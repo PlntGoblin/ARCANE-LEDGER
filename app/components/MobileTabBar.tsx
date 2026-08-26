@@ -104,7 +104,7 @@ export default function MobileTabBar({
   return (
     <nav
       aria-label="Character sheet tabs"
-      className="touch-only fixed bottom-0 inset-x-0 z-50 h-[9rem] bg-black/40 backdrop-blur-2xl border-t border-amber-200/25 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+      className="touch-only fixed bottom-0 inset-x-0 z-50 h-[11.7rem] bg-black/40 backdrop-blur-2xl border-t border-amber-200/25 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
       style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
     >
       <ul className="flex h-full w-full">
