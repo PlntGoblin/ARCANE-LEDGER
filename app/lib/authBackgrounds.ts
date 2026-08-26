@@ -15,6 +15,12 @@ export const AUTH_BACKGROUND_IMAGES: AuthBackground[] = [
   'https://i.pinimg.com/736x/11/4a/8e/114a8edea7d5b8905b8480e091a5855d.jpg',
   { url: 'https://i.pinimg.com/1200x/a5/f8/d0/a5f8d060d21acc42ac155c35f40c33bd.jpg', rotate: 270 },
   { url: 'https://i.pinimg.com/736x/e9/af/cb/e9afcb23fe9f33d2cfd0fe1e8c17e68c.jpg', rotate: 270 },
+  'https://i.pinimg.com/1200x/64/9f/27/649f276cc34c702c26addb2293b7bc9e.jpg',
+  { url: 'https://i.pinimg.com/1200x/ec/1f/9b/ec1f9bce9111eaf955abc421c55742b6.jpg', rotate: 270 },
+  'https://i.pinimg.com/1200x/89/c1/14/89c114a249ed39e22571ada158520dd0.jpg',
+  'https://i.pinimg.com/736x/2b/14/ad/2b14adfe29464b13454bedeed9862a47.jpg',
+  'https://i.pinimg.com/1200x/6f/6b/ff/6f6bff47dd8490c5456c83c7cd40c860.jpg',
+  'https://i.pinimg.com/736x/62/6c/e9/626ce902a963908660f538ebefd6f865.jpg',
 ];
 
 export function pickRandomAuthBackground(): { url: string; rotate: 0 | 90 | 180 | 270 } | null {
