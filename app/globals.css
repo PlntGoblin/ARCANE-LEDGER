@@ -68,9 +68,10 @@ body {
   .no-touch {
     display: none !important;
   }
-  /* keep the last row of the sheet visible above the fixed bottom tab bar */
+  /* keep the last row of the sheet visible above the fixed bottom tab bar.
+     Matches the bar's h-[9rem] + generous slack for the home-indicator area. */
   .sheet-bottom-pad {
-    padding-bottom: 9rem;
+    padding-bottom: calc(11rem + env(safe-area-inset-bottom, 0px));
   }
   /* w-3 h-3 checkboxes render at ~4 physical px on a phone at 0.36x — bump */
   input[type='checkbox'] {
