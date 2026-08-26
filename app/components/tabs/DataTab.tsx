@@ -2,6 +2,7 @@
 
 import { Character, Feat } from '../../types/character';
 import { CLASS_HIT_DICE } from '../../data/dndConstants';
+import { syncedStorage as localStorage } from '../../lib/syncedStorage';
 
 export interface DataTabProps {
   character: Character;

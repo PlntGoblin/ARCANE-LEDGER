@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
+import SessionProviderWrapper from './components/SessionProviderWrapper';
+import TopNav from './components/TopNav';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -13,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'D&D Character Sheet',
+  title: 'Arcane Ledger',
   description: 'A D&D 5e character sheet application',
 };
 
@@ -24,7 +26,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <SessionProviderWrapper>
+          <TopNav />
+          {children}
+        </SessionProviderWrapper>
+      </body>
     </html>
   );
 }

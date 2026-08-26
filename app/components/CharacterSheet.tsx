@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Character, Feat } from '../types/character';
+import { syncedStorage as localStorage } from '../lib/syncedStorage';
 import {
   DND_CLASSES,
   DND_RACES,
