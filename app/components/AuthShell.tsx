@@ -60,10 +60,15 @@ export default function AuthShell({
       <div className="absolute inset-0 bg-black/55" aria-hidden="true" />
 
       <div className="relative w-full max-w-sm rounded-2xl border border-white/20 bg-white/10 backdrop-blur-2xl shadow-[0_20px_80px_-20px_rgba(0,0,0,0.7)] p-7 text-gray-100">
-        <h1 className="text-2xl font-semibold tracking-tight mb-1">{title}</h1>
-        {subtitle && <p className="text-sm text-white/70 mb-6">{subtitle}</p>}
+        <h1
+          className="text-center text-4xl font-black tracking-wide mb-2 text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]"
+          style={{ fontFamily: 'var(--font-cinzel-decorative), serif' }}
+        >
+          {title}
+        </h1>
+        {subtitle && <p className="text-center text-sm text-white/70 mb-6">{subtitle}</p>}
         {children}
-        {footer && <div className="mt-6 text-sm text-white/70">{footer}</div>}
+        {footer && <div className="mt-6 text-sm text-white/70 text-center">{footer}</div>}
       </div>
     </div>
   );
