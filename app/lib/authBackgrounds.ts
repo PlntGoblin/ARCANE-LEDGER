@@ -24,6 +24,9 @@ export const AUTH_BACKGROUND_IMAGES: AuthBackground[] = [
   'https://i.pinimg.com/1200x/ab/0d/02/ab0d02ecd93bacea66469934ec1e24d2.jpg',
   'https://i.pinimg.com/736x/cb/28/f1/cb28f16ef4255c34a04a3763ce3050c1.jpg',
   'https://i.pinimg.com/736x/a3/a9/a6/a3a9a67b4c7ea485dce9883653e44c9e.jpg',
+  'https://i.pinimg.com/1200x/46/14/e6/4614e6a99c89d198f301951ebfe4e6fa.jpg',
+  { url: 'https://i.pinimg.com/736x/89/0f/e3/890fe38448a32547bfe9c89c5d611dfd.jpg', rotate: 90 },
+  'https://i.pinimg.com/1200x/0a/9e/b9/0a9eb9f8570efe64c24ca79955d8f31b.jpg',
 ];
 
 export function pickRandomAuthBackground(): { url: string; rotate: 0 | 90 | 180 | 270 } | null {
