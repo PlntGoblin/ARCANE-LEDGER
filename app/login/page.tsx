@@ -50,7 +50,7 @@ function LoginForm() {
 
   return (
     <AuthShell
-      title="Arcane Ledger"
+      title="Grimoire"
       subtitle="Log in to your character sheet."
       footer={
         <>

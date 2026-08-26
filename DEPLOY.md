@@ -1,4 +1,4 @@
-# Deploying Arcane Ledger to Vercel
+# Deploying Grimoire to Vercel
 
 Multi-user character sheet on Vercel with Neon Postgres + Auth.js.
 

@@ -1,4 +1,4 @@
-# Arcane Ledger — D&D 5e Digital Character Sheet
+# Grimoire — D&D 5e Digital Character Sheet
 
 A fully-featured, browser-based character sheet for Dungeons & Dragons 5th Edition. Built for players who want a fast, beautiful, and deeply customizable tool to manage every aspect of their character — from ability scores to spell slots to survival conditions — all in one place.
 

@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Arcane Ledger',
+  title: 'Grimoire',
   description: 'A D&D 5e character sheet application',
 };
 
