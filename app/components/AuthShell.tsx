@@ -14,7 +14,16 @@ export default function AuthShell({
   children: React.ReactNode;
   footer?: React.ReactNode;
 }) {
-  const [bg] = useState(() => pickRandomAuthBackground());
+  const [bg] = useState(() => {
+    // Prefer mobile-tagged images on touch devices. The initializer only
+    // runs on the client (this is a 'use client' component) so window is
+    // available; guard just to be safe during any SSR pre-render.
+    const isMobile =
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(pointer: coarse)').matches;
+    return pickRandomAuthBackground({ isMobile });
+  });
 
   const isSideways = bg?.rotate === 90 || bg?.rotate === 270;
   const bgStyle: React.CSSProperties | undefined = bg

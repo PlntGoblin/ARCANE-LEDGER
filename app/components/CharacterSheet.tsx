@@ -2520,17 +2520,20 @@ export default function CharacterSheet() {
 
   return (
     <div
-      className={`min-h-screen p-4 font-sans relative ${isDarkMode ? 'bg-slate-900 text-white' : 'bg-gray-200 text-black'}`}
-      style={{
-        backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'none',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
+      className={`min-h-screen p-4 font-sans relative ${
+        isDarkMode ? 'text-white' : 'text-black'
+      } ${backgroundImage ? '' : isDarkMode ? 'bg-slate-900' : 'bg-gray-200'}`}
     >
       {backgroundImage && (
+        // Fixed-position so the wallpaper always covers the visible viewport,
+        // regardless of scroll position or content height. Previously this
+        // was bound to the min-h-screen container, which on mobile (fixed
+        // 1080px viewport) collapsed to content height and revealed the
+        // outer bg-gray-900 above the fixed bottom tab bar.
+        // Rendered as an early DOM sibling with no z-index — the content
+        // wrapper below is `relative z-10`, so it paints on top by DOM order.
         <div
-          className="absolute inset-0 z-0"
+          className="fixed inset-0 pointer-events-none"
           style={{
             backgroundImage: `url(${backgroundImage})`,
             backgroundSize: 'cover',

@@ -8,8 +8,18 @@
 //
 //   { url: 'https://i.pinimg.com/…jpg', rotate: 90 }
 //
-// A plain string means no rotation.
-export type AuthBackground = string | { url: string; rotate?: 90 | 180 | 270 };
+// To restrict an image to phones (portrait-oriented art), set `mobile: true`.
+// Mobile-tagged images only fire on touch devices; the rest are desktop-only.
+// If a device requests a pool that's empty, the picker falls back to the
+// other pool so nothing crashes.
+//
+//   { url: 'https://…jpg', mobile: true }
+//   { url: 'https://…jpg', mobile: true, rotate: 270 }
+//
+// A plain string means desktop, no rotation.
+export type AuthBackground =
+  | string
+  | { url: string; rotate?: 90 | 180 | 270; mobile?: boolean };
 
 export const AUTH_BACKGROUND_IMAGES: AuthBackground[] = [
   'https://i.pinimg.com/736x/11/4a/8e/114a8edea7d5b8905b8480e091a5855d.jpg',
@@ -29,10 +39,22 @@ export const AUTH_BACKGROUND_IMAGES: AuthBackground[] = [
   'https://i.pinimg.com/1200x/0a/9e/b9/0a9eb9f8570efe64c24ca79955d8f31b.jpg',
 ];
 
-export function pickRandomAuthBackground(): { url: string; rotate: 0 | 90 | 180 | 270 } | null {
+function isMobileEntry(e: AuthBackground): boolean {
+  return typeof e === 'object' && e.mobile === true;
+}
+
+export function pickRandomAuthBackground(
+  opts: { isMobile: boolean } = { isMobile: false }
+): { url: string; rotate: 0 | 90 | 180 | 270 } | null {
   if (AUTH_BACKGROUND_IMAGES.length === 0) return null;
-  const idx = Math.floor(Math.random() * AUTH_BACKGROUND_IMAGES.length);
-  const entry = AUTH_BACKGROUND_IMAGES[idx];
+
+  const preferredPool = AUTH_BACKGROUND_IMAGES.filter((e) =>
+    opts.isMobile ? isMobileEntry(e) : !isMobileEntry(e)
+  );
+  const pool = preferredPool.length > 0 ? preferredPool : AUTH_BACKGROUND_IMAGES;
+
+  const idx = Math.floor(Math.random() * pool.length);
+  const entry = pool[idx];
   if (typeof entry === 'string') return { url: entry, rotate: 0 };
   return { url: entry.url, rotate: entry.rotate ?? 0 };
 }
