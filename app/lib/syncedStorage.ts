@@ -117,6 +117,22 @@ export async function loadFromServer(): Promise<void> {
     }
   }
 
+  // Seed the bundled master spell list if the user has none yet. Ships in
+  // public/master-spell-list.json so new signups don't have to import it.
+  if (!cache.has('dnd-master-spell-list')) {
+    try {
+      const res = await fetch('/master-spell-list.json', { cache: 'force-cache' });
+      if (res.ok) {
+        const text = await res.text();
+        // Sanity: it should parse as JSON. If not, skip seeding.
+        JSON.parse(text);
+        cache.set('dnd-master-spell-list', text);
+      }
+    } catch {
+      // Fall through — user just won't have a default spell list.
+    }
+  }
+
   ready = true;
   notify();
 
