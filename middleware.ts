@@ -16,6 +16,11 @@ export default auth((req) => {
     pathname.startsWith('/api/auth');
 
   if (!isAuthed && !isPublic) {
+    // API calls need a real 401 — a login-page redirect would make failed
+    // saves look like 200s to the client.
+    if (pathname.startsWith('/api/')) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     const url = req.nextUrl.clone();
     url.pathname = '/login';
     url.searchParams.set('from', pathname);

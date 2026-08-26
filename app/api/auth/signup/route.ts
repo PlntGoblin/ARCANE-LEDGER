@@ -19,8 +19,8 @@ export async function POST(req: Request) {
   if (username.length < 2 || username.length > 32) {
     return NextResponse.json({ error: 'Username must be 2-32 characters' }, { status: 400 });
   }
-  if (password.length < 4) {
-    return NextResponse.json({ error: 'Password must be at least 4 characters' }, { status: 400 });
+  if (password.length < 4 || password.length > 128) {
+    return NextResponse.json({ error: 'Password must be 4-128 characters' }, { status: 400 });
   }
 
   const existing = await prisma.user.findUnique({ where: { username } });
@@ -29,7 +29,15 @@ export async function POST(req: Request) {
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
-  await prisma.user.create({ data: { username, passwordHash } });
+  try {
+    await prisma.user.create({ data: { username, passwordHash } });
+  } catch (err) {
+    // Unique-constraint race: two simultaneous signups with the same name.
+    if (err && typeof err === 'object' && 'code' in err && err.code === 'P2002') {
+      return NextResponse.json({ error: 'Username taken' }, { status: 409 });
+    }
+    throw err;
+  }
 
   return NextResponse.json({ ok: true });
 }

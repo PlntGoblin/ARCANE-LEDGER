@@ -7,13 +7,18 @@
 // - Same synchronous getItem/setItem/removeItem contract as window.localStorage
 //   so CharacterSheet.tsx can migrate via a straight find-and-replace.
 // - Values are always strings, matching localStorage semantics.
-// - PUT to /api/character is debounced and serialized (no overlapping writes).
-// - A best-effort last save fires via sendBeacon on beforeunload.
-// - On first server load, if the server row is empty and the browser has
-//   legacy dnd-* keys in localStorage, they are migrated into the server.
+// - PUT to /api/character is debounced and serialized (no overlapping writes),
+//   with a retry on failure so transient errors don't drop edits.
+// - A best-effort last save fires via sendBeacon on beforeunload (the API
+//   exposes POST as an alias of PUT because beacons can only POST).
+// - On first successful server load, if the row is empty and the browser has
+//   legacy dnd-* keys in localStorage, they are migrated up exactly once
+//   (guarded by a marker so stale data can't hijack later fresh accounts).
 
 const DND_KEY_PREFIX = 'dnd-';
+const MIGRATED_MARKER = 'dnd-migrated-to-server';
 const SAVE_DEBOUNCE_MS = 800;
+const SAVE_RETRY_MS = 5000;
 
 type Listener = () => void;
 
@@ -22,6 +27,7 @@ let ready = false;
 let inFlight = false;
 let pending = false;
 let saveTimer: ReturnType<typeof setTimeout> | null = null;
+let loadPromise: Promise<boolean> | null = null;
 const listeners = new Set<Listener>();
 let beforeUnloadWired = false;
 
@@ -29,10 +35,10 @@ function notify() {
   for (const l of listeners) l();
 }
 
-function scheduleSave() {
+function scheduleSave(delay = SAVE_DEBOUNCE_MS) {
   if (!ready) return;
   if (saveTimer) clearTimeout(saveTimer);
-  saveTimer = setTimeout(runSave, SAVE_DEBOUNCE_MS);
+  saveTimer = setTimeout(runSave, delay);
 }
 
 async function runSave() {
@@ -45,21 +51,31 @@ async function runSave() {
   const snapshot: Record<string, string> = {};
   for (const [k, v] of cache) snapshot[k] = v;
 
+  let ok = false;
   try {
-    await fetch('/api/character', {
+    const res = await fetch('/api/character', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ data: snapshot }),
       credentials: 'same-origin',
     });
+    ok = res.ok;
   } catch {
-    // Silent — a later change will retry via the next debounce.
-  } finally {
-    inFlight = false;
-    if (pending) {
-      pending = false;
-      scheduleSave();
-    }
+    ok = false;
+  }
+  inFlight = false;
+
+  if (!ok) {
+    // Transient failure or expired session — retry until it lands. Edits
+    // keep accumulating in the cache, so the retry always sends the latest.
+    pending = false;
+    scheduleSave(SAVE_RETRY_MS);
+    return;
+  }
+
+  if (pending) {
+    pending = false;
+    scheduleSave();
   }
 }
 
@@ -83,23 +99,38 @@ function wireBeforeUnload() {
 }
 
 /**
- * Populate the in-memory cache from the server. Runs once at app startup.
- * If the server row is empty AND the browser has legacy dnd-* keys, migrate
- * them into the cache and push them up in a single save.
+ * Populate the in-memory cache from the server. Memoized so StrictMode's
+ * double-effect (or multiple gates) can't run two loads concurrently.
+ * Returns true when the server load succeeded; false means the caller should
+ * offer a retry and MUST NOT let the app write, or stale/empty data could
+ * clobber the user's real character.
  */
-export async function loadFromServer(): Promise<void> {
+export function loadFromServer(): Promise<boolean> {
+  if (loadPromise) return loadPromise;
+  loadPromise = doLoad();
+  return loadPromise;
+}
+
+async function doLoad(): Promise<boolean> {
   wireBeforeUnload();
-  let serverData: Record<string, unknown> = {};
+
+  let serverData: Record<string, unknown> | null = null;
   try {
     const res = await fetch('/api/character', { credentials: 'same-origin' });
     if (res.ok) {
       const body = await res.json();
-      if (body?.data && typeof body.data === 'object') {
-        serverData = body.data as Record<string, unknown>;
-      }
+      serverData =
+        body?.data && typeof body.data === 'object' ? (body.data as Record<string, unknown>) : {};
     }
   } catch {
-    // Fall through with empty server data — cache stays empty, UI still boots.
+    serverData = null;
+  }
+
+  if (serverData === null) {
+    // Load failed — do NOT mark ready, do NOT migrate, do NOT save.
+    // Allow a later retry.
+    loadPromise = null;
+    return false;
   }
 
   cache.clear();
@@ -108,12 +139,17 @@ export async function loadFromServer(): Promise<void> {
   }
 
   const serverIsEmpty = cache.size === 0;
+  let migrated = false;
   if (serverIsEmpty && typeof window !== 'undefined') {
-    for (let i = 0; i < window.localStorage.length; i++) {
-      const key = window.localStorage.key(i);
-      if (!key || !key.startsWith(DND_KEY_PREFIX)) continue;
-      const val = window.localStorage.getItem(key);
-      if (val !== null) cache.set(key, val);
+    const alreadyMigrated = window.localStorage.getItem(MIGRATED_MARKER) === '1';
+    if (!alreadyMigrated) {
+      for (let i = 0; i < window.localStorage.length; i++) {
+        const key = window.localStorage.key(i);
+        if (!key || !key.startsWith(DND_KEY_PREFIX)) continue;
+        const val = window.localStorage.getItem(key);
+        if (val !== null) cache.set(key, val);
+      }
+      migrated = cache.size > 0;
     }
   }
 
@@ -124,8 +160,7 @@ export async function loadFromServer(): Promise<void> {
       const res = await fetch('/master-spell-list.json', { cache: 'force-cache' });
       if (res.ok) {
         const text = await res.text();
-        // Sanity: it should parse as JSON. If not, skip seeding.
-        JSON.parse(text);
+        JSON.parse(text); // sanity — skip seeding if the asset is corrupt
         cache.set('dnd-master-spell-list', text);
       }
     } catch {
@@ -136,9 +171,18 @@ export async function loadFromServer(): Promise<void> {
   ready = true;
   notify();
 
+  if (migrated && typeof window !== 'undefined') {
+    try {
+      window.localStorage.setItem(MIGRATED_MARKER, '1');
+    } catch {
+      // Marker is best-effort.
+    }
+  }
+
   if (serverIsEmpty && cache.size > 0) {
     scheduleSave();
   }
+  return true;
 }
 
 export const syncedStorage = {
