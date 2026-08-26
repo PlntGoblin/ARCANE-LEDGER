@@ -16,9 +16,6 @@ export default function AuthShell({
 }) {
   const [bg] = useState(() => pickRandomAuthBackground());
 
-  // For 90/270 rotations the container's width becomes the image's height and
-  // vice-versa. Swap dimensions accordingly so the rotated image still fills
-  // the viewport with no gaps.
   const isSideways = bg?.rotate === 90 || bg?.rotate === 270;
   const bgStyle: React.CSSProperties | undefined = bg
     ? isSideways
@@ -57,18 +54,25 @@ export default function AuthShell({
             aria-hidden="true"
           />
         ))}
-      <div className="absolute inset-0 bg-black/55" aria-hidden="true" />
+      <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
 
-      <div className="relative w-full max-w-[19rem] rounded-2xl border border-white/20 bg-white/10 backdrop-blur-2xl shadow-[0_20px_80px_-20px_rgba(0,0,0,0.7)] p-7 text-gray-100">
+      <div className="auth-card-enter relative w-full max-w-[19rem] rounded-2xl border border-amber-200/25 bg-black/35 backdrop-blur-2xl shadow-[0_20px_80px_-20px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.06)] pt-8 pb-7 px-7 text-gray-100">
         <h1
-          className="text-center text-4xl font-black tracking-wide mb-2 text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]"
+          className="text-center text-4xl font-black tracking-wide mb-3 text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.7)]"
           style={{ fontFamily: 'var(--font-cinzel-decorative), serif' }}
         >
           {title}
         </h1>
+
+        <div className="flex items-center justify-center gap-3 mb-6" aria-hidden="true">
+          <span className="h-px flex-1 max-w-16 bg-gradient-to-r from-transparent to-amber-300/50" />
+          <span className="text-amber-300/80 text-[10px]">◆</span>
+          <span className="h-px flex-1 max-w-16 bg-gradient-to-l from-transparent to-amber-300/50" />
+        </div>
+
         {subtitle && <p className="text-center text-sm text-white/70 mb-6">{subtitle}</p>}
         {children}
-        {footer && <div className="mt-6 text-sm text-white/70 text-center">{footer}</div>}
+        {footer && <div className="mt-6 text-sm text-white/80 text-center">{footer}</div>}
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import AuthShell from '../components/AuthShell';
+import PasswordField from '../components/PasswordField';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -49,12 +50,12 @@ export default function SignupPage() {
 
   return (
     <AuthShell
-      title="Create an account"
-      subtitle="Pick a username and password."
+      title="Grimoire"
+      subtitle="Create a new account"
       footer={
         <>
           Have an account?{' '}
-          <Link href="/login" className="text-indigo-300 hover:text-indigo-200 hover:underline">
+          <Link href="/login" className="text-amber-300 hover:text-amber-200 hover:underline">
             Log in
           </Link>
         </>
@@ -62,9 +63,11 @@ export default function SignupPage() {
     >
       <form onSubmit={onSubmit} className="space-y-4 max-w-[85%] mx-auto">
         <label className="block">
-          <span className="text-sm text-white/80">Username</span>
+          <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/60">
+            Username
+          </span>
           <input
-            className="mt-1 block w-full rounded-lg bg-black/30 border border-white/20 px-3 py-2 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-indigo-400/60 focus:border-transparent"
+            className="auth-input mt-1.5 block w-full rounded-lg bg-black/40 border border-white/15 px-3 py-2 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-amber-300/50 focus:border-amber-300/30"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             autoComplete="username"
@@ -73,23 +76,18 @@ export default function SignupPage() {
             required
           />
         </label>
-        <label className="block">
-          <span className="text-sm text-white/80">Password</span>
-          <input
-            type="password"
-            className="mt-1 block w-full rounded-lg bg-black/30 border border-white/20 px-3 py-2 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-indigo-400/60 focus:border-transparent"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="new-password"
-            minLength={4}
-            required
-          />
-        </label>
+        <PasswordField
+          value={password}
+          onChange={setPassword}
+          autoComplete="new-password"
+          required
+          minLength={4}
+        />
         {error && <p className="text-sm text-red-300">{error}</p>}
         <button
           type="submit"
           disabled={busy}
-          className="w-full rounded-lg bg-indigo-500/90 hover:bg-indigo-400 py-2 font-medium text-white shadow-lg shadow-indigo-500/20 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full rounded-lg bg-amber-500 hover:bg-amber-400 py-2 font-semibold text-slate-950 shadow-lg shadow-amber-500/25 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {busy ? 'Creating…' : 'Sign up'}
         </button>
