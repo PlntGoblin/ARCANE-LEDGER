@@ -4,6 +4,7 @@ import { Suspense, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import AuthShell from '../components/AuthShell';
 
 export default function LoginPage() {
   return (
@@ -48,48 +49,49 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-sm rounded-lg border border-gray-700 bg-gray-800 p-6 shadow-xl">
-        <h1 className="text-2xl font-bold mb-1">Arcane Ledger</h1>
-        <p className="text-sm text-gray-400 mb-6">Log in to your character sheet.</p>
-        <form onSubmit={onSubmit} className="space-y-4">
-          <label className="block">
-            <span className="text-sm text-gray-300">Username</span>
-            <input
-              className="mt-1 block w-full rounded bg-gray-900 border border-gray-700 px-3 py-2 text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              autoComplete="username"
-              required
-            />
-          </label>
-          <label className="block">
-            <span className="text-sm text-gray-300">Password</span>
-            <input
-              type="password"
-              className="mt-1 block w-full rounded bg-gray-900 border border-gray-700 px-3 py-2 text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-              required
-            />
-          </label>
-          {error && <p className="text-sm text-red-400">{error}</p>}
-          <button
-            type="submit"
-            disabled={busy}
-            className="w-full rounded bg-indigo-600 py-2 font-medium hover:bg-indigo-500 disabled:opacity-50"
-          >
-            {busy ? 'Signing in…' : 'Sign in'}
-          </button>
-        </form>
-        <p className="mt-6 text-sm text-gray-400">
+    <AuthShell
+      title="Arcane Ledger"
+      subtitle="Log in to your character sheet."
+      footer={
+        <>
           No account?{' '}
-          <Link href="/signup" className="text-indigo-400 hover:underline">
+          <Link href="/signup" className="text-indigo-300 hover:text-indigo-200 hover:underline">
             Sign up
           </Link>
-        </p>
-      </div>
-    </div>
+        </>
+      }
+    >
+      <form onSubmit={onSubmit} className="space-y-4">
+        <label className="block">
+          <span className="text-sm text-white/80">Username</span>
+          <input
+            className="mt-1 block w-full rounded-lg bg-black/30 border border-white/20 px-3 py-2 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-indigo-400/60 focus:border-transparent"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            autoComplete="username"
+            required
+          />
+        </label>
+        <label className="block">
+          <span className="text-sm text-white/80">Password</span>
+          <input
+            type="password"
+            className="mt-1 block w-full rounded-lg bg-black/30 border border-white/20 px-3 py-2 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-indigo-400/60 focus:border-transparent"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+            required
+          />
+        </label>
+        {error && <p className="text-sm text-red-300">{error}</p>}
+        <button
+          type="submit"
+          disabled={busy}
+          className="w-full rounded-lg bg-indigo-500/90 hover:bg-indigo-400 py-2 font-medium text-white shadow-lg shadow-indigo-500/20 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {busy ? 'Signing in…' : 'Sign in'}
+        </button>
+      </form>
+    </AuthShell>
   );
 }
