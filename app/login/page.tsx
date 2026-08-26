@@ -61,7 +61,7 @@ function LoginForm() {
         </>
       }
     >
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form onSubmit={onSubmit} className="space-y-4 max-w-[85%] mx-auto">
         <label className="block">
           <span className="text-sm text-white/80">Username</span>
           <input
