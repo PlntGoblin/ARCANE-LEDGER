@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono, Cinzel_Decorative } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 import SessionProviderWrapper from './components/SessionProviderWrapper';
 import TopNav from './components/TopNav';
@@ -39,6 +40,7 @@ export default function RootLayout({
           <TopNav />
           {children}
         </SessionProviderWrapper>
+        <Analytics />
       </body>
     </html>
   );
