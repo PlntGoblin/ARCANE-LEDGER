@@ -51,7 +51,6 @@ function LoginForm() {
   return (
     <AuthShell
       title="Grimoire"
-      subtitle="Log in to your character sheet."
       footer={
         <>
           No account?{' '}
