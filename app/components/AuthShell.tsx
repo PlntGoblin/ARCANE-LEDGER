@@ -58,12 +58,8 @@ export default function AuthShell({
 
       <div className="auth-card-enter relative w-full max-w-[19rem] rounded-2xl border border-amber-200/25 bg-black/35 backdrop-blur-2xl shadow-[0_20px_80px_-20px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.06)] pt-8 pb-7 px-7 text-gray-100">
         <h1
-          className="text-center text-4xl font-black tracking-wide mb-3 text-white"
-          style={{
-            fontFamily: 'var(--font-cinzel-decorative), serif',
-            textShadow:
-              '0 0 8px rgba(251, 191, 36, 0.75), 0 0 22px rgba(251, 191, 36, 0.55), 0 0 44px rgba(217, 119, 6, 0.4), 0 2px 4px rgba(0, 0, 0, 0.8)',
-          }}
+          className="text-center text-4xl font-black tracking-wide mb-3 text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.7)]"
+          style={{ fontFamily: 'var(--font-cinzel-decorative), serif' }}
         >
           {title}
         </h1>
