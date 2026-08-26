@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono, Cinzel_Decorative } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
@@ -24,6 +24,13 @@ const cinzelDecorative = Cinzel_Decorative({
 export const metadata: Metadata = {
   title: 'Grimoire',
   description: 'A D&D 5e character sheet application',
+};
+
+// Applies site-wide unless a page overrides it (app/page.tsx sets a
+// mobile-scaling width for the character sheet). Sets theme_color for
+// standalone/PWA installs and mobile browser chrome.
+export const viewport: Viewport = {
+  themeColor: '#030712',
 };
 
 export default function RootLayout({

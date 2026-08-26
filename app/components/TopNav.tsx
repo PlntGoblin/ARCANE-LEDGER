@@ -15,12 +15,12 @@ export default function TopNav() {
   return (
     <div className="w-full bg-gray-950 text-gray-200 border-b border-gray-800">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2">
-        <span className="text-sm text-gray-400">
+        <span className="text-sm text-gray-400 touch-nav-label">
           Signed in as <span className="text-gray-100 font-medium">{username}</span>
         </span>
         <button
           onClick={() => signOut({ callbackUrl: '/login' })}
-          className="rounded bg-gray-800 hover:bg-gray-700 px-3 py-1 text-sm"
+          className="rounded bg-gray-800 hover:bg-gray-700 px-3 py-1 text-sm touch-nav-button"
         >
           Log out
         </button>

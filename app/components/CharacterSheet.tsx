@@ -21,6 +21,7 @@ import SpellsTab from './tabs/SpellsTab';
 import LibraryTab from './tabs/LibraryTab';
 import InventoryTab from './tabs/InventoryTab';
 import DataTab from './tabs/DataTab';
+import MobileTabBar from './MobileTabBar';
 import {
   getModifier as _getModifier,
   getRacialBonus as _getRacialBonus,
@@ -2802,9 +2803,10 @@ export default function CharacterSheet() {
       `}</style>
 
       <div className="relative z-10">
-        <div className="max-w-5xl mx-auto">
-          {/* Tab Navigation - Above Main Box */}
-          <div className="flex justify-center mb-4 space-x-2">
+        <MobileTabBar activeTab={activeTab} setActiveTab={setActiveTab} />
+        <div className="max-w-5xl mx-auto sheet-bottom-pad">
+          {/* Tab Navigation - Above Main Box (desktop only; phones use MobileTabBar) */}
+          <div className="no-touch flex justify-center mb-4 space-x-2">
             {tabs.map((tab) => (
               <button
                 key={tab}
