@@ -34,7 +34,7 @@ export default function CharacterTab({
   setProficiencies,
   getSkillModifier,
 }: CharacterTabProps) {
-  const cardClass = isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-gray-100 border-stone-300';
+  const cardClass = isDarkMode ? 'sheet-card' : 'bg-gray-100 border-stone-300';
 
   return (
     // Transparent wrapper like the other tabs — each section is its own card
@@ -82,7 +82,7 @@ export default function CharacterTab({
                 {character.trueName?.toUpperCase() || 'CHARACTER NAME'}
               </h1>
               <div
-                className={`py-1 px-3 inline-block rounded shadow-lg ${isDarkMode ? 'bg-orange-600 text-white' : 'bg-red-700 text-white'}`}
+                className={`py-1 px-3 inline-block rounded shadow-lg ${isDarkMode ? 'bg-orange-600/80 text-white' : 'bg-red-700 text-white'}`}
               >
                 {/* inline-grid with a hidden mirror span: the input is sized by
                     its own text instead of the browser's default 20-character
@@ -128,13 +128,13 @@ export default function CharacterTab({
 
         {/* Character Portrait */}
         <div
-          className={`rounded-lg shadow-2xl overflow-hidden border-4 w-full ${isDarkMode ? 'border-orange-400 bg-slate-800' : 'border-stone-300 bg-gray-100'}`}
+          className={`rounded-lg shadow-2xl overflow-hidden border-4 w-full ${isDarkMode ? 'border-orange-400/70 bg-black/30' : 'border-stone-300 bg-gray-100'}`}
         >
           {characterImage ? (
             <img src={characterImage} alt="Character portrait" className="w-full h-full object-cover" />
           ) : (
             <div
-              className={`w-full h-full min-h-[500px] flex items-center justify-center ${isDarkMode ? 'bg-slate-700 text-stone-400' : 'bg-stone-200 text-stone-500'}`}
+              className={`w-full h-full min-h-[500px] flex items-center justify-center ${isDarkMode ? 'bg-black/30 text-stone-400' : 'bg-stone-200 text-stone-500'}`}
             >
               <div className="text-center">
                 <div className="text-6xl mb-4">⚔️</div>
@@ -150,7 +150,7 @@ export default function CharacterTab({
       <div className="grid grid-cols-2 gap-4">
         {/* Left: Your Nature */}
         <div
-          className={`relative p-4 rounded-lg border shadow-xl ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-gray-100 border-stone-300'}`}
+          className={`relative p-4 rounded-lg border shadow-xl ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-stone-300'}`}
         >
           <textarea
             value={character.backstory.roleplayNotes || ''}
@@ -159,20 +159,20 @@ export default function CharacterTab({
                 backstory: { ...character.backstory, roleplayNotes: e.target.value },
               })
             }
-            className={`w-full bg-transparent border rounded px-4 py-3 pb-10 resize-none leading-relaxed text-sm ${
-              isDarkMode ? 'bg-slate-700 border-slate-600 text-stone-200' : 'bg-white border-stone-300 text-stone-800'
-            } focus:outline-none focus:ring-2 focus:ring-orange-500 placeholder-stone-400`}
+            className={`w-full bg-transparent px-1 pb-6 resize-none leading-relaxed text-sm outline-none ${
+              isDarkMode ? 'text-stone-100' : 'text-stone-800'
+            } placeholder-stone-400`}
             placeholder="• Silent, observant, strikes from shadows&#10;• Uncomfortable around crowds of people&#10;• Protective of natural places and creatures&#10;• Struggles with the rage that led to the village massacre&#10;• Seeking redemption through control and purpose&#10;• The sickle is both weapon and reminder: 'Burn, or grow'"
             rows={6}
           />
-          <div className="absolute bottom-6 left-0 right-0 text-center">
+          <div className="absolute bottom-2 left-0 right-0 text-center">
             <span className="text-sm font-bold text-gray-400">Your Nature:</span>
           </div>
         </div>
 
         {/* Right: Character Arc Hooks */}
         <div
-          className={`relative p-4 rounded-lg border shadow-xl ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-gray-100 border-stone-300'}`}
+          className={`relative p-4 rounded-lg border shadow-xl ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-stone-300'}`}
         >
           <textarea
             value={character.backstory.arcHooks || ''}
@@ -181,13 +181,13 @@ export default function CharacterTab({
                 backstory: { ...character.backstory, arcHooks: e.target.value },
               })
             }
-            className={`w-full bg-transparent border rounded px-4 py-3 pb-10 resize-none leading-relaxed text-sm ${
-              isDarkMode ? 'bg-slate-700 border-slate-600 text-stone-200' : 'bg-white border-stone-300 text-stone-800'
-            } focus:outline-none focus:ring-2 focus:ring-orange-500 placeholder-stone-400`}
+            className={`w-full bg-transparent px-1 pb-6 resize-none leading-relaxed text-sm outline-none ${
+              isDarkMode ? 'text-stone-100' : 'text-stone-800'
+            } placeholder-stone-400`}
             placeholder="• War is coming - must learn to fight alongside humans&#10;• Runa is out there somewhere with the survivors&#10;• The vision showed him fighting beside three strangers&#10;• Elariel's words: 'Learn their steps, their hungers, their griefs'"
             rows={6}
           />
-          <div className="absolute bottom-6 left-0 right-0 text-center">
+          <div className="absolute bottom-2 left-0 right-0 text-center">
             <span className="text-sm font-bold text-gray-400">Character Arc Hooks:</span>
           </div>
         </div>
@@ -199,7 +199,7 @@ export default function CharacterTab({
         <div>
           {/* Proficiencies & Languages Section */}
           <div
-            className={`border-2 rounded-lg shadow-xl p-4 ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-gray-100 border-stone-300'}`}
+            className={`border-2 rounded-lg shadow-xl p-4 ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-stone-300'}`}
           >
             <h3 className={`text-lg font-bold mb-4 ${isDarkMode ? 'text-stone-200' : 'text-stone-800'}`}>
               Proficiencies & Languages
@@ -222,7 +222,7 @@ export default function CharacterTab({
                         .filter((s) => s),
                     })
                   }
-                  className={`w-full px-3 py-2 rounded border ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-stone-300 text-stone-800'} focus:outline-none focus:ring-2 focus:ring-orange-500`}
+                  className={`w-full px-3 py-2 rounded border ${isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-white border-stone-300 text-stone-800'} focus:outline-none focus:ring-2 focus:ring-orange-500`}
                   placeholder="Light armor, Medium armor, Shields"
                   rows={2}
                 />
@@ -244,7 +244,7 @@ export default function CharacterTab({
                         .filter((s) => s),
                     })
                   }
-                  className={`w-full px-3 py-2 rounded border ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-stone-300 text-stone-800'} focus:outline-none focus:ring-2 focus:ring-orange-500`}
+                  className={`w-full px-3 py-2 rounded border ${isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-white border-stone-300 text-stone-800'} focus:outline-none focus:ring-2 focus:ring-orange-500`}
                   placeholder="Simple weapons, Martial weapons"
                   rows={2}
                 />
@@ -266,7 +266,7 @@ export default function CharacterTab({
                         .filter((s) => s),
                     })
                   }
-                  className={`w-full px-3 py-2 rounded border ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-stone-300 text-stone-800'} focus:outline-none focus:ring-2 focus:ring-orange-500`}
+                  className={`w-full px-3 py-2 rounded border ${isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-white border-stone-300 text-stone-800'} focus:outline-none focus:ring-2 focus:ring-orange-500`}
                   placeholder="Thieves' tools, Herbalism kit"
                   rows={2}
                 />
@@ -288,7 +288,7 @@ export default function CharacterTab({
                         .filter((s) => s),
                     })
                   }
-                  className={`w-full px-3 py-2 rounded border ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-stone-300 text-stone-800'} focus:outline-none focus:ring-2 focus:ring-orange-500`}
+                  className={`w-full px-3 py-2 rounded border ${isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-white border-stone-300 text-stone-800'} focus:outline-none focus:ring-2 focus:ring-orange-500`}
                   placeholder="Common, Elvish, Draconic"
                   rows={2}
                 />
@@ -301,7 +301,7 @@ export default function CharacterTab({
         <div className="md:col-span-2 space-y-4">
           {/* Profile Details Section */}
           <div
-            className={`border-2 p-6 rounded-lg shadow-xl ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-gray-100 border-stone-300'}`}
+            className={`border-2 p-6 rounded-lg shadow-xl ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-stone-300'}`}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div className="space-y-3">
@@ -333,7 +333,7 @@ export default function CharacterTab({
                   <select
                     value={character.race}
                     onChange={(e) => updateCharacter({ race: e.target.value })}
-                    className={`flex-1 outline-none ${isDarkMode ? 'bg-slate-800 text-stone-200' : 'bg-stone-50 text-stone-800'}`}
+                    className={`flex-1 outline-none ${isDarkMode ? 'bg-transparent text-stone-100' : 'bg-stone-50 text-stone-800'}`}
                   >
                     {DND_RACES.map((race) => (
                       <option key={race} value={race}>
@@ -349,7 +349,7 @@ export default function CharacterTab({
                   <select
                     value={character.gender || 'Female'}
                     onChange={(e) => updateCharacter({ gender: e.target.value })}
-                    className={`flex-1 outline-none ${isDarkMode ? 'bg-slate-800 text-stone-200' : 'bg-stone-50 text-stone-800'}`}
+                    className={`flex-1 outline-none ${isDarkMode ? 'bg-transparent text-stone-100' : 'bg-stone-50 text-stone-800'}`}
                   >
                     {GENDER_OPTIONS.map((gender) => (
                       <option key={gender} value={gender}>
@@ -446,7 +446,7 @@ export default function CharacterTab({
                   <select
                     value={character.alignment}
                     onChange={(e) => updateCharacter({ alignment: e.target.value })}
-                    className={`flex-1 outline-none ${isDarkMode ? 'bg-slate-800 text-stone-200' : 'bg-stone-50 text-stone-800'}`}
+                    className={`flex-1 outline-none ${isDarkMode ? 'bg-transparent text-stone-100' : 'bg-stone-50 text-stone-800'}`}
                   >
                     {DND_ALIGNMENTS.map((alignment) => (
                       <option key={alignment} value={alignment}>
@@ -473,7 +473,7 @@ export default function CharacterTab({
                   <select
                     value={character.class}
                     onChange={(e) => updateCharacter({ class: e.target.value })}
-                    className={`flex-1 outline-none ${isDarkMode ? 'bg-slate-800 text-stone-200' : 'bg-stone-50 text-stone-800'}`}
+                    className={`flex-1 outline-none ${isDarkMode ? 'bg-transparent text-stone-100' : 'bg-stone-50 text-stone-800'}`}
                   >
                     {DND_CLASSES.map((className) => (
                       <option key={className} value={className}>
@@ -646,17 +646,17 @@ export default function CharacterTab({
                                 {item.skill.slice(0, 8)}
                               </div>
                               <div
-                                className={`flex-1 relative h-4 rounded overflow-hidden ${isDarkMode ? 'bg-slate-700' : 'bg-gray-200'}`}
+                                className={`flex-1 relative h-4 rounded overflow-hidden ${isDarkMode ? 'bg-black/30' : 'bg-gray-200'}`}
                               >
                                 <div
                                   className={`h-full rounded transition-all duration-300 ${
                                     isTop
                                       ? isDarkMode
-                                        ? 'bg-green-500 bg-opacity-60'
-                                        : 'bg-green-600 bg-opacity-60'
+                                        ? 'bg-emerald-500/75'
+                                        : 'bg-emerald-600/75'
                                       : isDarkMode
-                                        ? 'bg-red-500 bg-opacity-60'
-                                        : 'bg-red-600 bg-opacity-60'
+                                        ? 'bg-red-500/60'
+                                        : 'bg-red-600/60'
                                   }`}
                                   style={{ width: `${barWidth}%` }}
                                 />
@@ -683,11 +683,13 @@ export default function CharacterTab({
                   >
                     <div className="flex justify-center gap-4">
                       <div className="flex items-center gap-1">
-                        <div className={`w-3 h-3 rounded ${isDarkMode ? 'bg-green-500' : 'bg-green-600'}`}></div>
+                        <div
+                          className={`w-3 h-3 rounded ${isDarkMode ? 'bg-emerald-500/75' : 'bg-emerald-600/75'}`}
+                        ></div>
                         <span>Strongest</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <div className={`w-3 h-3 rounded ${isDarkMode ? 'bg-red-500' : 'bg-red-600'}`}></div>
+                        <div className={`w-3 h-3 rounded ${isDarkMode ? 'bg-red-500/60' : 'bg-red-600/60'}`}></div>
                         <span>Weakest</span>
                       </div>
                     </div>

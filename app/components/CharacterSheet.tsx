@@ -694,6 +694,11 @@ export default function CharacterSheet() {
   const [vibeEffects, setVibeEffects] = useState<string>('none');
   const [vibeOpacity, setVibeOpacity] = useState<number>(50);
 
+  // Frosted-glass cards. On by default; turning it off swaps every .sheet-card
+  // back to the solid panel for anyone who finds the wallpaper hard to read
+  // through. Applied as a root class so one CSS rule covers every card.
+  const [glassCards, setGlassCards] = useState<boolean>(true);
+
   // Ability Score Rolling Tracking
   const [abilityScoreRolls, setAbilityScoreRolls] = useState({
     strength: [0, 0, 0, 0],
@@ -879,6 +884,7 @@ export default function CharacterSheet() {
     const savedCustomSpells = localStorage.getItem('dnd-custom-spells');
     const savedDeathSaves = localStorage.getItem('dnd-death-saves');
     const savedVibeEffects = localStorage.getItem('dnd-vibe-effects');
+    const savedGlassCards = localStorage.getItem('dnd-glass-cards');
     const savedQuarryUses = localStorage.getItem('dnd-quarry-uses');
 
     if (savedCharacter) {
@@ -1009,6 +1015,14 @@ export default function CharacterSheet() {
         setVibeOpacity(vibeData.opacity || 50);
       } catch (error) {
         console.warn('Failed to load vibe effects from localStorage:', error);
+      }
+    }
+
+    if (savedGlassCards) {
+      try {
+        setGlassCards(JSON.parse(savedGlassCards));
+      } catch (error) {
+        console.warn('Failed to load glass cards setting from localStorage:', error);
       }
     }
 
@@ -1344,6 +1358,16 @@ export default function CharacterSheet() {
       console.warn('Failed to save vibe effects to localStorage:', error);
     }
   }, [vibeEffects, vibeOpacity]);
+
+  // Save the frosted-glass card preference to localStorage
+  useEffect(() => {
+    if (!hasMountedRef.current) return;
+    try {
+      localStorage.setItem('dnd-glass-cards', JSON.stringify(glassCards));
+    } catch (error) {
+      console.warn('Failed to save glass cards setting to localStorage:', error);
+    }
+  }, [glassCards]);
 
   // Save Ranger's Quarry uses to localStorage
   useEffect(() => {
@@ -2567,7 +2591,7 @@ export default function CharacterSheet() {
 
   return (
     <div
-      className={`min-h-screen p-4 font-sans relative ${
+      className={`min-h-screen p-4 font-sans relative ${glassCards ? '' : 'glass-off'} ${
         isDarkMode ? 'text-white' : 'text-black'
       } ${backgroundImage ? '' : isDarkMode ? 'bg-slate-900' : 'bg-gray-200'}`}
     >
@@ -2867,9 +2891,7 @@ export default function CharacterSheet() {
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`px-3 py-1.5 rounded-full font-semibold text-sm transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
-                  activeTab === tab
-                    ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg'
-                    : 'bg-slate-800 text-gray-300 hover:bg-slate-700 hover:text-white'
+                  activeTab === tab ? 'tab-pill-active text-white shadow-lg' : 'tab-pill text-gray-300 hover:text-white'
                 }`}
               >
                 {tab}
@@ -3085,6 +3107,8 @@ export default function CharacterSheet() {
               setBackgroundImage={setBackgroundImage}
               backgroundBlur={backgroundBlur}
               setBackgroundBlur={setBackgroundBlur}
+              glassCards={glassCards}
+              setGlassCards={setGlassCards}
               characterImage={characterImage}
               setCharacterImage={setCharacterImage}
               handleImageUrlChange={handleImageUrlChange}

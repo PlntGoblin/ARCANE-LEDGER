@@ -47,6 +47,8 @@ export interface DataTabProps {
   setBackgroundImage: React.Dispatch<React.SetStateAction<string>>;
   backgroundBlur: number;
   setBackgroundBlur: React.Dispatch<React.SetStateAction<number>>;
+  glassCards: boolean;
+  setGlassCards: React.Dispatch<React.SetStateAction<boolean>>;
   characterImage: string;
   setCharacterImage: React.Dispatch<React.SetStateAction<string>>;
   handleImageUrlChange: (url: string, setter: React.Dispatch<React.SetStateAction<string>>) => void;
@@ -97,6 +99,8 @@ export default function DataTab({
   setBackgroundImage,
   backgroundBlur,
   setBackgroundBlur,
+  glassCards,
+  setGlassCards,
   characterImage,
   setCharacterImage,
   handleImageUrlChange,
@@ -972,7 +976,7 @@ export default function DataTab({
             <h3 className="text-lg font-semibold text-orange-400 mb-2">Images</h3>
             <p className="text-xs text-gray-400 mb-4">Upload images for character display and background.</p>
 
-            <div className="space-y-4">
+            <div className="space-y-2">
               {/* Stats Image URL */}
               <div>
                 <label className="text-sm font-medium text-gray-300 mb-2 block">Stats Page Image URL</label>
@@ -995,7 +999,7 @@ export default function DataTab({
               </div>
 
               {/* Background Image URL with Blur */}
-              <div>
+              <div className="border-t border-white/20 pt-2">
                 <label className="text-sm font-medium text-gray-300 mb-2 block">Background Image URL</label>
                 <input
                   type="text"
@@ -1032,8 +1036,33 @@ export default function DataTab({
                 )}
               </div>
 
+              {/* Frosted glass toggle — off restores the solid card panels.
+                  Its own section, so the divider lands under the background
+                  preview rather than below the switch. */}
+              <div className="flex items-center justify-between gap-3 border-t border-white/20 pt-2">
+                <label htmlFor="glass-cards" className="text-xs font-medium text-gray-400">
+                  Frosted glass cards
+                </label>
+                <button
+                  id="glass-cards"
+                  type="button"
+                  role="switch"
+                  aria-checked={glassCards}
+                  onClick={() => setGlassCards(!glassCards)}
+                  className={`h-5 w-9 shrink-0 rounded-full border transition-colors ${
+                    glassCards ? 'bg-orange-500/80 border-orange-400/60' : 'bg-slate-600 border-slate-500'
+                  }`}
+                >
+                  <span
+                    className={`block h-3.5 w-3.5 rounded-full bg-white transition-transform ${
+                      glassCards ? 'translate-x-4.5' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
               {/* Character Image URL */}
-              <div>
+              <div className="border-t border-white/20 pt-2">
                 <label className="text-sm font-medium text-gray-300 mb-2 block">Character Tab Image URL</label>
                 <input
                   type="text"
