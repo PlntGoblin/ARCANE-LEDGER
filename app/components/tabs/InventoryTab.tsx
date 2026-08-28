@@ -654,7 +654,9 @@ export default function InventoryTab({
       </div>
 
       {/* Equipment Sections - 2 Column Layout */}
-      <div className="grid gap-6" style={{ gridTemplateColumns: '1fr 1.15fr' }}>
+      {/* items-start: don't stretch the Inventory card to the height of the
+          left-column stack — it should only be as tall as its rows. */}
+      <div className="grid gap-6 items-start" style={{ gridTemplateColumns: '1fr 1.15fr' }}>
         {/* Left Column: Equipped Items + External Storage + Attuned Items */}
         <div className="space-y-6">
           {/* 1. Equipped Items */}
