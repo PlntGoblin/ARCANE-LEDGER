@@ -31,10 +31,20 @@ export default function NumberField({ value, onCommit, emptyValue = 0, ...rest }
       value={draft ?? String(value)}
       onChange={(e) => {
         const raw = e.target.value;
-        setDraft(raw);
-        if (raw === '' || raw === '-') return;
+        if (raw === '' || raw === '-') {
+          setDraft(raw);
+          return;
+        }
         const parsed = parseInt(raw, 10);
-        if (!Number.isNaN(parsed)) onCommit(parsed);
+        if (Number.isNaN(parsed)) {
+          setDraft(raw);
+          return;
+        }
+        // Show the normalised number, not the raw keystrokes. Typing 45 into a
+        // field showing 0 puts the caret after the zero and yields "045";
+        // echoing String(parsed) collapses that to "45" as you type.
+        setDraft(String(parsed));
+        onCommit(parsed);
       }}
       onBlur={(e) => {
         if (draft === '' || draft === '-') onCommit(emptyValue);
