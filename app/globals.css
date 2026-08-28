@@ -524,3 +524,111 @@ option {
     animation: none;
   }
 }
+
+/* Embers: the rise carries an explicit transform at every keyframe so the
+   linear timing stays even, with the wobble baked into the path. Flicker is a
+   separate, much faster animation on a child element. */
+@keyframes emberRise {
+  0% {
+    transform: translate(0, 6vh) scale(0.6);
+    opacity: 0;
+  }
+  10% {
+    transform: translate(4px, -4vh) scale(1);
+    opacity: 1;
+  }
+  35% {
+    transform: translate(-10px, -32vh) scale(0.95);
+    opacity: 1;
+  }
+  60% {
+    transform: translate(12px, -58vh) scale(0.8);
+    opacity: 0.85;
+  }
+  85% {
+    transform: translate(-6px, -84vh) scale(0.55);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(6px, -106vh) scale(0.3);
+    opacity: 0;
+  }
+}
+@keyframes emberFlicker {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.85);
+  }
+  35% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  70% {
+    opacity: 0.75;
+    transform: scale(0.95);
+  }
+}
+.ember-rise {
+  animation-name: emberRise;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-fill-mode: backwards;
+  will-change: transform;
+}
+.ember-flicker {
+  animation-name: emberFlicker;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+/* Arcane motes: a slow wandering drift with an independent twinkle, so the
+   field shimmers instead of bobbing in unison. */
+@keyframes moteDrift {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(26px, -34px);
+  }
+  50% {
+    transform: translate(-18px, -62px);
+  }
+  75% {
+    transform: translate(22px, -30px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+@keyframes moteTwinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.7) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15) rotate(35deg);
+  }
+}
+.mote-drift {
+  animation-name: moteDrift;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-fill-mode: backwards;
+  will-change: transform;
+}
+.mote-twinkle {
+  animation-name: moteTwinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ember-rise,
+  .ember-flicker,
+  .mote-drift,
+  .mote-twinkle {
+    animation: none;
+  }
+}

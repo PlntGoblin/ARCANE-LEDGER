@@ -2846,21 +2846,57 @@ export default function CharacterSheet() {
 
           {vibeEffects === 'magic' && (
             <div className="absolute inset-0">
-              {effectParticles.slice(0, 30).map((particle, i) => (
-                <div
-                  key={i}
-                  className="absolute rounded-full"
-                  style={{
-                    left: `${particle.left}%`,
-                    top: `${particle.top}%`,
-                    width: `${10 + particle.width * 2}px`,
-                    height: `${10 + particle.height * 2}px`,
-                    background: `radial-gradient(circle, ${particle.color || '#a855f7'} 0%, transparent 70%)`,
-                    animation: `float ${3 + particle.duration * 1.5}s ease-in-out infinite`,
-                    animationDelay: `${particle.delay}s`,
-                  }}
-                />
-              ))}
+              {effectParticles.slice(0, 44).map((particle, i) => {
+                const arcane = ['#c084fc', '#a855f7', '#818cf8', '#38bdf8', '#f0abfc', '#5eead4'];
+                const hue = particle.color && i % 5 === 0 ? particle.color : arcane[i % arcane.length];
+                // Every fourth mote is a four-point sparkle; the rest are soft
+                // orbs. A field of identical blobs was what made this dull.
+                const isSparkle = i % 4 === 0;
+                const size = isSparkle ? 9 + particle.width * 1.4 : 4 + particle.width * 0.9;
+                return (
+                  <div
+                    key={i}
+                    className="absolute mote-drift"
+                    style={{
+                      left: `${particle.left}%`,
+                      top: `${particle.top}%`,
+                      width: `${size}px`,
+                      height: `${size}px`,
+                      animationDuration: `${9 + particle.duration * 4}s`,
+                      animationDelay: `-${particle.delay * 5}s`,
+                    }}
+                  >
+                    <div
+                      className="mote-twinkle h-full w-full"
+                      style={{
+                        animationDuration: `${1.6 + particle.duration * 0.9}s`,
+                        animationDelay: `-${particle.delay}s`,
+                      }}
+                    >
+                      {isSparkle ? (
+                        <svg
+                          viewBox="0 0 24 24"
+                          className="h-full w-full"
+                          style={{ filter: `drop-shadow(0 0 3px ${hue})` }}
+                        >
+                          <path
+                            d="M12 0C13.2 8.4 15.6 10.8 24 12C15.6 13.2 13.2 15.6 12 24C10.8 15.6 8.4 13.2 0 12C8.4 10.8 10.8 8.4 12 0Z"
+                            fill={hue}
+                          />
+                        </svg>
+                      ) : (
+                        <div
+                          className="h-full w-full rounded-full"
+                          style={{
+                            backgroundColor: hue,
+                            boxShadow: `0 0 ${4 + particle.width}px ${hue}, 0 0 ${10 + particle.width * 2}px ${hue}66`,
+                          }}
+                        />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
 
@@ -2973,24 +3009,36 @@ export default function CharacterSheet() {
 
           {vibeEffects === 'embers' && (
             <div className="absolute inset-0">
-              {effectParticles.slice(0, 30).map((particle, i) => {
+              {effectParticles.slice(0, 45).map((particle, i) => {
                 const colors = ['#dc2626', '#ea580c', '#f97316', '#fb923c', '#fbbf24', '#fcd34d'];
                 const emberColor = colors[i % colors.length];
+                const size = 2.5 + particle.width * 0.55;
                 return (
+                  // Outer rises, inner flickers. One element could not do both:
+                  // the rise animation owned the transform, so any flicker had
+                  // to be baked into the same keyframes for every ember.
                   <div
                     key={i}
-                    className="absolute rounded-full"
+                    className="absolute ember-rise"
                     style={{
                       left: `${particle.left}%`,
-                      bottom: `-${particle.top * 0.5}px`,
-                      width: `${3 + particle.width * 0.5}px`,
-                      height: `${3 + particle.height * 0.5}px`,
-                      backgroundColor: emberColor,
-                      boxShadow: `0 0 ${8 + particle.width}px ${emberColor}`,
-                      animation: `rise ${4 + particle.duration}s ease-in infinite`,
-                      animationDelay: `${particle.delay}s`,
+                      bottom: 0,
+                      width: `${size}px`,
+                      height: `${size}px`,
+                      animationDuration: `${6 + particle.duration * 2.5}s`,
+                      animationDelay: `-${particle.delay * 3}s`,
                     }}
-                  />
+                  >
+                    <div
+                      className="ember-flicker h-full w-full rounded-full"
+                      style={{
+                        backgroundColor: emberColor,
+                        boxShadow: `0 0 ${5 + particle.width}px ${emberColor}, 0 0 ${12 + particle.width * 2}px ${emberColor}88`,
+                        animationDuration: `${0.5 + particle.duration * 0.35}s`,
+                        animationDelay: `-${particle.delay}s`,
+                      }}
+                    />
+                  </div>
                 );
               })}
             </div>
