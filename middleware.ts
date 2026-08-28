@@ -10,10 +10,18 @@ export default auth((req) => {
   const { pathname } = req.nextUrl;
   const isAuthed = !!req.auth;
 
+  // PWA metadata (manifest + icons) must be reachable while logged out or
+  // "Add to Home Screen" on phones gets a login redirect instead of an icon.
+  const isPwaAsset =
+    pathname === '/manifest.webmanifest' ||
+    pathname === '/icon.png' ||
+    pathname === '/apple-icon.png';
+
   const isPublic =
     pathname === '/login' ||
     pathname === '/signup' ||
-    pathname.startsWith('/api/auth');
+    pathname.startsWith('/api/auth') ||
+    isPwaAsset;
 
   if (!isAuthed && !isPublic) {
     // API calls need a real 401 — a login-page redirect would make failed

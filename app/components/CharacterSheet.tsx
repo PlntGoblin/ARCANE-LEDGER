@@ -2545,9 +2545,14 @@ export default function CharacterSheet() {
       )}
 
       {/* Vibe Effects Overlay */}
+      {/* Fixed like the wallpaper above: particles spawn at the top of the
+          visible viewport and fall 100vh through it. When this was `absolute`
+          it was bound to the sheet container, so on mobile (scrolled down,
+          1080px scaled viewport) rain/snow only covered the top slice of
+          the screen. */}
       {vibeEffects !== 'none' && (
         <div
-          className="absolute inset-0 pointer-events-none overflow-hidden"
+          className="fixed inset-0 pointer-events-none overflow-hidden"
           style={{
             opacity: vibeOpacity / 100,
             zIndex: 5,
