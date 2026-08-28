@@ -3,6 +3,7 @@
 import { Character, Feat } from '../../types/character';
 import { CLASS_HIT_DICE } from '../../data/dndConstants';
 import { syncedStorage as localStorage } from '../../lib/syncedStorage';
+import NumberField from '../NumberField';
 
 export interface DataTabProps {
   character: Character;
@@ -159,14 +160,13 @@ export default function DataTab({
                     >
                       {i + 1}
                     </div>
-                    <input
-                      type="number"
+                    <NumberField
                       min="1"
                       max="20"
-                      value={hitPointRolls[i] || ''}
-                      onChange={(e) => {
+                      value={hitPointRolls[i] || 0}
+                      onCommit={(roll) => {
                         const newRolls = [...hitPointRolls];
-                        newRolls[i] = parseInt(e.target.value) || 0;
+                        newRolls[i] = roll;
                         setHitPointRolls(newRolls);
                       }}
                       className={`w-12 text-center text-sm border rounded px-1 py-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
@@ -189,14 +189,13 @@ export default function DataTab({
                     >
                       {i + 11}
                     </div>
-                    <input
-                      type="number"
+                    <NumberField
                       min="1"
                       max="20"
-                      value={hitPointRolls[i + 10] || ''}
-                      onChange={(e) => {
+                      value={hitPointRolls[i + 10] || 0}
+                      onCommit={(roll) => {
                         const newRolls = [...hitPointRolls];
-                        newRolls[i + 10] = parseInt(e.target.value) || 0;
+                        newRolls[i + 10] = roll;
                         setHitPointRolls(newRolls);
                       }}
                       className={`w-12 text-center text-sm border rounded px-1 py-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
@@ -218,10 +217,9 @@ export default function DataTab({
               <span className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                 Addt'l Bonuses
               </span>
-              <input
-                type="number"
+              <NumberField
                 value={additionalHPBonuses}
-                onChange={(e) => setAdditionalHPBonuses(parseInt(e.target.value) || 0)}
+                onCommit={setAdditionalHPBonuses}
                 className={`w-16 text-center text-sm border rounded px-2 py-1 transition-all duration-200 ${
                   isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
                 }`}
@@ -274,12 +272,10 @@ export default function DataTab({
               <span className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                 Max Points
               </span>
-              <input
-                type="number"
+              <NumberField
                 min="0"
                 value={character.sorceryPoints.max}
-                onChange={(e) => {
-                  const newMax = parseInt(e.target.value) || 0;
+                onCommit={(newMax) =>
                   setCharacter((prev) => ({
                     ...prev,
                     sorceryPoints: {
@@ -287,8 +283,8 @@ export default function DataTab({
                       max: newMax,
                       used: Math.min(prev.sorceryPoints.used, newMax),
                     },
-                  }));
-                }}
+                  }))
+                }
                 disabled={character.class !== 'Sorcerer'}
                 className={`w-16 text-center text-sm border rounded px-2 py-1 transition-all duration-200 ${
                   character.class !== 'Sorcerer'
@@ -358,12 +354,11 @@ export default function DataTab({
                     <option value="Stealth">Stealth</option>
                     <option value="Survival">Survival</option>
                   </select>
-                  <input
-                    type="number"
+                  <NumberField
                     value={sb.bonus}
-                    onChange={(e) => {
+                    onCommit={(bonus) => {
                       const newBonuses = [...skillBonuses];
-                      newBonuses[index].bonus = parseInt(e.target.value) || 0;
+                      newBonuses[index].bonus = bonus;
                       setSkillBonuses(newBonuses);
                     }}
                     className={`w-14 flex-shrink-0 text-center text-sm border rounded px-1 py-1 ${
@@ -407,16 +402,10 @@ export default function DataTab({
                   <label className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} capitalize`}>
                     {speedType}
                   </label>
-                  <input
-                    type="number"
+                  <NumberField
                     min="0"
                     value={value}
-                    onChange={(e) =>
-                      setSpeeds({
-                        ...speeds,
-                        [speedType]: parseInt(e.target.value) || 0,
-                      })
-                    }
+                    onCommit={(speed) => setSpeeds({ ...speeds, [speedType]: speed })}
                     className={`w-16 text-center text-sm border rounded px-2 py-1 transition-all duration-200 ${
                       isDarkMode
                         ? 'bg-black/30 border-white/10 text-white'
@@ -530,15 +519,9 @@ export default function DataTab({
                 ))}
               <div className="flex items-center justify-between">
                 <label className="text-sm font-medium text-gray-300">Addt'l Bonus</label>
-                <input
-                  type="number"
+                <NumberField
                   value={initiativeModifiers.additionalBonus}
-                  onChange={(e) =>
-                    setInitiativeModifiers({
-                      ...initiativeModifiers,
-                      additionalBonus: parseInt(e.target.value) || 0,
-                    })
-                  }
+                  onCommit={(additionalBonus) => setInitiativeModifiers({ ...initiativeModifiers, additionalBonus })}
                   className={`w-16 text-center text-sm border rounded px-2 py-1 transition-all duration-200 ${
                     isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
                   }`}

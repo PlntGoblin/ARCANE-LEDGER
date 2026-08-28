@@ -2,6 +2,7 @@
 
 import { Character, Feat } from '../../types/character';
 import { CLASS_HIT_DICE } from '../../data/dndConstants';
+import NumberField from '../NumberField';
 
 export interface StatsTabProps {
   character: Character;
@@ -193,21 +194,16 @@ export default function StatsTab({
                   <div className={`text-xs font-bold ${textColors[index]} mb-1`}>
                     {ability.slice(0, 3).toUpperCase()}
                   </div>
-                  <input
-                    type="number"
+                  <NumberField
                     value={hasAnyBonus ? finalScore : score}
-                    onChange={(e) => {
-                      const newValue = parseInt(e.target.value) || 0;
-                      if (hasAnyBonus) {
-                        updateCharacter({
-                          abilityScores: { ...character.abilityScores, [ability]: newValue - racialBonus - asiBonus },
-                        });
-                      } else {
-                        updateCharacter({
-                          abilityScores: { ...character.abilityScores, [ability]: newValue },
-                        });
-                      }
-                    }}
+                    onCommit={(newValue) =>
+                      updateCharacter({
+                        abilityScores: {
+                          ...character.abilityScores,
+                          [ability]: hasAnyBonus ? newValue - racialBonus - asiBonus : newValue,
+                        },
+                      })
+                    }
                     className={`w-full text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} bg-transparent border-0 text-center rounded-lg py-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none focus:ring-2 focus:ring-orange-500 ${isDarkMode ? 'focus:bg-white/10' : 'focus:bg-gray-300/50'}`}
                   />
                   <div className={`text-sm font-semibold ${isDarkMode ? 'text-white/90' : 'text-gray-700'} mt-1`}>
@@ -445,10 +441,9 @@ export default function StatsTab({
               <div className="grid grid-cols-2 gap-2 pb-8 max-w-xs mx-auto">
                 <div className="text-center">
                   <div className={`text-xs font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-1`}>AC</div>
-                  <input
-                    type="number"
+                  <NumberField
                     value={character.armorClass || calculateTotalAC()}
-                    onChange={(e) => updateCharacter({ armorClass: parseInt(e.target.value) || 0 })}
+                    onCommit={(armorClass) => updateCharacter({ armorClass })}
                     className={`w-full text-center border rounded px-2 py-1 transition-all duration-200 text-xl font-semibold animate-[pulse_0.3s_ease-in-out] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                       character.armorClass
                         ? isDarkMode
@@ -540,10 +535,9 @@ export default function StatsTab({
                   <div className={`text-xs font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-1`}>
                     Prof Bonus
                   </div>
-                  <input
-                    type="number"
+                  <NumberField
                     value={character.proficiencyBonus}
-                    onChange={(e) => updateCharacter({ proficiencyBonus: parseInt(e.target.value) || 0 })}
+                    onCommit={(proficiencyBonus) => updateCharacter({ proficiencyBonus })}
                     className={`w-full text-center border rounded px-2 py-1 transition-all duration-200 text-xl font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                       isDarkMode
                         ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
@@ -570,10 +564,21 @@ export default function StatsTab({
                     }`}
                   >
                     <div
-                      className="h-full transition-all duration-500 rounded-lg absolute left-0"
+                      className={`h-full transition-all duration-500 rounded-lg absolute left-0 liquid-fill ${
+                        character.hitPoints.current <= getEffectiveMaxHP() * 0.25 ? 'liquid-fill-critical' : ''
+                      }`}
                       style={{
                         width: `${Math.min(100, Math.max(0, (character.hitPoints.current / getEffectiveMaxHP()) * 100))}%`,
                         backgroundColor:
+                          character.hitPoints.current <= getEffectiveMaxHP() * 0.25
+                            ? '#ef4444'
+                            : character.hitPoints.current <= getEffectiveMaxHP() * 0.5
+                              ? '#f59e0b'
+                              : character.hitPoints.current <= getEffectiveMaxHP() * 0.75
+                                ? '#eab308'
+                                : '#10b981',
+                        // The glow and lip are drawn from currentColor.
+                        color:
                           character.hitPoints.current <= getEffectiveMaxHP() * 0.25
                             ? '#ef4444'
                             : character.hitPoints.current <= getEffectiveMaxHP() * 0.5
@@ -585,11 +590,12 @@ export default function StatsTab({
                     ></div>
                     {(character.hitPoints.temporary || 0) > 0 && (
                       <div
-                        className="h-full transition-all duration-500 rounded-lg absolute"
+                        className="h-full transition-all duration-500 rounded-lg absolute liquid-fill"
                         style={{
                           left: `${Math.min(100, Math.max(0, (character.hitPoints.current / getEffectiveMaxHP()) * 100))}%`,
                           width: `${Math.min(100 - Math.min(100, (character.hitPoints.current / getEffectiveMaxHP()) * 100), ((character.hitPoints.temporary || 0) / getEffectiveMaxHP()) * 100)}%`,
                           backgroundColor: '#06b6d4',
+                          color: '#06b6d4',
                         }}
                       ></div>
                     )}
@@ -606,14 +612,9 @@ export default function StatsTab({
                   <div className="grid grid-cols-3 gap-4">
                     <div className="text-center">
                       <div className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-2`}>HP</div>
-                      <input
-                        type="number"
+                      <NumberField
                         value={character.hitPoints.current}
-                        onChange={(e) =>
-                          updateCharacter({
-                            hitPoints: { ...character.hitPoints, current: parseInt(e.target.value) || 0 },
-                          })
-                        }
+                        onCommit={(current) => updateCharacter({ hitPoints: { ...character.hitPoints, current } })}
                         className={`w-full text-center border rounded px-2 py-1 transition-all duration-200 font-bold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                           isDarkMode
                             ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
@@ -697,14 +698,9 @@ export default function StatsTab({
                       <div className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-2`}>
                         Temp HP
                       </div>
-                      <input
-                        type="number"
-                        value={character.hitPoints.temporary || ''}
-                        onChange={(e) =>
-                          updateCharacter({
-                            hitPoints: { ...character.hitPoints, temporary: parseInt(e.target.value) || 0 },
-                          })
-                        }
+                      <NumberField
+                        value={character.hitPoints.temporary || 0}
+                        onCommit={(temporary) => updateCharacter({ hitPoints: { ...character.hitPoints, temporary } })}
                         className={`w-full text-center border rounded px-2 py-1 transition-all duration-200 font-bold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                           isDarkMode
                             ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
@@ -721,10 +717,9 @@ export default function StatsTab({
                       <div className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-2`}>
                         Hit Dice
                       </div>
-                      <input
-                        type="number"
-                        value={currentHitDice || ''}
-                        onChange={(e) => setCurrentHitDice(parseInt(e.target.value) || 0)}
+                      <NumberField
+                        value={currentHitDice || 0}
+                        onCommit={setCurrentHitDice}
                         className={`w-full text-center border rounded px-2 py-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                           isDarkMode
                             ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
@@ -764,10 +759,9 @@ export default function StatsTab({
                       <div className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-2`}>
                         Reduction
                       </div>
-                      <input
-                        type="number"
-                        value={damageReduction || ''}
-                        onChange={(e) => setDamageReduction(parseInt(e.target.value) || 0)}
+                      <NumberField
+                        value={damageReduction || 0}
+                        onCommit={setDamageReduction}
                         className={`w-full text-center border rounded px-2 py-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                           isDarkMode
                             ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
@@ -1255,19 +1249,14 @@ export default function StatsTab({
                     <div className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'} text-xs`}>Addt'l</div>
                     <div></div>
                     <div className="text-center">
-                      <input
-                        type="number"
-                        value={character.survivalConditions.additionalExhaustion || ''}
-                        onChange={(e) => {
-                          const val = parseInt(e.target.value) || 0;
+                      <NumberField
+                        value={character.survivalConditions.additionalExhaustion || 0}
+                        onCommit={(val) =>
                           setCharacter((prev) => ({
                             ...prev,
-                            survivalConditions: {
-                              ...prev.survivalConditions,
-                              additionalExhaustion: val,
-                            },
-                          }));
-                        }}
+                            survivalConditions: { ...prev.survivalConditions, additionalExhaustion: val },
+                          }))
+                        }
                         placeholder="0"
                         className={`w-4/5 text-xs text-center border rounded px-1 py-0.5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                           isDarkMode

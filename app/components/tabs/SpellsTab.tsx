@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Character } from '../../types/character';
+import NumberField from '../NumberField';
 
 export interface SpellsTabProps {
   character: Character;
@@ -406,12 +407,10 @@ export default function SpellsTab({
                 Known/Prepared Spells
               </label>
               <div className="relative">
-                <input
-                  type="number"
+                <NumberField
                   min="0"
                   value={getEffectiveKnownSpells()}
-                  onChange={(e) => {
-                    const value = parseInt(e.target.value) || 0;
+                  onCommit={(value) => {
                     const calculated = calculateKnownSpells();
                     setKnownSpellsOverride(value === calculated ? null : value);
                     setCharacter({ ...character, knownPreparedSpells: value });
@@ -490,21 +489,30 @@ export default function SpellsTab({
                   <div
                     className={`flex-1 ${isDarkMode ? 'bg-slate-700' : 'bg-gray-200'} rounded-full h-8 relative overflow-hidden`}
                   >
-                    <div
-                      className="h-full transition-all duration-300"
-                      style={{
-                        width: `${character.sorceryPoints.max > 0 ? ((character.sorceryPoints.max - character.sorceryPoints.used) / character.sorceryPoints.max) * 100 : 0}%`,
-                        backgroundColor: (() => {
-                          const remaining = character.sorceryPoints.max - character.sorceryPoints.used;
-                          const percentage =
-                            character.sorceryPoints.max > 0 ? remaining / character.sorceryPoints.max : 0;
-                          if (percentage <= 0.25) return '#ef4444';
-                          if (percentage <= 0.5) return '#f59e0b';
-                          if (percentage <= 0.75) return '#eab308';
-                          return '#10b981';
-                        })(),
-                      }}
-                    />
+                    {(() => {
+                      const remaining = character.sorceryPoints.max - character.sorceryPoints.used;
+                      const percentage = character.sorceryPoints.max > 0 ? remaining / character.sorceryPoints.max : 0;
+                      const fill =
+                        percentage <= 0.25
+                          ? '#ef4444'
+                          : percentage <= 0.5
+                            ? '#f59e0b'
+                            : percentage <= 0.75
+                              ? '#eab308'
+                              : '#10b981';
+                      return (
+                        <div
+                          className={`h-full transition-all duration-300 liquid-fill ${
+                            percentage <= 0.25 ? 'liquid-fill-critical' : ''
+                          }`}
+                          style={{
+                            width: `${percentage * 100}%`,
+                            backgroundColor: fill,
+                            color: fill,
+                          }}
+                        />
+                      );
+                    })()}
                     <div className="absolute inset-0 flex items-center justify-center">
                       <span
                         className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} drop-shadow-md`}

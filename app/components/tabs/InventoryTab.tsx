@@ -1,6 +1,7 @@
 'use client';
 
 import { Character } from '../../types/character';
+import NumberField from '../NumberField';
 
 export interface InventoryTabProps {
   character: Character;
@@ -160,20 +161,29 @@ export default function InventoryTab({
               <div className={`text-xs ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-1`}>Capacity:</div>
               {/* Health Bar Style Display */}
               <div className="w-full bg-black/35 rounded-full h-3 mb-1">
-                <div
-                  className={`h-3 rounded-full transition-all duration-300 ${
+                {(() => {
+                  const ratio = encumbrance.maxSlots > 0 ? encumbrance.openSlots / encumbrance.maxSlots : 0;
+                  const fill =
                     encumbrance.openSlots <= 0
-                      ? 'bg-red-500/80'
-                      : encumbrance.openSlots / encumbrance.maxSlots > 0.5
-                        ? 'bg-emerald-500/80'
-                        : encumbrance.openSlots / encumbrance.maxSlots > 0.2
-                          ? 'bg-amber-500/80'
-                          : 'bg-orange-500/80'
-                  }`}
-                  style={{
-                    width: `${Math.max(0, Math.min(100, (encumbrance.openSlots / encumbrance.maxSlots) * 100))}%`,
-                  }}
-                />
+                      ? '#ef4444'
+                      : ratio > 0.5
+                        ? '#10b981'
+                        : ratio > 0.2
+                          ? '#f59e0b'
+                          : '#f97316';
+                  return (
+                    <div
+                      className={`h-3 rounded-full transition-all duration-300 liquid-fill ${
+                        encumbrance.openSlots <= 0 ? 'liquid-fill-critical' : ''
+                      }`}
+                      style={{
+                        width: `${Math.max(0, Math.min(100, ratio * 100))}%`,
+                        backgroundColor: fill,
+                        color: fill,
+                      }}
+                    />
+                  );
+                })()}
               </div>
               <div className={`text-xs ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
                 {encumbrance.openSlots >= 0
@@ -238,16 +248,10 @@ export default function InventoryTab({
                       {coinType.charAt(0).toUpperCase()}P
                     </td>
                     <td className="py-1 text-center">
-                      <input
-                        type="number"
+                      <NumberField
                         min="0"
-                        value={data.amount || ''}
-                        onChange={(e) =>
-                          setPurse({
-                            ...purse,
-                            [coinType]: { ...data, amount: parseInt(e.target.value) || 0 },
-                          })
-                        }
+                        value={data.amount || 0}
+                        onCommit={(amount) => setPurse({ ...purse, [coinType]: { ...data, amount } })}
                         className={`w-12 text-center text-xs border rounded px-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                           isDarkMode
                             ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
@@ -315,12 +319,10 @@ export default function InventoryTab({
                 <div>Total Bulk</div>
               </div>
               <div className="grid grid-cols-3 gap-1">
-                <input
-                  type="number"
+                <NumberField
                   min="0"
-                  value={rationBox.boxes || ''}
-                  onChange={(e) => {
-                    const boxes = parseInt(e.target.value) || 0;
+                  value={rationBox.boxes || 0}
+                  onCommit={(boxes) => {
                     const rations = rationBox.rations;
                     let totalBulk = 0;
 
@@ -343,12 +345,10 @@ export default function InventoryTab({
                   }`}
                   placeholder="0"
                 />
-                <input
-                  type="number"
+                <NumberField
                   min="0"
-                  value={rationBox.rations || ''}
-                  onChange={(e) => {
-                    const rations = parseInt(e.target.value) || 0;
+                  value={rationBox.rations || 0}
+                  onCommit={(rations) => {
                     const boxes = rationBox.boxes;
                     let totalBulk = 0;
 
@@ -408,12 +408,10 @@ export default function InventoryTab({
                 <div>Total Bulk</div>
               </div>
               <div className="grid grid-cols-3 gap-1">
-                <input
-                  type="number"
+                <NumberField
                   min="0"
-                  value={waterskinBox.skins || ''}
-                  onChange={(e) => {
-                    const skins = parseInt(e.target.value) || 0;
+                  value={waterskinBox.skins || 0}
+                  onCommit={(skins) => {
                     const rations = waterskinBox.rations;
                     let totalBulk = 0;
 
@@ -436,12 +434,10 @@ export default function InventoryTab({
                   }`}
                   placeholder="0"
                 />
-                <input
-                  type="number"
+                <NumberField
                   min="0"
-                  value={waterskinBox.rations || ''}
-                  onChange={(e) => {
-                    const rations = parseInt(e.target.value) || 0;
+                  value={waterskinBox.rations || 0}
+                  onCommit={(rations) => {
                     const skins = waterskinBox.skins;
                     let totalBulk = 0;
 
@@ -617,15 +613,11 @@ export default function InventoryTab({
                       {coinType} ({coinType.charAt(0).toUpperCase()}P)
                     </td>
                     <td className="py-1 text-center">
-                      <input
-                        type="number"
+                      <NumberField
                         min="0"
-                        value={data.purchase || ''}
-                        onChange={(e) =>
-                          setPurchaseCalculator({
-                            ...purchaseCalculator,
-                            [coinType]: { ...data, purchase: parseInt(e.target.value) || 0 },
-                          })
+                        value={data.purchase || 0}
+                        onCommit={(purchase) =>
+                          setPurchaseCalculator({ ...purchaseCalculator, [coinType]: { ...data, purchase } })
                         }
                         className={`w-12 text-center text-xs border rounded px-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                           isDarkMode
@@ -1008,13 +1000,12 @@ export default function InventoryTab({
                         />
                       </td>
                       <td className="py-1">
-                        <input
-                          type="number"
+                        <NumberField
                           min="0"
-                          value={inventoryItem.amount || ''}
-                          onChange={(e) => {
+                          value={inventoryItem.amount || 0}
+                          onCommit={(amount) => {
                             const newItems = [...inventoryItems];
-                            newItems[index].amount = parseInt(e.target.value) || 0;
+                            newItems[index].amount = amount;
                             setInventoryItems(newItems);
                           }}
                           onFocus={(e) => e.target.select()}

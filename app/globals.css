@@ -632,3 +632,69 @@ option {
     animation: none;
   }
 }
+
+/* Liquid meter fill. Three stacked touches on one element:
+   - a diagonal ripple band that scrolls, for the sense of moving fluid
+   - a sheen that sweeps across every few seconds
+   - a glow and a glass lip, drawn from currentColor so each bar glows in its
+     own colour. Set `color` to the fill colour wherever this is used.
+   Everything is a pseudo-element, so the bar keeps its width transition. */
+.liquid-fill {
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 0 10px -1px currentColor,
+    inset 0 1px 0 rgb(255 255 255 / 0.4),
+    inset 0 -2px 4px -2px rgb(0 0 0 / 0.45);
+}
+/* A soft vertical gradient instead of the old scrolling diagonal stripes,
+   which read as a barber pole rather than liquid. */
+.liquid-fill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgb(255 255 255 / 0.22) 0%, rgb(255 255 255 / 0) 55%, rgb(0 0 0 / 0.15) 100%);
+}
+.liquid-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.42), transparent);
+  animation: liquidSheen 5s ease-in-out infinite;
+}
+@keyframes liquidSheen {
+  0% {
+    left: -50%;
+  }
+  55%,
+  100% {
+    left: 105%;
+  }
+}
+
+/* Under a quarter left: the glow throbs so the bar reads as urgent. */
+.liquid-fill-critical {
+  animation: criticalPulse 1.3s ease-in-out infinite;
+}
+@keyframes criticalPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 8px -2px currentColor,
+      inset 0 1px 0 rgb(255 255 255 / 0.4);
+  }
+  50% {
+    box-shadow:
+      0 0 16px 1px currentColor,
+      inset 0 1px 0 rgb(255 255 255 / 0.55);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liquid-fill::after,
+  .liquid-fill-critical {
+    animation: none;
+  }
+}
