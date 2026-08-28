@@ -423,3 +423,104 @@ option {
     opacity: 0.55;
   }
 }
+/* Falling leaves, on three nested elements: descent, sway and tumble each own
+   their own transform so none overwrites another, and their periods are
+   unrelated so no two leaves trace the same path together.
+   Descent is strictly linear — a timing function applies to EVERY keyframe
+   interval, not the whole animation, so easing plus midway keyframes made each
+   leaf visibly stall at 25/50/75% instead of falling steadily. */
+@keyframes leafFall {
+  0% {
+    transform: translateY(-12vh);
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  93% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(112vh);
+    opacity: 0;
+  }
+}
+@keyframes leafSway {
+  0%,
+  100% {
+    transform: translateX(-16px);
+  }
+  50% {
+    transform: translateX(18px);
+  }
+}
+@keyframes leafTumble {
+  0% {
+    transform: rotateY(0deg) rotateZ(-10deg);
+  }
+  50% {
+    transform: rotateY(150deg) rotateZ(12deg);
+  }
+  100% {
+    transform: rotateY(360deg) rotateZ(-10deg);
+  }
+}
+.leaf-fall {
+  animation-fill-mode: backwards;
+  animation-name: leafFall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+.leaf-sway {
+  animation-name: leafSway;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+.leaf-tumble {
+  animation-name: leafTumble;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  transform-style: preserve-3d;
+}
+@media (prefers-reduced-motion: reduce) {
+  .leaf-fall,
+  .leaf-sway,
+  .leaf-tumble {
+    animation: none;
+  }
+}
+
+/* Rain: drops travel on a slight diagonal and the streak is rotated to match,
+   so each one points along its own path instead of hanging vertically while
+   drifting sideways. Linear, with no midway keyframes, so the fall never
+   stutters. */
+@keyframes rainStreak {
+  0% {
+    transform: translate(0, -14vh) rotate(-8deg);
+    opacity: 0;
+  }
+  7% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(17vh, 112vh) rotate(-8deg);
+    opacity: 0;
+  }
+}
+.rain-streak {
+  animation-fill-mode: backwards;
+  animation-name: rainStreak;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rain-streak {
+    animation: none;
+  }
+}

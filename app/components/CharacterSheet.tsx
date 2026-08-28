@@ -2769,20 +2769,40 @@ export default function CharacterSheet() {
         >
           {vibeEffects === 'rain' && (
             <div className="absolute inset-0">
-              {effectParticles.slice(0, 50).map((particle, i) => (
-                <div
-                  key={i}
-                  className="absolute bg-blue-400"
-                  style={{
-                    left: `${particle.left}%`,
-                    top: `-${particle.top}px`,
-                    width: '2px',
-                    height: `${20 + particle.width}px`,
-                    animation: `fall ${0.5 + particle.duration * 0.25}s linear infinite`,
-                    animationDelay: `${particle.delay}s`,
-                  }}
-                />
-              ))}
+              {effectParticles.slice(0, 70).map((particle, i) => {
+                // Three depth layers. Distant rain is thin, faint, slightly
+                // blurred and slower; close rain is fatter, brighter and
+                // quicker. Uniform drops are what made this read as bars.
+                const depth = i % 3;
+                const near = depth === 2;
+                const mid = depth === 1;
+                const len = (near ? 34 : mid ? 24 : 16) + particle.width;
+                return (
+                  <div
+                    key={i}
+                    className="absolute rain-streak"
+                    style={{
+                      left: `${particle.left}%`,
+                      top: 0,
+                      width: near ? '2px' : mid ? '1.5px' : '1px',
+                      height: `${len}px`,
+                      // Transparent at the tail, bright at the head — a falling
+                      // drop motion-blurs into a streak, it is not a solid bar.
+                      background: near
+                        ? 'linear-gradient(to bottom, rgba(191,219,254,0) 0%, rgba(147,197,253,0.75) 60%, rgba(219,234,254,0.95) 100%)'
+                        : mid
+                          ? 'linear-gradient(to bottom, rgba(147,197,253,0) 0%, rgba(147,197,253,0.5) 65%, rgba(191,219,254,0.7) 100%)'
+                          : 'linear-gradient(to bottom, rgba(147,197,253,0) 0%, rgba(147,197,253,0.28) 70%, rgba(191,219,254,0.4) 100%)',
+                      borderRadius: '9999px',
+                      filter: near ? 'none' : mid ? 'blur(0.3px)' : 'blur(0.6px)',
+                      animationDuration: `${(near ? 0.75 : mid ? 1.05 : 1.45) + particle.duration * 0.18}s`,
+                      // Negative: every drop starts mid-cycle so the rain is
+                      // already falling the instant the effect is switched on.
+                      animationDelay: `-${particle.delay}s`,
+                    }}
+                  />
+                );
+              })}
             </div>
           )}
 
@@ -2847,22 +2867,105 @@ export default function CharacterSheet() {
           {vibeEffects === 'leaves' && (
             <div className="absolute inset-0">
               {effectParticles.slice(0, 40).map((particle, i) => {
-                const colors = ['#d97706', '#dc2626', '#ea580c', '#92400e'];
+                // Drawn tall in a 24x32 box with a protruding stem. The old
+                // shapes were round blobs in a square box, which is why they
+                // read as falling balls rather than leaves.
+                const LEAF_SHAPES = [
+                  // Pointed oval
+                  {
+                    body: 'M12 3C18.5 9 20 18 12 27C4 18 5.5 9 12 3Z',
+                    veins: 'M12 24l4.5-4M12 19l5-4.5M12 24l-4.5-4M12 19l-5-4.5',
+                  },
+                  // Asymmetric, curled to one side
+                  {
+                    body: 'M12 3C19.5 8 20.5 19 12.5 27C9 21 8 10 12 3Z',
+                    veins: 'M12.3 24l4.5-4.5M12 19l4.8-5M12.2 24l-3-4M12 19l-3.2-4.5',
+                  },
+                  // Simplified maple
+                  {
+                    body: 'M12 2l2.6 6 4.2-2-1.6 5.2 5-.8-3.8 4 4.4 2.4-5.2 1.4 1.8 4.6-4.6-1.6-.8 4.8-.9-2.6-.9 2.6-.8-4.8-4.6 1.6 1.8-4.6-5.2-1.4L7.6 14.4l-3.8-4 5 .8L7.2 6l4.2 2z',
+                    veins: 'M12 24l4-4.5M12 24l-4-4.5',
+                  },
+                ];
+                const leaf = LEAF_SHAPES[i % LEAF_SHAPES.length];
+                const palette = ['#d97706', '#c2410c', '#dc2626', '#a16207', '#92400e', '#b45309'];
+                const color = palette[i % palette.length];
+                // Taller than wide, and bigger than before — a leaf silhouette
+                // needs the size to be legible at all.
+                const height = 24 + particle.width * 1.8;
+                const width = height * 0.72;
                 return (
+                  // Outer element owns the fall and sway; the inner one owns the
+                  // tumble. Splitting them means the two animations don't fight
+                  // over the same transform, which is why the old leaves ignored
+                  // their starting rotation entirely.
                   <div
                     key={i}
-                    className="absolute rounded-sm"
+                    className="absolute leaf-fall"
                     style={{
                       left: `${particle.left}%`,
-                      top: `-${particle.top}px`,
-                      width: `${8 + particle.width}px`,
-                      height: `${6 + particle.height * 0.8}px`,
-                      backgroundColor: particle.color || colors[i % colors.length],
-                      animation: `fallSway ${3 + particle.duration}s linear infinite`,
-                      animationDelay: `${particle.delay}s`,
-                      transform: `rotate(${particle.rotation}deg)`,
+                      top: 0,
+                      width: `${width}px`,
+                      height: `${height}px`,
+                      animationDuration: `${7 + particle.duration * 2.5}s`,
+                      // Negative: each leaf starts partway through its own cycle, so
+                      // the sky is already full the moment the effect turns on.
+                      animationDelay: `-${particle.delay * 4}s`,
                     }}
-                  />
+                  >
+                    <div
+                      className="leaf-sway h-full w-full"
+                      style={{
+                        animationDuration: `${2.6 + particle.duration}s`,
+                        animationDelay: `-${particle.delay * 0.6}s`,
+                        // Without perspective, rotateY just squashes the leaf
+                        // flat instead of turning it, which rounded it off.
+                        perspective: '260px',
+                      }}
+                    >
+                      <div
+                        className="leaf-tumble h-full w-full"
+                        style={{
+                          animationDuration: `${2.2 + particle.duration * 0.8}s`,
+                          animationDelay: `-${particle.delay}s`,
+                        }}
+                      >
+                        <svg
+                          viewBox="0 0 24 32"
+                          className="h-full w-full"
+                          style={{ transform: `rotate(${particle.rotation}deg)` }}
+                        >
+                          {/* Stem first, so the blade sits over its top end */}
+                          <path
+                            d="M12 25c0 3 .6 4.5 1.4 6"
+                            stroke="#5b3a1a"
+                            strokeWidth="1.1"
+                            strokeLinecap="round"
+                            fill="none"
+                          />
+                          <path d={leaf.body} fill={color} stroke="#00000040" strokeWidth="0.5" />
+                          {/* Midrib and side veins in a lighter tint — at this
+                              size near-black veins just muddied the fill. */}
+                          <path
+                            d="M12 25V5"
+                            stroke="#ffffff"
+                            strokeOpacity="0.4"
+                            strokeWidth="0.9"
+                            strokeLinecap="round"
+                            fill="none"
+                          />
+                          <path
+                            d={leaf.veins}
+                            stroke="#ffffff"
+                            strokeOpacity="0.22"
+                            strokeWidth="0.7"
+                            strokeLinecap="round"
+                            fill="none"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
                 );
               })}
             </div>
