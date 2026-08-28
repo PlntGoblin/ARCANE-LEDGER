@@ -52,19 +52,30 @@ export default function CharacterTab({
               className={`text-center border-b-2 border-t-2 py-3 ${isDarkMode ? 'border-orange-400' : 'border-stone-400'}`}
             >
               <div className="mb-1">
+                {/* Grows to fit its text. A fixed rows={2} left an empty second
+                    line under one-line quotes, which opened a dead gap above
+                    the name and threw the block off balance. */}
                 <textarea
+                  ref={(el) => {
+                    if (el) {
+                      el.style.height = 'auto';
+                      el.style.height = `${el.scrollHeight}px`;
+                    }
+                  }}
                   value={
                     character.backstory.personalityTraits ||
                     'I am eager to learn new things and ask many questions. I speak in metaphors and parables.'
                   }
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    e.currentTarget.style.height = 'auto';
+                    e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
                     updateCharacter({
                       backstory: { ...character.backstory, personalityTraits: e.target.value },
-                    })
-                  }
-                  className={`w-full bg-transparent italic text-lg text-center border-none outline-none resize-none ${isDarkMode ? 'text-stone-300' : 'text-stone-600'} placeholder-stone-400`}
+                    });
+                  }}
+                  className={`w-full bg-transparent italic text-lg text-center border-none outline-none resize-none overflow-hidden ${isDarkMode ? 'text-stone-300' : 'text-stone-600'} placeholder-stone-400`}
                   placeholder="Character description..."
-                  rows={2}
+                  rows={1}
                 />
               </div>
               <h1 className="text-4xl font-extrabold tracking-wider mb-2 font-serif">
@@ -73,13 +84,21 @@ export default function CharacterTab({
               <div
                 className={`py-1 px-3 inline-block rounded shadow-lg ${isDarkMode ? 'bg-orange-600 text-white' : 'bg-red-700 text-white'}`}
               >
-                <input
-                  type="text"
-                  value={character.mantra || 'Knowledge is the greatest treasure'}
-                  onChange={(e) => updateCharacter({ mantra: e.target.value })}
-                  className="bg-transparent font-semibold text-lg text-center border-none outline-none text-white placeholder-white/70"
-                  placeholder="Character mantra or quote"
-                />
+                {/* inline-grid with a hidden mirror span: the input is sized by
+                    its own text instead of the browser's default 20-character
+                    width, so the pill hugs the mantra. */}
+                <span className="inline-grid items-center">
+                  <span className="invisible col-start-1 row-start-1 whitespace-pre px-px font-semibold text-lg">
+                    {character.mantra || 'Knowledge is the greatest treasure'}
+                  </span>
+                  <input
+                    type="text"
+                    value={character.mantra || 'Knowledge is the greatest treasure'}
+                    onChange={(e) => updateCharacter({ mantra: e.target.value })}
+                    className="col-start-1 row-start-1 w-full bg-transparent font-semibold text-lg text-center border-none outline-none text-white placeholder-white/70"
+                    placeholder="Character mantra or quote"
+                  />
+                </span>
               </div>
             </div>
           </div>
