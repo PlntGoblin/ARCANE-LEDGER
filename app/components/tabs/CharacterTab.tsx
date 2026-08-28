@@ -25,6 +25,87 @@ export interface CharacterTabProps {
   getSkillModifier: (skill: string, ability: keyof Character['abilityScores']) => number;
 }
 
+// Defined at module scope, not inside CharacterTab — a component declared in a
+// render body gets a new identity each render, which remounts the subtree and
+// would wipe half-typed text out of the TagGroup input.
+
+// Section title that sits at the TOP of a card, with an orange rule under it
+// to echo the rules around the character name.
+function SectionHeader({ children, isDarkMode }: { children: React.ReactNode; isDarkMode: boolean }) {
+  return (
+    <h3
+      className={`mb-3 pb-2 border-b text-sm font-bold uppercase tracking-wider ${
+        isDarkMode ? 'text-orange-400 border-orange-400/30' : 'text-orange-700 border-orange-700/30'
+      }`}
+    >
+      {children}
+    </h3>
+  );
+}
+
+// Proficiencies render as chips instead of bordered textareas — reads as a
+// character sheet, not a web form. Type + Enter (or comma) to add, × to remove.
+function TagGroup({
+  label,
+  items,
+  onChange,
+  placeholder,
+  isDarkMode,
+}: {
+  label: string;
+  items: string[];
+  onChange: (next: string[]) => void;
+  placeholder: string;
+  isDarkMode: boolean;
+}) {
+  return (
+    <div>
+      <div
+        className={`mb-1.5 text-xs font-bold uppercase tracking-wide ${isDarkMode ? 'text-orange-400' : 'text-orange-700'}`}
+      >
+        {label}
+      </div>
+      <div className="flex flex-wrap items-center gap-1.5">
+        {items.map((item, i) => (
+          <span
+            key={`${item}-${i}`}
+            className={`group inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs ${
+              isDarkMode ? 'bg-slate-700/70 text-stone-100' : 'bg-stone-200 text-stone-800'
+            }`}
+          >
+            {item}
+            <button
+              type="button"
+              onClick={() => onChange(items.filter((_, j) => j !== i))}
+              aria-label={`Remove ${item}`}
+              className="opacity-40 transition-opacity hover:opacity-100 hover:text-orange-400"
+            >
+              ×
+            </button>
+          </span>
+        ))}
+        <input
+          type="text"
+          placeholder={items.length ? '+' : placeholder}
+          onKeyDown={(e) => {
+            const input = e.currentTarget;
+            if (e.key === 'Enter' || e.key === ',') {
+              e.preventDefault();
+              const value = input.value.trim();
+              if (value) onChange([...items, value]);
+              input.value = '';
+            } else if (e.key === 'Backspace' && !input.value && items.length) {
+              onChange(items.slice(0, -1));
+            }
+          }}
+          className={`min-w-16 flex-1 bg-transparent text-xs outline-none ${
+            isDarkMode ? 'text-stone-100 placeholder-stone-500' : 'text-stone-800 placeholder-stone-400'
+          }`}
+        />
+      </div>
+    </div>
+  );
+}
 export default function CharacterTab({
   character,
   isDarkMode,
@@ -40,7 +121,7 @@ export default function CharacterTab({
     // Transparent wrapper like the other tabs — each section is its own card
     // so the wallpaper shows between them instead of one solid panel.
     // gap-4 between cards to match the Stats tab.
-    <div className={`font-serif space-y-4 ${isDarkMode ? 'text-stone-200' : 'text-stone-800'}`}>
+    <div className={`font-serif space-y-4 ${isDarkMode ? 'text-stone-100' : 'text-stone-800'}`}>
       {/* Top Section: Header + Bio on Left, Portrait on Right */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Left Column: Header + Bio */}
@@ -98,7 +179,7 @@ export default function CharacterTab({
                       backstory: { ...character.backstory, backstoryText: e.target.value },
                     })
                   }
-                  className={`w-full bg-transparent border-none outline-none resize-none leading-relaxed text-sm ${isDarkMode ? 'text-stone-200' : 'text-stone-800'} placeholder-stone-400`}
+                  className={`w-full bg-transparent border-none outline-none resize-none leading-relaxed text-sm ${isDarkMode ? 'text-stone-100' : 'text-stone-800'} placeholder-stone-400`}
                   placeholder="Character backstory..."
                   rows={12}
                 />
@@ -130,9 +211,8 @@ export default function CharacterTab({
       {/* Roleplay Notes Section */}
       <div className="grid grid-cols-2 gap-4">
         {/* Left: Your Nature */}
-        <div
-          className={`relative p-4 rounded-lg border shadow-xl ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-gray-100 border-stone-300'}`}
-        >
+        <div className={`p-4 rounded-lg border shadow-xl ${cardClass}`}>
+          <SectionHeader isDarkMode={isDarkMode}>Your Nature</SectionHeader>
           <textarea
             value={character.backstory.roleplayNotes || ''}
             onChange={(e) =>
@@ -140,21 +220,17 @@ export default function CharacterTab({
                 backstory: { ...character.backstory, roleplayNotes: e.target.value },
               })
             }
-            className={`w-full bg-transparent border rounded px-4 py-3 pb-10 resize-none leading-relaxed text-sm ${
-              isDarkMode ? 'bg-slate-700 border-slate-600 text-stone-200' : 'bg-white border-stone-300 text-stone-800'
-            } focus:outline-none focus:ring-2 focus:ring-orange-500 placeholder-stone-400`}
+            className={`w-full bg-transparent resize-none leading-relaxed text-sm outline-none ${
+              isDarkMode ? 'text-stone-100 placeholder-stone-500' : 'text-stone-800 placeholder-stone-400'
+            }`}
             placeholder="• Silent, observant, strikes from shadows&#10;• Uncomfortable around crowds of people&#10;• Protective of natural places and creatures&#10;• Struggles with the rage that led to the village massacre&#10;• Seeking redemption through control and purpose&#10;• The sickle is both weapon and reminder: 'Burn, or grow'"
             rows={6}
           />
-          <div className="absolute bottom-6 left-0 right-0 text-center">
-            <span className="text-sm font-bold text-gray-400">Your Nature:</span>
-          </div>
         </div>
 
         {/* Right: Character Arc Hooks */}
-        <div
-          className={`relative p-4 rounded-lg border shadow-xl ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-gray-100 border-stone-300'}`}
-        >
+        <div className={`p-4 rounded-lg border shadow-xl ${cardClass}`}>
+          <SectionHeader isDarkMode={isDarkMode}>Character Arc Hooks</SectionHeader>
           <textarea
             value={character.backstory.arcHooks || ''}
             onChange={(e) =>
@@ -162,15 +238,12 @@ export default function CharacterTab({
                 backstory: { ...character.backstory, arcHooks: e.target.value },
               })
             }
-            className={`w-full bg-transparent border rounded px-4 py-3 pb-10 resize-none leading-relaxed text-sm ${
-              isDarkMode ? 'bg-slate-700 border-slate-600 text-stone-200' : 'bg-white border-stone-300 text-stone-800'
-            } focus:outline-none focus:ring-2 focus:ring-orange-500 placeholder-stone-400`}
+            className={`w-full bg-transparent resize-none leading-relaxed text-sm outline-none ${
+              isDarkMode ? 'text-stone-100 placeholder-stone-500' : 'text-stone-800 placeholder-stone-400'
+            }`}
             placeholder="• War is coming - must learn to fight alongside humans&#10;• Runa is out there somewhere with the survivors&#10;• The vision showed him fighting beside three strangers&#10;• Elariel's words: 'Learn their steps, their hungers, their griefs'"
             rows={6}
           />
-          <div className="absolute bottom-6 left-0 right-0 text-center">
-            <span className="text-sm font-bold text-gray-400">Character Arc Hooks:</span>
-          </div>
         </div>
       </div>
 
@@ -179,105 +252,41 @@ export default function CharacterTab({
         {/* Left Column: Proficiencies & Languages */}
         <div>
           {/* Proficiencies & Languages Section */}
-          <div
-            className={`border-2 rounded-lg shadow-xl p-4 ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-gray-100 border-stone-300'}`}
-          >
-            <h3 className={`text-lg font-bold mb-4 ${isDarkMode ? 'text-stone-200' : 'text-stone-800'}`}>
-              Proficiencies & Languages
-            </h3>
+          <div className={`rounded-lg border shadow-xl p-4 ${cardClass}`}>
+            <SectionHeader isDarkMode={isDarkMode}>Proficiencies &amp; Languages</SectionHeader>
 
-            <div className="space-y-4 text-sm">
-              {/* Armor Proficiencies */}
-              <div>
-                <label className={`font-bold block mb-2 ${isDarkMode ? 'text-orange-400' : 'text-orange-600'}`}>
-                  Armor
-                </label>
-                <textarea
-                  value={proficiencies.armor.join(', ')}
-                  onChange={(e) =>
-                    setProficiencies({
-                      ...proficiencies,
-                      armor: e.target.value
-                        .split(',')
-                        .map((s) => s.trim())
-                        .filter((s) => s),
-                    })
-                  }
-                  className={`w-full px-3 py-2 rounded border ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-stone-300 text-stone-800'} focus:outline-none focus:ring-2 focus:ring-orange-500`}
-                  placeholder="Light armor, Medium armor, Shields"
-                  rows={2}
-                />
-              </div>
-
-              {/* Weapon Proficiencies */}
-              <div>
-                <label className={`font-bold block mb-2 ${isDarkMode ? 'text-orange-400' : 'text-orange-600'}`}>
-                  Weapons
-                </label>
-                <textarea
-                  value={proficiencies.weapons.join(', ')}
-                  onChange={(e) =>
-                    setProficiencies({
-                      ...proficiencies,
-                      weapons: e.target.value
-                        .split(',')
-                        .map((s) => s.trim())
-                        .filter((s) => s),
-                    })
-                  }
-                  className={`w-full px-3 py-2 rounded border ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-stone-300 text-stone-800'} focus:outline-none focus:ring-2 focus:ring-orange-500`}
-                  placeholder="Simple weapons, Martial weapons"
-                  rows={2}
-                />
-              </div>
-
-              {/* Tool Proficiencies */}
-              <div>
-                <label className={`font-bold block mb-2 ${isDarkMode ? 'text-orange-400' : 'text-orange-600'}`}>
-                  Tools
-                </label>
-                <textarea
-                  value={proficiencies.tools.join(', ')}
-                  onChange={(e) =>
-                    setProficiencies({
-                      ...proficiencies,
-                      tools: e.target.value
-                        .split(',')
-                        .map((s) => s.trim())
-                        .filter((s) => s),
-                    })
-                  }
-                  className={`w-full px-3 py-2 rounded border ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-stone-300 text-stone-800'} focus:outline-none focus:ring-2 focus:ring-orange-500`}
-                  placeholder="Thieves' tools, Herbalism kit"
-                  rows={2}
-                />
-              </div>
-
-              {/* Languages */}
-              <div>
-                <label className={`font-bold block mb-2 ${isDarkMode ? 'text-orange-400' : 'text-orange-600'}`}>
-                  Languages
-                </label>
-                <textarea
-                  value={proficiencies.languages.join(', ')}
-                  onChange={(e) =>
-                    setProficiencies({
-                      ...proficiencies,
-                      languages: e.target.value
-                        .split(',')
-                        .map((s) => s.trim())
-                        .filter((s) => s),
-                    })
-                  }
-                  className={`w-full px-3 py-2 rounded border ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-stone-300 text-stone-800'} focus:outline-none focus:ring-2 focus:ring-orange-500`}
-                  placeholder="Common, Elvish, Draconic"
-                  rows={2}
-                />
-              </div>
+            <div className="space-y-4">
+              <TagGroup
+                label="Armor"
+                items={proficiencies.armor}
+                onChange={(armor) => setProficiencies({ ...proficiencies, armor })}
+                placeholder="Light armor, Medium armor, Shields"
+                isDarkMode={isDarkMode}
+              />
+              <TagGroup
+                label="Weapons"
+                items={proficiencies.weapons}
+                onChange={(weapons) => setProficiencies({ ...proficiencies, weapons })}
+                placeholder="Simple weapons, Martial weapons"
+                isDarkMode={isDarkMode}
+              />
+              <TagGroup
+                label="Tools"
+                items={proficiencies.tools}
+                onChange={(tools) => setProficiencies({ ...proficiencies, tools })}
+                placeholder="Thieves' tools, Herbalism kit"
+                isDarkMode={isDarkMode}
+              />
+              <TagGroup
+                label="Languages"
+                items={proficiencies.languages}
+                onChange={(languages) => setProficiencies({ ...proficiencies, languages })}
+                placeholder="Common, Elvish, Draconic"
+                isDarkMode={isDarkMode}
+              />
             </div>
           </div>
         </div>
-
         {/* Right Column: Profile Details & Ability Scores */}
         <div className="md:col-span-2 space-y-4">
           {/* Profile Details Section */}
@@ -293,7 +302,7 @@ export default function CharacterTab({
                     type="text"
                     value={character.trueName || 'Marcille Donato'}
                     onChange={(e) => updateCharacter({ trueName: e.target.value })}
-                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-200' : 'text-stone-800'}`}
+                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-100' : 'text-stone-800'}`}
                   />
                 </div>
 
@@ -304,7 +313,7 @@ export default function CharacterTab({
                     type="text"
                     value={character.age || '50 years old'}
                     onChange={(e) => updateCharacter({ age: e.target.value })}
-                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-200' : 'text-stone-800'}`}
+                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-100' : 'text-stone-800'}`}
                   />
                 </div>
 
@@ -347,7 +356,7 @@ export default function CharacterTab({
                     type="text"
                     value={character.birthplace || 'Northern Continent'}
                     onChange={(e) => updateCharacter({ birthplace: e.target.value })}
-                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-200' : 'text-stone-800'}`}
+                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-100' : 'text-stone-800'}`}
                   />
                 </div>
 
@@ -358,7 +367,7 @@ export default function CharacterTab({
                     type="text"
                     value={character.family || 'Common, Elvish'}
                     onChange={(e) => updateCharacter({ family: e.target.value })}
-                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-200' : 'text-stone-800'}`}
+                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-100' : 'text-stone-800'}`}
                   />
                 </div>
 
@@ -369,7 +378,7 @@ export default function CharacterTab({
                     type="text"
                     value={character.physique || 'Height, roughly 160cm'}
                     onChange={(e) => updateCharacter({ physique: e.target.value })}
-                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-200' : 'text-stone-800'}`}
+                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-100' : 'text-stone-800'}`}
                   />
                 </div>
               </div>
@@ -382,7 +391,7 @@ export default function CharacterTab({
                     type="text"
                     value={character.likes || 'Seafood, nuts'}
                     onChange={(e) => updateCharacter({ likes: e.target.value })}
-                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-200' : 'text-stone-800'}`}
+                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-100' : 'text-stone-800'}`}
                   />
                 </div>
 
@@ -393,7 +402,7 @@ export default function CharacterTab({
                     type="text"
                     value={character.dislikes || 'Any sort of weird food'}
                     onChange={(e) => updateCharacter({ dislikes: e.target.value })}
-                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-200' : 'text-stone-800'}`}
+                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-100' : 'text-stone-800'}`}
                   />
                 </div>
 
@@ -404,7 +413,7 @@ export default function CharacterTab({
                     type="text"
                     value={character.flaws || ''}
                     onChange={(e) => updateCharacter({ flaws: e.target.value })}
-                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-200' : 'text-stone-800'}`}
+                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-100' : 'text-stone-800'}`}
                     placeholder="Character flaws..."
                   />
                 </div>
@@ -416,7 +425,7 @@ export default function CharacterTab({
                     type="text"
                     value={character.nicknames || ''}
                     onChange={(e) => updateCharacter({ nicknames: e.target.value })}
-                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-200' : 'text-stone-800'}`}
+                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-100' : 'text-stone-800'}`}
                     placeholder="Character nicknames..."
                   />
                 </div>
@@ -444,7 +453,7 @@ export default function CharacterTab({
                     type="text"
                     value={character.background}
                     onChange={(e) => updateCharacter({ background: e.target.value })}
-                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-200' : 'text-stone-800'}`}
+                    className={`flex-1 bg-transparent outline-none ${isDarkMode ? 'text-stone-100' : 'text-stone-800'}`}
                   />
                 </div>
 
@@ -468,7 +477,7 @@ export default function CharacterTab({
 
             {/* Ability Scores Radar Chart */}
             <div className="mt-6 pt-4 border-t border-stone-300">
-              <div className="flex justify-center gap-8">
+              <div className="flex flex-wrap items-center justify-center gap-6">
                 {/* Ability Scores Radar Chart */}
                 <div className="w-50 h-50 relative">
                   <svg viewBox="0 0 320 320" className="w-full h-full">
@@ -577,7 +586,7 @@ export default function CharacterTab({
                 </div>
 
                 {/* Skills Bar Chart */}
-                <div className="w-56 h-44 pb-2">
+                <div className="w-56">
                   <div className="space-y-1">
                     {(() => {
                       // Get all skills with their modifiers
@@ -622,7 +631,7 @@ export default function CharacterTab({
                           <div key={item.skill}>
                             <div className="flex items-center text-xs">
                               <div
-                                className={`w-20 text-right pr-2 ${isDarkMode ? 'text-stone-300' : 'text-stone-700'}`}
+                                className={`w-20 text-right pr-2 ${isDarkMode ? 'text-stone-200' : 'text-stone-700'}`}
                               >
                                 {item.skill.slice(0, 8)}
                               </div>
@@ -633,17 +642,17 @@ export default function CharacterTab({
                                   className={`h-full rounded transition-all duration-300 ${
                                     isTop
                                       ? isDarkMode
-                                        ? 'bg-green-500 bg-opacity-60'
-                                        : 'bg-green-600 bg-opacity-60'
+                                        ? 'bg-orange-500/80'
+                                        : 'bg-orange-600/80'
                                       : isDarkMode
-                                        ? 'bg-red-500 bg-opacity-60'
-                                        : 'bg-red-600 bg-opacity-60'
+                                        ? 'bg-slate-400/50'
+                                        : 'bg-stone-400/60'
                                   }`}
                                   style={{ width: `${barWidth}%` }}
                                 />
                               </div>
                               <div
-                                className={`w-8 text-center font-mono ${isDarkMode ? 'text-stone-300' : 'text-stone-700'}`}
+                                className={`w-8 text-center font-mono ${isDarkMode ? 'text-stone-200' : 'text-stone-700'}`}
                               >
                                 {item.modifier >= 0 ? '+' : ''}
                                 {item.modifier}
@@ -664,11 +673,13 @@ export default function CharacterTab({
                   >
                     <div className="flex justify-center gap-4">
                       <div className="flex items-center gap-1">
-                        <div className={`w-3 h-3 rounded ${isDarkMode ? 'bg-green-500' : 'bg-green-600'}`}></div>
+                        <div
+                          className={`w-3 h-3 rounded ${isDarkMode ? 'bg-orange-500/80' : 'bg-orange-600/80'}`}
+                        ></div>
                         <span>Strongest</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <div className={`w-3 h-3 rounded ${isDarkMode ? 'bg-red-500' : 'bg-red-600'}`}></div>
+                        <div className={`w-3 h-3 rounded ${isDarkMode ? 'bg-slate-400/50' : 'bg-stone-400/60'}`}></div>
                         <span>Weakest</span>
                       </div>
                     </div>

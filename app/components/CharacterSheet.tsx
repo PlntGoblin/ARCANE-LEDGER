@@ -2861,20 +2861,25 @@ export default function CharacterSheet() {
         <MobileTabBar activeTab={activeTab} setActiveTab={setActiveTab} />
         <div className="max-w-5xl mx-auto sheet-bottom-pad">
           {/* Tab Navigation - Above Main Box (desktop only; phones use MobileTabBar) */}
-          <div className="no-touch flex justify-center mb-4 space-x-2">
-            {tabs.map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-3 py-1.5 rounded-full font-semibold text-sm transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
-                  activeTab === tab
-                    ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg'
-                    : 'bg-slate-800 text-gray-300 hover:bg-slate-700 hover:text-white'
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
+          {/* One integrated segmented bar rather than separate floating pills:
+              a single card-styled container whose bottom edge sits flush against
+              the content below, so the tabs read as attached to the sheet. */}
+          <div className="no-touch flex justify-center">
+            <div className="inline-flex gap-1 rounded-t-xl border border-b-0 border-slate-600 bg-slate-800/85 p-1 shadow-xl backdrop-blur-sm">
+              {tabs.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`rounded-t-lg px-4 py-2 text-sm font-semibold transition-colors duration-200 ${
+                    activeTab === tab
+                      ? 'bg-gradient-to-b from-orange-500 to-orange-600 text-white shadow-inner'
+                      : 'text-gray-300 hover:bg-slate-700/70 hover:text-white'
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Stats Tab */}
