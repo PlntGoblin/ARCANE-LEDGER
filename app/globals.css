@@ -207,3 +207,219 @@ option {
 .glass-off .mobile-tab-active {
   background-color: rgb(234 88 12);
 }
+
+/* Weather icon: the day sun. Rays turn slowly, the corona breathes, and the
+   disc pulses a touch out of phase so it never looks mechanical. */
+@keyframes sunSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes sunBreathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.09);
+    opacity: 1;
+  }
+}
+@keyframes sunCorePulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.035);
+  }
+}
+.sun-rays {
+  transform-origin: 32px 32px;
+  animation: sunSpin 55s linear infinite;
+}
+.sun-halo {
+  transform-origin: 32px 32px;
+  animation: sunBreathe 5s ease-in-out infinite;
+}
+.sun-core {
+  transform-origin: 32px 32px;
+  animation: sunCorePulse 5s ease-in-out infinite 0.6s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sun-rays,
+  .sun-halo,
+  .sun-core {
+    animation: none;
+  }
+}
+
+/* Weather icons: morning, evening, night, rain and snow. Each pairs a slow
+   ambient motion with a faster foreground one so nothing beats in unison. */
+@keyframes dawnRise {
+  0%,
+  100% {
+    transform: translateY(2.5px);
+  }
+  50% {
+    transform: translateY(-1.5px);
+  }
+}
+@keyframes skyGlow {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+@keyframes duskSink {
+  0%,
+  100% {
+    transform: translateY(-1.5px);
+  }
+  50% {
+    transform: translateY(2px);
+  }
+}
+@keyframes shimmer {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scaleX(0.9);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scaleX(1.05);
+  }
+}
+@keyframes starTwinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+@keyframes cloudDrift {
+  0%,
+  100% {
+    transform: translateX(-1.2px);
+  }
+  50% {
+    transform: translateX(1.2px);
+  }
+}
+@keyframes rainFall {
+  0% {
+    transform: translateY(-5px);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+}
+@keyframes snowFall {
+  0% {
+    transform: translate(0, -4px) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(3px, 20px) rotate(160deg);
+    opacity: 0;
+  }
+}
+
+.dawn-sun {
+  animation: dawnRise 7s ease-in-out infinite;
+}
+.dawn-glow {
+  transform-origin: 32px 46px;
+  animation: skyGlow 6s ease-in-out infinite;
+}
+.dusk-sun {
+  animation: duskSink 7s ease-in-out infinite;
+}
+.dusk-glow {
+  transform-origin: 32px 36px;
+  animation: skyGlow 6s ease-in-out infinite 0.5s;
+}
+.dusk-shimmer {
+  transform-origin: 32px 46px;
+  animation: shimmer 3.2s ease-in-out infinite;
+}
+.moon-halo {
+  transform-origin: 30px 32px;
+  animation: skyGlow 6.5s ease-in-out infinite;
+}
+.star-twinkle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: starTwinkle 2.8s ease-in-out infinite;
+}
+.storm-cloud,
+.snow-cloud {
+  animation: cloudDrift 8s ease-in-out infinite;
+}
+.rain-drop {
+  animation: rainFall 1.1s linear infinite;
+}
+.snow-flake {
+  animation: snowFall 3.2s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dawn-sun,
+  .dawn-glow,
+  .dusk-sun,
+  .dusk-glow,
+  .dusk-shimmer,
+  .moon-halo,
+  .star-twinkle,
+  .storm-cloud,
+  .snow-cloud,
+  .rain-drop,
+  .snow-flake {
+    animation: none;
+  }
+}
+
+/* Morning rays hold their angle and shimmer instead of rotating. */
+@keyframes rayShimmer {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+.dawn-ray {
+  animation: rayShimmer 4.5s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dawn-ray {
+    animation: none;
+    opacity: 0.55;
+  }
+}

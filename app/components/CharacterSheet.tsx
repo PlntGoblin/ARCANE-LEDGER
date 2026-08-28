@@ -1472,210 +1472,326 @@ export default function CharacterSheet() {
     const iconStyle = 'w-16 h-16 cursor-pointer transition-transform hover:scale-110';
 
     switch (type) {
-      case 0: // Morning - Sun behind mountains
+      case 0: // Morning - sun climbing out from behind the ridgeline
         return (
           <div className={iconStyle} onClick={cycleWeather}>
-            <div className="relative w-full h-full">
-              {/* Sun positioned behind mountains - only showing 2/3s */}
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-                <div className="w-8 h-8 bg-yellow-400 rounded-full shadow-lg shadow-yellow-400/50"></div>
-              </div>
-              {/* Mountains using CSS triangles - positioned to cover 1/3 of sun */}
-              <div
-                className="absolute bottom-0 left-1 w-0 h-0"
-                style={{
-                  borderLeft: '12px solid transparent',
-                  borderRight: '12px solid transparent',
-                  borderBottom: '24px solid #374151',
-                }}
-              ></div>
-              <div
-                className="absolute bottom-0 left-6 w-0 h-0"
-                style={{
-                  borderLeft: '16px solid transparent',
-                  borderRight: '16px solid transparent',
-                  borderBottom: '32px solid #4b5563',
-                }}
-              ></div>
-              <div
-                className="absolute bottom-0 right-1 w-0 h-0"
-                style={{
-                  borderLeft: '12px solid transparent',
-                  borderRight: '12px solid transparent',
-                  borderBottom: '24px solid #374151',
-                }}
-              ></div>
-            </div>
+            <svg viewBox="0 0 64 64" className="w-full h-full overflow-visible" aria-hidden="true">
+              <defs>
+                <radialGradient id="dawnGlowGrad" cx="50%" cy="72%" r="55%">
+                  <stop offset="0%" stopColor="#fbbf24" stopOpacity="0.5" />
+                  <stop offset="60%" stopColor="#fb7185" stopOpacity="0.18" />
+                  <stop offset="100%" stopColor="#fb7185" stopOpacity="0" />
+                </radialGradient>
+                <linearGradient id="dawnSunGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#fef3c7" />
+                  <stop offset="55%" stopColor="#fbbf24" />
+                  <stop offset="100%" stopColor="#f97316" />
+                </linearGradient>
+                {/* Both the sun and its glow are clipped to below the peaks,
+                    so the light pools in the valley instead of haloing over
+                    the ridgeline. */}
+                <clipPath id="dawnSkyClip">
+                  <rect x="0" y="32" width="64" height="22" />
+                </clipPath>
+                {/* Rays are cut off at the mountain base so none show below it */}
+                <clipPath id="dawnRayClip">
+                  <rect x="0" y="0" width="64" height="52" />
+                </clipPath>
+              </defs>
+
+              {/* Rays fan up past the peaks to read as first light breaking
+                  over the ridge, but stop at the mountain base so none appear
+                  underneath it. The diffuse glow stays penned in the valley. */}
+              <g clipPath="url(#dawnRayClip)">
+                {/* A fixed upper fan rather than a full turning wheel: rotating
+                    rays kept sinking past the base clip and swinging back up,
+                    which read as the fan drifting rather than as dawn light. */}
+                {[-72, -48, -24, 0, 24, 48, 72].map((angle, i) => (
+                  <rect
+                    key={angle}
+                    className="dawn-ray"
+                    x="31.3"
+                    y="20"
+                    width="1.4"
+                    height={i % 2 === 0 ? 7 : 4.5}
+                    rx="0.7"
+                    fill="#fcd34d"
+                    style={{
+                      transformOrigin: '32px 45px',
+                      transform: `rotate(${angle}deg)`,
+                      animationDelay: `${i * 0.45}s`,
+                    }}
+                  />
+                ))}
+              </g>
+
+              <g clipPath="url(#dawnSkyClip)">
+                <circle className="dawn-glow" cx="32" cy="46" r="22" fill="url(#dawnGlowGrad)" />
+                <circle className="dawn-sun" cx="32" cy="45" r="10" fill="url(#dawnSunGrad)" />
+              </g>
+
+              {/* Two peaks with a notch between them for the sun to rise into */}
+              <polygon points="0,52 18,30 34,52" fill="#334155" />
+              <polygon points="28,52 48,34 64,52" fill="#2f3e52" />
+              <polygon points="18,30 22.5,35.5 13.5,35.5" fill="#cbd5e1" opacity="0.7" />
+              <polygon points="48,34 51.5,38.5 44.5,38.5" fill="#cbd5e1" opacity="0.55" />
+              <rect x="0" y="51" width="64" height="3" fill="#2f3e52" />
+            </svg>
           </div>
         );
-      case 1: // Day - Yellow sun with animated glow effect
+      case 1: // Day - sun with a breathing corona and slowly turning rays
         return (
           <div className={iconStyle} onClick={cycleWeather}>
-            <div className="relative w-full h-full flex items-center justify-center">
-              {/* Animated background glow */}
-              <div
-                className="absolute w-16 h-16 rounded-full animate-pulse"
-                style={{
-                  background:
-                    'radial-gradient(circle, rgba(251, 191, 36, 0.4) 0%, rgba(251, 191, 36, 0.2) 40%, transparent 70%)',
-                }}
-              ></div>
-              {/* Solid sun circle */}
-              <div className="relative w-10 h-10 bg-yellow-400 rounded-full shadow-lg"></div>
-            </div>
+            <svg viewBox="0 0 64 64" className="w-full h-full overflow-visible" aria-hidden="true">
+              <defs>
+                {/* Off-centre so the disc reads as lit from the upper left
+                    rather than as a flat yellow circle. */}
+                <radialGradient id="sunCoreGrad" cx="40%" cy="35%" r="70%">
+                  <stop offset="0%" stopColor="#fffbeb" />
+                  <stop offset="40%" stopColor="#fde047" />
+                  <stop offset="100%" stopColor="#f59e0b" />
+                </radialGradient>
+                <radialGradient id="sunHaloGrad" cx="50%" cy="50%" r="50%">
+                  <stop offset="35%" stopColor="#fbbf24" stopOpacity="0.45" />
+                  <stop offset="65%" stopColor="#f59e0b" stopOpacity="0.15" />
+                  <stop offset="100%" stopColor="#f59e0b" stopOpacity="0" />
+                </radialGradient>
+              </defs>
+
+              <circle className="sun-halo" cx="32" cy="32" r="31" fill="url(#sunHaloGrad)" />
+
+              <g className="sun-rays">
+                {Array.from({ length: 12 }, (_, i) => (
+                  <rect
+                    key={i}
+                    x="31.1"
+                    y="2"
+                    width="1.8"
+                    height={i % 2 === 0 ? 8 : 5}
+                    rx="0.9"
+                    fill="#fcd34d"
+                    opacity={i % 2 === 0 ? 0.9 : 0.5}
+                    style={{ transformOrigin: '32px 32px', transform: `rotate(${i * 30}deg)` }}
+                  />
+                ))}
+              </g>
+
+              <circle className="sun-core" cx="32" cy="32" r="13" fill="url(#sunCoreGrad)" />
+              <circle cx="27" cy="26.5" r="3.8" fill="#fffdf0" opacity="0.45" />
+            </svg>
           </div>
         );
-      case 2: // Evening - Orange/red sun with horizon line
+      case 2: // Evening - sun sinking into the horizon
         return (
           <div className={iconStyle} onClick={cycleWeather}>
-            <div className="relative w-full h-full">
-              {/* Animated background glow */}
-              <div
-                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full animate-pulse"
-                style={{
-                  background:
-                    'radial-gradient(circle, rgba(249, 115, 22, 0.4) 0%, rgba(249, 115, 22, 0.2) 40%, rgba(251, 146, 60, 0.1) 70%, transparent 100%)',
-                }}
-              ></div>
-              {/* Solid sun circle - positioned to be partially covered by horizon */}
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-10 h-10 bg-orange-500 rounded-full shadow-lg"></div>
-              {/* Horizon line covering bottom third */}
-              <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-b from-gray-600 via-gray-700/50 to-transparent"></div>
-            </div>
-          </div>
-        );
-      case 3: // Night - Crescent moon with stars
-        return (
-          <div className={iconStyle} onClick={cycleWeather}>
-            <div className="relative w-full h-full">
-              {/* Stars */}
-              <div className="absolute top-2 left-2 w-1 h-1 bg-white rounded-full animate-pulse"></div>
-              <div
-                className="absolute top-4 right-3 w-1 h-1 bg-white rounded-full animate-pulse"
-                style={{ animationDelay: '0.5s' }}
-              ></div>
-              <div
-                className="absolute top-6 left-4 w-1 h-1 bg-white rounded-full animate-pulse"
-                style={{ animationDelay: '1s' }}
-              ></div>
-              <div
-                className="absolute bottom-4 right-2 w-1 h-1 bg-white rounded-full animate-pulse"
-                style={{ animationDelay: '1.5s' }}
-              ></div>
-              {/* Crescent Moon */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                <div className="w-8 h-8 bg-gray-300 rounded-full relative">
-                  <div className="absolute top-1 left-2 w-6 h-6 bg-slate-800 rounded-full"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      case 4: // Rainy - Storm cloud with rain
-        return (
-          <div className={iconStyle} onClick={cycleWeather}>
-            <div className="relative w-full h-full">
-              {/* Storm Cloud */}
-              <div className="absolute top-1 left-1/2 transform -translate-x-1/2">
-                {/* Main cloud body - darker for storm */}
-                <div className="w-14 h-7 bg-gray-600 rounded-full relative shadow-lg">
-                  {/* Cloud layers for depth */}
-                  <div className="absolute -left-3 top-1 w-6 h-6 bg-gray-700 rounded-full"></div>
-                  <div className="absolute -right-3 top-1 w-6 h-6 bg-gray-700 rounded-full"></div>
-                  <div className="absolute left-2 -top-2 w-5 h-5 bg-gray-500 rounded-full"></div>
-                  <div className="absolute right-2 -top-2 w-5 h-5 bg-gray-500 rounded-full"></div>
-                  <div className="absolute left-4 -top-3 w-7 h-7 bg-gray-600 rounded-full"></div>
-                  {/* Highlights for dimensionality */}
-                  <div className="absolute left-1 top-0 w-3 h-2 bg-gray-400 rounded-full opacity-60"></div>
-                  <div className="absolute right-1 top-0 w-3 h-2 bg-gray-400 rounded-full opacity-60"></div>
-                </div>
-              </div>
-              {/* Rain drops - more realistic */}
-              <div className="absolute top-8 left-5 w-0.5 h-5 bg-blue-400 rounded-full animate-pulse transform rotate-12"></div>
-              <div
-                className="absolute top-9 left-7 w-0.5 h-4 bg-blue-500 rounded-full animate-pulse transform rotate-6"
-                style={{ animationDelay: '0.2s' }}
-              ></div>
-              <div
-                className="absolute top-8 left-9 w-0.5 h-5 bg-blue-400 rounded-full animate-pulse transform -rotate-6"
-                style={{ animationDelay: '0.4s' }}
-              ></div>
-              <div
-                className="absolute top-10 left-6 w-0.5 h-3 bg-blue-500 rounded-full animate-pulse transform rotate-12"
-                style={{ animationDelay: '0.6s' }}
-              ></div>
-              <div
-                className="absolute top-8 left-11 w-0.5 h-4 bg-blue-400 rounded-full animate-pulse transform -rotate-12"
+            <svg viewBox="0 0 64 64" className="w-full h-full overflow-visible" aria-hidden="true">
+              <defs>
+                <radialGradient id="duskGlowGrad" cx="50%" cy="62%" r="55%">
+                  <stop offset="0%" stopColor="#fb923c" stopOpacity="0.55" />
+                  <stop offset="55%" stopColor="#ef4444" stopOpacity="0.2" />
+                  <stop offset="100%" stopColor="#ef4444" stopOpacity="0" />
+                </radialGradient>
+                <linearGradient id="duskSunGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#fcd34d" />
+                  <stop offset="50%" stopColor="#f97316" />
+                  <stop offset="100%" stopColor="#dc2626" />
+                </linearGradient>
+                <linearGradient id="duskSeaGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#7c2d12" stopOpacity="0.85" />
+                  <stop offset="100%" stopColor="#1e293b" stopOpacity="0.95" />
+                </linearGradient>
+                <clipPath id="duskSkyClip">
+                  <rect x="0" y="0" width="64" height="40" />
+                </clipPath>
+              </defs>
+
+              <circle className="dusk-glow" cx="32" cy="36" r="28" fill="url(#duskGlowGrad)" />
+
+              <g clipPath="url(#duskSkyClip)">
+                <circle className="dusk-sun" cx="32" cy="34" r="12" fill="url(#duskSunGrad)" />
+              </g>
+
+              {/* Horizon, plus a short reflected shimmer under the sun */}
+              <rect x="0" y="40" width="64" height="18" fill="url(#duskSeaGrad)" />
+              <rect className="dusk-shimmer" x="22" y="42.5" width="20" height="1.6" rx="0.8" fill="#fb923c" />
+              <rect
+                className="dusk-shimmer"
+                x="25"
+                y="46"
+                width="14"
+                height="1.4"
+                rx="0.7"
+                fill="#f97316"
                 style={{ animationDelay: '0.8s' }}
-              ></div>
-              <div
-                className="absolute top-11 left-8 w-0.5 h-3 bg-blue-500 rounded-full animate-pulse"
-                style={{ animationDelay: '1s' }}
-              ></div>
-            </div>
+              />
+              <rect
+                className="dusk-shimmer"
+                x="27"
+                y="49.5"
+                width="10"
+                height="1.2"
+                rx="0.6"
+                fill="#ea580c"
+                style={{ animationDelay: '1.6s' }}
+              />
+            </svg>
           </div>
         );
-      case 5: // Snowy - Fluffy snow cloud
+      case 3: // Night - crescent moon with drifting stars
         return (
           <div className={iconStyle} onClick={cycleWeather}>
-            <div className="relative w-full h-full">
-              {/* Snow Cloud - Light and fluffy */}
-              <div className="absolute top-1 left-1/2 transform -translate-x-1/2">
-                <div className="w-13 h-7 bg-gray-200 rounded-full relative shadow-md">
-                  {/* Cloud puffs for fluffy appearance */}
-                  <div className="absolute -left-2 top-1 w-5 h-5 bg-white rounded-full"></div>
-                  <div className="absolute -right-2 top-1 w-5 h-5 bg-white rounded-full"></div>
-                  <div className="absolute left-1 -top-2 w-4 h-4 bg-white rounded-full opacity-90"></div>
-                  <div className="absolute right-1 -top-2 w-4 h-4 bg-white rounded-full opacity-90"></div>
-                  <div className="absolute left-3 -top-3 w-6 h-6 bg-white rounded-full"></div>
-                  <div className="absolute right-3 -top-3 w-6 h-6 bg-white rounded-full"></div>
-                  {/* Additional fluffy bits */}
-                  <div className="absolute left-0 top-2 w-3 h-3 bg-gray-200 rounded-full"></div>
-                  <div className="absolute right-0 top-2 w-3 h-3 bg-gray-200 rounded-full"></div>
-                  {/* Light highlights */}
-                  <div className="absolute left-2 top-0 w-2 h-1 bg-white rounded-full opacity-80"></div>
-                  <div className="absolute right-2 top-0 w-2 h-1 bg-white rounded-full opacity-80"></div>
-                </div>
-              </div>
-              {/* Snowflakes - more detailed */}
-              <div className="absolute top-8 left-4 text-white text-xs animate-bounce">❄</div>
-              <div
-                className="absolute top-10 left-6 text-white text-xs animate-bounce"
-                style={{ animationDelay: '0.3s' }}
-              >
-                ❅
-              </div>
-              <div
-                className="absolute top-9 left-8 text-white text-xs animate-bounce"
-                style={{ animationDelay: '0.6s' }}
-              >
-                ❄
-              </div>
-              <div
-                className="absolute top-11 left-5 text-white text-xs animate-bounce"
-                style={{ animationDelay: '0.9s' }}
-              >
-                ❅
-              </div>
-              <div
-                className="absolute top-8 left-10 text-white text-xs animate-bounce"
-                style={{ animationDelay: '1.2s' }}
-              >
-                ❄
-              </div>
-              <div
-                className="absolute top-12 left-7 text-white text-xs animate-bounce"
-                style={{ animationDelay: '1.5s' }}
-              >
-                ❅
-              </div>
-              <div
-                className="absolute top-10 left-9 text-white text-xs animate-bounce"
-                style={{ animationDelay: '1.8s' }}
-              >
-                ❄
-              </div>
-            </div>
+            <svg viewBox="0 0 64 64" className="w-full h-full overflow-visible" aria-hidden="true">
+              <defs>
+                <radialGradient id="moonHaloGrad" cx="50%" cy="50%" r="50%">
+                  <stop offset="35%" stopColor="#e2e8f0" stopOpacity="0.35" />
+                  <stop offset="70%" stopColor="#cbd5e1" stopOpacity="0.1" />
+                  <stop offset="100%" stopColor="#cbd5e1" stopOpacity="0" />
+                </radialGradient>
+                <linearGradient id="moonBodyGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="60%" stopColor="#e2e8f0" />
+                  <stop offset="100%" stopColor="#94a3b8" />
+                </linearGradient>
+                {/* Cut the crescent with a mask rather than covering the disc
+                    with a slate circle, so it works over any wallpaper. */}
+                <mask id="crescentMask">
+                  <rect x="0" y="0" width="64" height="64" fill="black" />
+                  <circle cx="30" cy="32" r="14" fill="white" />
+                  <circle cx="38" cy="27" r="13" fill="black" />
+                </mask>
+              </defs>
+
+              <circle className="moon-halo" cx="30" cy="32" r="24" fill="url(#moonHaloGrad)" />
+
+              <g mask="url(#crescentMask)">
+                <circle cx="30" cy="32" r="14" fill="url(#moonBodyGrad)" />
+                <circle cx="24" cy="36" r="2.6" fill="#94a3b8" opacity="0.45" />
+                <circle cx="28" cy="42" r="1.7" fill="#94a3b8" opacity="0.35" />
+                <circle cx="22" cy="28" r="1.3" fill="#94a3b8" opacity="0.3" />
+              </g>
+
+              {[
+                { x: 52, y: 12, r: 1.5, d: '0s' },
+                { x: 58, y: 26, r: 1.1, d: '0.7s' },
+                { x: 47, y: 40, r: 1.3, d: '1.4s' },
+                { x: 12, y: 10, r: 1.2, d: '2.1s' },
+                { x: 55, y: 52, r: 1, d: '2.8s' },
+              ].map((s, i) => (
+                <circle
+                  key={i}
+                  className="star-twinkle"
+                  cx={s.x}
+                  cy={s.y}
+                  r={s.r}
+                  fill="#ffffff"
+                  style={{ animationDelay: s.d }}
+                />
+              ))}
+            </svg>
+          </div>
+        );
+      case 4: // Rainy - storm cloud with falling rain
+        return (
+          <div className={iconStyle} onClick={cycleWeather}>
+            <svg viewBox="0 0 64 64" className="w-full h-full overflow-visible" aria-hidden="true">
+              <defs>
+                <linearGradient id="stormCloudGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#94a3b8" />
+                  <stop offset="55%" stopColor="#64748b" />
+                  <stop offset="100%" stopColor="#3f4a5a" />
+                </linearGradient>
+                <linearGradient id="rainDropGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#93c5fd" stopOpacity="0" />
+                  <stop offset="45%" stopColor="#60a5fa" stopOpacity="0.95" />
+                  <stop offset="100%" stopColor="#3b82f6" stopOpacity="1" />
+                </linearGradient>
+              </defs>
+
+              {/* One path for the whole cloud, so the puffs read as a single
+                  mass instead of a pile of overlapping circles. */}
+              <g className="storm-cloud">
+                <path
+                  d="M16 32 a9 9 0 0 1 3.5 -17 a12 12 0 0 1 22.5 -2 a9.5 9.5 0 0 1 6 19 z"
+                  fill="url(#stormCloudGrad)"
+                />
+                <path
+                  d="M19.5 15 a12 12 0 0 1 22.5 -2 a9.5 9.5 0 0 1 2.6 2.4 a13 13 0 0 0 -25.1 -0.4 z"
+                  fill="#cbd5e1"
+                  opacity="0.45"
+                />
+              </g>
+
+              {[
+                { x: 20, len: 8, d: '0s', dur: '1.1s' },
+                { x: 27, len: 6, d: '0.35s', dur: '1.25s' },
+                { x: 34, len: 9, d: '0.15s', dur: '1s' },
+                { x: 41, len: 6.5, d: '0.55s', dur: '1.2s' },
+                { x: 47, len: 7.5, d: '0.8s', dur: '1.15s' },
+              ].map((r, i) => (
+                <rect
+                  key={i}
+                  className="rain-drop"
+                  x={r.x}
+                  y="34"
+                  width="1.7"
+                  height={r.len}
+                  rx="0.85"
+                  fill="url(#rainDropGrad)"
+                  style={{ animationDelay: r.d, animationDuration: r.dur }}
+                />
+              ))}
+            </svg>
+          </div>
+        );
+      case 5: // Snowy - soft cloud with drifting flakes
+        return (
+          <div className={iconStyle} onClick={cycleWeather}>
+            <svg viewBox="0 0 64 64" className="w-full h-full overflow-visible" aria-hidden="true">
+              <defs>
+                <linearGradient id="snowCloudGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="60%" stopColor="#e8edf4" />
+                  <stop offset="100%" stopColor="#c3cddb" />
+                </linearGradient>
+              </defs>
+
+              <g className="snow-cloud">
+                <path
+                  d="M16 32 a9 9 0 0 1 3.5 -17 a12 12 0 0 1 22.5 -2 a9.5 9.5 0 0 1 6 19 z"
+                  fill="url(#snowCloudGrad)"
+                />
+                <path
+                  d="M19.5 15 a12 12 0 0 1 22.5 -2 a9.5 9.5 0 0 1 2.6 2.4 a13 13 0 0 0 -25.1 -0.4 z"
+                  fill="#ffffff"
+                  opacity="0.85"
+                />
+              </g>
+
+              {/* Six-armed flakes drawn as strokes: they keep their shape at
+                  this size where a text glyph would just blur. */}
+              {[
+                { x: 21, d: '0s', dur: '3.2s', s: 1 },
+                { x: 32, d: '1.1s', dur: '2.8s', s: 0.78 },
+                { x: 43, d: '2s', dur: '3.5s', s: 0.9 },
+              ].map((f, i) => (
+                <g
+                  key={i}
+                  className="snow-flake"
+                  style={{ animationDelay: f.d, animationDuration: f.dur, transformOrigin: `${f.x}px 40px` }}
+                >
+                  <g
+                    transform={`translate(${f.x} 40) scale(${f.s})`}
+                    stroke="#ffffff"
+                    strokeWidth="1.1"
+                    strokeLinecap="round"
+                  >
+                    <line x1="0" y1="-4" x2="0" y2="4" />
+                    <line x1="-3.5" y1="-2" x2="3.5" y2="2" />
+                    <line x1="-3.5" y1="2" x2="3.5" y2="-2" />
+                  </g>
+                </g>
+              ))}
+            </svg>
           </div>
         );
       default:
