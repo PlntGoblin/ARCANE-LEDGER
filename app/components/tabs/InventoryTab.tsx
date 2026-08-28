@@ -84,7 +84,7 @@ export default function InventoryTab({
         {/* 1. Survival Guide & Encumbrance Column */}
         <div className="space-y-4">
           <div
-            className={`p-2 rounded-lg border shadow-xl ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+            className={`p-2 rounded-lg border shadow-xl ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
             <div className="grid grid-cols-2 gap-2 items-center">
               <div className={`text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
@@ -97,8 +97,8 @@ export default function InventoryTab({
                   rel="noopener noreferrer"
                   className={`inline-flex items-center justify-center px-3 py-2 rounded-lg border transition-all duration-200 text-2xl ${
                     isDarkMode
-                      ? 'bg-gradient-to-br from-orange-600 to-amber-700 hover:from-orange-500 hover:to-amber-600 border-orange-500 shadow-md hover:shadow-orange-500/30'
-                      : 'bg-gradient-to-br from-orange-500 to-amber-600 hover:from-orange-400 hover:to-amber-500 border-orange-400 shadow-md hover:shadow-orange-400/30'
+                      ? 'bg-orange-900/40 hover:bg-orange-800/55 border-orange-400/30 shadow-md'
+                      : 'bg-orange-200/50 hover:bg-orange-300/60 border-orange-400/40 shadow-md'
                   }`}
                 >
                   📖
@@ -109,14 +109,14 @@ export default function InventoryTab({
 
           {/* Encumbrance Box */}
           <div
-            className={`p-2 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+            className={`p-2 rounded-lg border shadow-xl relative ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
             <div className="grid grid-cols-3 gap-1 text-center text-sm mb-2">
               <div>
                 <div className={`text-[10px] mb-1 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Open Slots</div>
                 <div
-                  className={`w-full text-center text-lg font-bold border rounded px-1 py-1 text-white bg-gray-700 ${
-                    isDarkMode ? 'border-green-400' : 'border-green-400'
+                  className={`w-full text-center text-lg font-bold border rounded px-1 py-1 text-white bg-black/30 ${
+                    isDarkMode ? 'border-emerald-400/50' : 'border-emerald-500/60'
                   }`}
                 >
                   {encumbrance.openSlots}
@@ -125,8 +125,8 @@ export default function InventoryTab({
               <div>
                 <div className={`text-[10px] mb-1 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Max Slots</div>
                 <div
-                  className={`w-full text-center text-lg font-bold border rounded px-1 py-1 text-white bg-gray-700 cursor-help ${
-                    isDarkMode ? 'border-orange-400' : 'border-orange-400'
+                  className={`w-full text-center text-lg font-bold border rounded px-1 py-1 text-white bg-black/30 cursor-help ${
+                    isDarkMode ? 'border-orange-400/50' : 'border-orange-500/60'
                   }`}
                   title={`${carryingSize} size (${
                     carryingSize === 'Tiny'
@@ -148,8 +148,8 @@ export default function InventoryTab({
               <div>
                 <div className={`text-[10px] mb-1 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Your Bulk</div>
                 <div
-                  className={`w-full text-center text-lg font-bold border rounded px-1 py-1 text-white bg-gray-700 ${
-                    isDarkMode ? 'border-blue-400' : 'border-blue-400'
+                  className={`w-full text-center text-lg font-bold border rounded px-1 py-1 text-white bg-black/30 ${
+                    isDarkMode ? 'border-sky-400/45' : 'border-sky-500/55'
                   }`}
                 >
                   {encumbrance.yourBulk}
@@ -159,16 +159,16 @@ export default function InventoryTab({
             <div className="text-center pb-8">
               <div className={`text-xs ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-1`}>Capacity:</div>
               {/* Health Bar Style Display */}
-              <div className="w-full bg-gray-600 rounded-full h-3 mb-1">
+              <div className="w-full bg-black/35 rounded-full h-3 mb-1">
                 <div
                   className={`h-3 rounded-full transition-all duration-300 ${
                     encumbrance.openSlots <= 0
-                      ? 'bg-red-500'
+                      ? 'bg-red-500/80'
                       : encumbrance.openSlots / encumbrance.maxSlots > 0.5
-                        ? 'bg-green-500'
+                        ? 'bg-emerald-500/80'
                         : encumbrance.openSlots / encumbrance.maxSlots > 0.2
-                          ? 'bg-yellow-500'
-                          : 'bg-orange-500'
+                          ? 'bg-amber-500/80'
+                          : 'bg-orange-500/80'
                   }`}
                   style={{
                     width: `${Math.max(0, Math.min(100, (encumbrance.openSlots / encumbrance.maxSlots) * 100))}%`,
@@ -220,7 +220,7 @@ export default function InventoryTab({
 
         {/* 3. Purse Box */}
         <div
-          className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+          className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
         >
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
@@ -250,7 +250,7 @@ export default function InventoryTab({
                         }
                         className={`w-12 text-center text-xs border rounded px-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                           isDarkMode
-                            ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                            ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                             : 'bg-gray-100 border-gray-300 text-gray-900'
                         }`}
                         placeholder="0"
@@ -272,7 +272,7 @@ export default function InventoryTab({
                         }}
                         className={`w-16 text-center text-xs border rounded px-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                           isDarkMode
-                            ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                            ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                             : 'bg-gray-100 border-gray-300 text-gray-900'
                         }`}
                       />
@@ -304,11 +304,11 @@ export default function InventoryTab({
         {/* 4. Ration Box */}
         <div className="space-y-4">
           <div
-            className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+            className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
             <div className="space-y-2 pb-8">
               <div
-                className={`grid grid-cols-3 gap-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-center`}
+                className={`grid grid-cols-3 gap-1 text-xs ${isDarkMode ? 'text-white' : 'text-gray-800'} text-center`}
               >
                 <div># of Boxes</div>
                 <div># of Rations</div>
@@ -338,7 +338,7 @@ export default function InventoryTab({
                   }}
                   className={`w-full text-center text-xs border rounded px-1 transition-all duration-200 py-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                     isDarkMode
-                      ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                      ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                       : 'bg-gray-100 border-gray-300 text-gray-900'
                   }`}
                   placeholder="0"
@@ -368,7 +368,7 @@ export default function InventoryTab({
                     rationBox.rations > rationBox.boxes * 5
                       ? 'bg-red-900/20 border-red-500 text-red-300 focus:outline-none focus:ring-2 focus:ring-red-500'
                       : isDarkMode
-                        ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                        ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                         : 'bg-gray-100 border-gray-300 text-gray-900'
                   }`}
                   placeholder="0"
@@ -397,11 +397,11 @@ export default function InventoryTab({
 
           {/* 5. Waterskin Box (beneath Ration Box) */}
           <div
-            className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+            className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
             <div className="space-y-2 pb-8">
               <div
-                className={`grid grid-cols-3 gap-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-center`}
+                className={`grid grid-cols-3 gap-1 text-xs ${isDarkMode ? 'text-white' : 'text-gray-800'} text-center`}
               >
                 <div># of Skins</div>
                 <div># of Rations</div>
@@ -431,7 +431,7 @@ export default function InventoryTab({
                   }}
                   className={`w-full text-center text-xs border rounded px-1 transition-all duration-200 py-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                     isDarkMode
-                      ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                      ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                       : 'bg-gray-100 border-gray-300 text-gray-900'
                   }`}
                   placeholder="0"
@@ -461,7 +461,7 @@ export default function InventoryTab({
                     waterskinBox.rations > waterskinBox.skins * 5
                       ? 'bg-red-900/20 border-red-500 text-red-300 focus:outline-none focus:ring-2 focus:ring-red-500'
                       : isDarkMode
-                        ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                        ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                         : 'bg-gray-100 border-gray-300 text-gray-900'
                   }`}
                   placeholder="0"
@@ -493,7 +493,7 @@ export default function InventoryTab({
 
         {/* 6. Magical Containers Box */}
         <div
-          className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+          className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
         >
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
@@ -519,7 +519,7 @@ export default function InventoryTab({
                       }
                       className={`w-6 text-center text-xs border rounded px-1 transition-all duration-200 ${
                         isDarkMode
-                          ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                          ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                           : 'bg-gray-100 border-gray-300 text-gray-900'
                       }`}
                     />
@@ -540,7 +540,7 @@ export default function InventoryTab({
                       }
                       className={`w-6 text-center text-xs border rounded px-1 transition-all duration-200 ${
                         isDarkMode
-                          ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                          ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                           : 'bg-gray-100 border-gray-300 text-gray-900'
                       }`}
                     />
@@ -561,7 +561,7 @@ export default function InventoryTab({
                       }
                       className={`w-6 text-center text-xs border rounded px-1 transition-all duration-200 ${
                         isDarkMode
-                          ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                          ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                           : 'bg-gray-100 border-gray-300 text-gray-900'
                       }`}
                     />
@@ -582,7 +582,7 @@ export default function InventoryTab({
                       }
                       className={`w-6 text-center text-xs border rounded px-1 transition-all duration-200 ${
                         isDarkMode
-                          ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                          ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                           : 'bg-gray-100 border-gray-300 text-gray-900'
                       }`}
                     />
@@ -599,7 +599,7 @@ export default function InventoryTab({
 
         {/* 7. Purchase Calculator Box */}
         <div
-          className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+          className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
         >
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
@@ -629,7 +629,7 @@ export default function InventoryTab({
                         }
                         className={`w-12 text-center text-xs border rounded px-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                           isDarkMode
-                            ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                            ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                             : 'bg-gray-100 border-gray-300 text-gray-900'
                         }`}
                         placeholder="0"
@@ -643,7 +643,7 @@ export default function InventoryTab({
           </div>
           <button
             onClick={handlePurchaseCalculation}
-            className="w-full mt-3 mb-8 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-2 px-3 rounded transition-colors"
+            className="w-full mt-3 mb-8 bg-amber-600/80 hover:bg-amber-500/90 text-slate-950 text-xs font-semibold py-2 px-3 rounded transition-colors"
           >
             Calculate
           </button>
@@ -661,7 +661,7 @@ export default function InventoryTab({
         <div className="space-y-6">
           {/* 1. Equipped Items */}
           <div
-            className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+            className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
@@ -692,7 +692,7 @@ export default function InventoryTab({
                           }}
                           className={`w-full text-xs border rounded px-1 transition-all duration-200 ${
                             isDarkMode
-                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                               : 'bg-gray-100 border-gray-300 text-gray-900'
                           }`}
                         >
@@ -717,7 +717,7 @@ export default function InventoryTab({
                           }}
                           className={`w-full text-xs border rounded px-1 transition-all duration-200 ${
                             isDarkMode
-                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                               : 'bg-gray-100 border-gray-300 text-gray-900'
                           }`}
                         />
@@ -735,7 +735,7 @@ export default function InventoryTab({
                           }}
                           className={`w-12 text-center text-xs border rounded px-1 transition-all duration-200 ${
                             isDarkMode
-                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                               : 'bg-gray-100 border-gray-300 text-gray-900'
                           }`}
                         />
@@ -751,7 +751,7 @@ export default function InventoryTab({
                           }}
                           className={`w-12 text-center text-xs border rounded px-1 transition-all duration-200 ${
                             isDarkMode
-                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                               : 'bg-gray-100 border-gray-300 text-gray-900'
                           }`}
                         />
@@ -769,7 +769,7 @@ export default function InventoryTab({
                           }}
                           className={`w-12 text-center text-xs border rounded px-1 transition-all duration-200 ${
                             isDarkMode
-                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                               : 'bg-gray-100 border-gray-300 text-gray-900'
                           }`}
                         />
@@ -787,7 +787,7 @@ export default function InventoryTab({
                           }}
                           className={`w-12 text-center text-xs border rounded px-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                             isDarkMode
-                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                               : 'bg-gray-100 border-gray-300 text-gray-900'
                           }`}
                           placeholder="0"
@@ -806,7 +806,7 @@ export default function InventoryTab({
                           }}
                           className={`w-12 text-center text-xs border rounded px-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                             isDarkMode
-                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                               : 'bg-gray-100 border-gray-300 text-gray-900'
                           }`}
                           placeholder="0"
@@ -833,7 +833,7 @@ export default function InventoryTab({
             <div className="flex gap-2 mt-2 mb-8">
               <button
                 onClick={addEquippedItem}
-                className="w-3/5 py-1 px-3 text-xs rounded transition-colors bg-green-500 hover:bg-green-600 text-white"
+                className="w-3/5 py-1 px-3 text-xs rounded transition-colors bg-emerald-700/60 hover:bg-emerald-600/75 border border-emerald-400/25 text-emerald-50"
               >
                 Add Item
               </button>
@@ -844,7 +844,7 @@ export default function InventoryTab({
                 className={`w-2/5 py-1 px-3 text-xs rounded transition-colors ${
                   equippedItems.length <= 1
                     ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                    : 'bg-red-800 hover:bg-red-900 text-white'
+                    : 'bg-red-900/50 hover:bg-red-800/65 border border-red-400/25 text-red-50'
                 }`}
                 title={equippedItems.length <= 1 ? 'Cannot remove - minimum 1 item required' : 'Remove last item'}
               >
@@ -858,7 +858,7 @@ export default function InventoryTab({
 
           {/* 2. External Storage */}
           <div
-            className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+            className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
@@ -883,7 +883,7 @@ export default function InventoryTab({
                           }}
                           className={`w-full text-xs border rounded px-1 transition-all duration-200 ${
                             isDarkMode
-                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                               : 'bg-gray-100 border-gray-300 text-gray-900'
                           }`}
                         />
@@ -901,7 +901,7 @@ export default function InventoryTab({
                           }}
                           className={`w-12 text-center text-xs border rounded px-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                             isDarkMode
-                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                               : 'bg-gray-100 border-gray-300 text-gray-900'
                           }`}
                           placeholder="0"
@@ -918,7 +918,7 @@ export default function InventoryTab({
                           }}
                           className={`w-full text-xs border rounded px-1 transition-all duration-200 ${
                             isDarkMode
-                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                               : 'bg-gray-100 border-gray-300 text-gray-900'
                           }`}
                         />
@@ -931,7 +931,7 @@ export default function InventoryTab({
             <div className="flex gap-2 mt-2 mb-8">
               <button
                 onClick={addExternalStorageItem}
-                className="w-3/5 py-1 px-3 text-xs rounded transition-colors bg-green-500 hover:bg-green-600 text-white"
+                className="w-3/5 py-1 px-3 text-xs rounded transition-colors bg-emerald-700/60 hover:bg-emerald-600/75 border border-emerald-400/25 text-emerald-50"
               >
                 Add Item
               </button>
@@ -942,7 +942,7 @@ export default function InventoryTab({
                 className={`w-2/5 py-1 px-3 text-xs rounded transition-colors ${
                   externalStorage.length <= 1
                     ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                    : 'bg-red-800 hover:bg-red-900 text-white'
+                    : 'bg-red-900/50 hover:bg-red-800/65 border border-red-400/25 text-red-50'
                 }`}
                 title={externalStorage.length <= 1 ? 'Cannot remove - minimum 1 item required' : 'Remove last item'}
               >
@@ -958,7 +958,7 @@ export default function InventoryTab({
         {/* Right Column: Inventory + Attuned Items */}
         <div className="space-y-6">
           <div
-            className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+            className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
@@ -985,7 +985,7 @@ export default function InventoryTab({
                           }}
                           className={`w-full text-xs border rounded px-1 transition-all duration-200 ${
                             isDarkMode
-                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                               : 'bg-gray-100 border-gray-300 text-gray-900'
                           }`}
                         />
@@ -1001,7 +1001,7 @@ export default function InventoryTab({
                           }}
                           className={`w-full text-xs border rounded px-1 transition-all duration-200 ${
                             isDarkMode
-                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                               : 'bg-gray-100 border-gray-300 text-gray-900'
                           }`}
                           placeholder="Details"
@@ -1020,7 +1020,7 @@ export default function InventoryTab({
                           onFocus={(e) => e.target.select()}
                           className={`w-12 text-center text-xs border rounded px-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                             isDarkMode
-                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                               : 'bg-gray-100 border-gray-300 text-gray-900'
                           }`}
                           placeholder="0"
@@ -1039,7 +1039,7 @@ export default function InventoryTab({
                           }}
                           className={`w-12 text-center text-xs border rounded px-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                             isDarkMode
-                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                               : 'bg-gray-100 border-gray-300 text-gray-900'
                           }`}
                           placeholder="0"
@@ -1059,7 +1059,7 @@ export default function InventoryTab({
                           onFocus={(e) => e.target.select()}
                           className={`w-12 text-center text-xs border rounded px-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                             isDarkMode
-                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                               : 'bg-gray-100 border-gray-300 text-gray-900'
                           }`}
                           placeholder="0"
@@ -1073,7 +1073,7 @@ export default function InventoryTab({
             <div className="flex gap-2 mt-2 mb-8">
               <button
                 onClick={addInventoryItem}
-                className="w-3/5 py-1 px-3 text-xs rounded transition-colors bg-green-500 hover:bg-green-600 text-white"
+                className="w-3/5 py-1 px-3 text-xs rounded transition-colors bg-emerald-700/60 hover:bg-emerald-600/75 border border-emerald-400/25 text-emerald-50"
               >
                 Add Item
               </button>
@@ -1084,7 +1084,7 @@ export default function InventoryTab({
                 className={`w-2/5 py-1 px-3 text-xs rounded transition-colors ${
                   inventoryItems.length <= 1
                     ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                    : 'bg-red-800 hover:bg-red-900 text-white'
+                    : 'bg-red-900/50 hover:bg-red-800/65 border border-red-400/25 text-red-50'
                 }`}
                 title={inventoryItems.length <= 1 ? 'Cannot remove - minimum 1 item required' : 'Remove last item'}
               >
@@ -1098,7 +1098,7 @@ export default function InventoryTab({
 
           {/* 3. Attuned Items */}
           <div
-            className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+            className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
@@ -1126,7 +1126,7 @@ export default function InventoryTab({
                             }}
                             className={`w-full text-xs border rounded px-1 transition-all duration-200 ${
                               isDarkMode
-                                ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                                ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                                 : 'bg-gray-100 border-gray-300 text-gray-900'
                             }`}
                           />
@@ -1147,7 +1147,7 @@ export default function InventoryTab({
                             }}
                             className={`w-full text-xs border rounded px-1 transition-all duration-200 ${
                               isDarkMode
-                                ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                                ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                                 : 'bg-gray-100 border-gray-300 text-gray-900'
                             }`}
                           />
