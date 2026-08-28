@@ -49,6 +49,8 @@ export interface DataTabProps {
   setBackgroundBlur: React.Dispatch<React.SetStateAction<number>>;
   glassCards: boolean;
   setGlassCards: React.Dispatch<React.SetStateAction<boolean>>;
+  glassFrost: number;
+  setGlassFrost: React.Dispatch<React.SetStateAction<number>>;
   characterImage: string;
   setCharacterImage: React.Dispatch<React.SetStateAction<string>>;
   handleImageUrlChange: (url: string, setter: React.Dispatch<React.SetStateAction<string>>) => void;
@@ -101,6 +103,8 @@ export default function DataTab({
   setBackgroundBlur,
   glassCards,
   setGlassCards,
+  glassFrost,
+  setGlassFrost,
   characterImage,
   setCharacterImage,
   handleImageUrlChange,
@@ -113,7 +117,7 @@ export default function DataTab({
       <div className="grid grid-cols-4 gap-x-6 gap-y-6 items-start">
         {/* Column 1: Level & Hit Points */}
         <div
-          className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+          className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
         >
           {/* Level Selection */}
           <div className="mb-4">
@@ -126,7 +130,7 @@ export default function DataTab({
               onChange={(e) => updateCharacter({ level: parseInt(e.target.value) })}
               className={`w-full text-center border rounded px-2 py-1 transition-all duration-200 font-bold ${
                 isDarkMode
-                  ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                  ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                   : 'bg-gray-100 border-gray-300 text-gray-900'
               }`}
             >
@@ -167,7 +171,7 @@ export default function DataTab({
                       }}
                       className={`w-12 text-center text-sm border rounded px-1 py-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                         isDarkMode
-                          ? 'bg-slate-700 border-slate-600 text-white'
+                          ? 'bg-black/30 border-white/10 text-white'
                           : 'bg-gray-100 border-gray-300 text-gray-900'
                       }`}
                       placeholder="0"
@@ -197,7 +201,7 @@ export default function DataTab({
                       }}
                       className={`w-12 text-center text-sm border rounded px-1 py-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                         isDarkMode
-                          ? 'bg-slate-700 border-slate-600 text-white'
+                          ? 'bg-black/30 border-white/10 text-white'
                           : 'bg-gray-100 border-gray-300 text-gray-900'
                       }`}
                       placeholder="0"
@@ -219,7 +223,7 @@ export default function DataTab({
                 value={additionalHPBonuses}
                 onChange={(e) => setAdditionalHPBonuses(parseInt(e.target.value) || 0)}
                 className={`w-16 text-center text-sm border rounded px-2 py-1 transition-all duration-200 ${
-                  isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
+                  isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
                 }`}
                 placeholder="+0"
               />
@@ -233,7 +237,7 @@ export default function DataTab({
                 value={hasToughness ? 'Yes' : 'No'}
                 onChange={(e) => setHasToughness(e.target.value === 'Yes')}
                 className={`text-center text-sm border rounded px-2 py-1 transition-all duration-200 ${
-                  isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
+                  isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
                 }`}
               >
                 <option value="No">No</option>
@@ -249,7 +253,7 @@ export default function DataTab({
                 value={isPHBHillDwarf ? 'Yes' : 'No'}
                 onChange={(e) => setIsPHBHillDwarf(e.target.value === 'Yes')}
                 className={`text-center text-sm border rounded px-2 py-1 transition-all duration-200 ${
-                  isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
+                  isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
                 }`}
               >
                 <option value="No">No</option>
@@ -292,7 +296,7 @@ export default function DataTab({
                       ? 'bg-slate-800 border-slate-700 text-gray-600 cursor-not-allowed'
                       : 'bg-gray-200 border-gray-400 text-gray-500 cursor-not-allowed'
                     : isDarkMode
-                      ? 'bg-slate-700 border-slate-600 text-white'
+                      ? 'bg-black/30 border-white/10 text-white'
                       : 'bg-gray-100 border-gray-300 text-gray-900'
                 }`}
                 placeholder="0"
@@ -331,7 +335,7 @@ export default function DataTab({
                     }}
                     className={`flex-1 min-w-0 text-sm border rounded px-2 py-1 transition-all duration-200 ${
                       isDarkMode
-                        ? 'bg-slate-700 border-slate-600 text-white'
+                        ? 'bg-black/30 border-white/10 text-white'
                         : 'bg-gray-100 border-gray-300 text-gray-900'
                     }`}
                   >
@@ -364,7 +368,7 @@ export default function DataTab({
                     }}
                     className={`w-14 flex-shrink-0 text-center text-sm border rounded px-1 py-1 ${
                       isDarkMode
-                        ? 'bg-slate-700 border-slate-600 text-white'
+                        ? 'bg-black/30 border-white/10 text-white'
                         : 'bg-gray-100 border-gray-300 text-gray-900'
                     }`}
                     placeholder="0"
@@ -391,7 +395,7 @@ export default function DataTab({
         <div className="space-y-6 h-fit">
           {/* Speed Box */}
           <div
-            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
             <h3 className="text-lg font-semibold text-orange-400 mb-2">Speed</h3>
             <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'} mb-4`}>
@@ -415,7 +419,7 @@ export default function DataTab({
                     }
                     className={`w-16 text-center text-sm border rounded px-2 py-1 transition-all duration-200 ${
                       isDarkMode
-                        ? 'bg-slate-700 border-slate-600 text-white'
+                        ? 'bg-black/30 border-white/10 text-white'
                         : 'bg-gray-100 border-gray-300 text-gray-900'
                     }`}
                   />
@@ -426,7 +430,7 @@ export default function DataTab({
 
           {/* Hit Die Box */}
           <div
-            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
             <h3 className="text-lg font-semibold text-orange-400 mb-2">Hit Die</h3>
             <div className="mb-3">
@@ -451,7 +455,7 @@ export default function DataTab({
                           ? 'bg-slate-600 border-slate-500 text-white font-bold'
                           : 'bg-gray-100 border-gray-300 text-gray-900 font-bold'
                         : isDarkMode
-                          ? 'bg-slate-700 border-slate-600 text-gray-500'
+                          ? 'bg-black/30 border-white/10 text-gray-500'
                           : 'bg-gray-100 border-gray-300 text-gray-400'
                     }`}
                   >
@@ -468,7 +472,7 @@ export default function DataTab({
 
           {/* Initiative Box */}
           <div
-            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
             <h3 className="text-lg font-semibold text-orange-400 mb-2">Initiative</h3>
 
@@ -478,7 +482,7 @@ export default function DataTab({
               <div
                 className={`text-2xl font-bold px-4 py-2 rounded-lg border ${
                   isDarkMode
-                    ? 'bg-slate-700 border-slate-600 text-orange-400'
+                    ? 'bg-black/30 border-white/10 text-orange-400'
                     : 'bg-gray-100 border-gray-300 text-orange-600'
                 }`}
               >
@@ -536,9 +540,7 @@ export default function DataTab({
                     })
                   }
                   className={`w-16 text-center text-sm border rounded px-2 py-1 transition-all duration-200 ${
-                    isDarkMode
-                      ? 'bg-slate-700 border-slate-600 text-white'
-                      : 'bg-gray-100 border-gray-300 text-gray-900'
+                    isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
                   }`}
                   placeholder="0"
                 />
@@ -551,7 +553,7 @@ export default function DataTab({
         <div className="space-y-6 h-fit">
           {/* Feat/ASI Choices Box */}
           <div
-            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
             <h3 className="text-lg font-semibold text-orange-400 mb-2">Feat/ASI Choices</h3>
             <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'} mb-4`}>
@@ -703,7 +705,7 @@ export default function DataTab({
                           }}
                           className={`w-full text-xs border rounded px-2 transition-all duration-200 py-1 ${
                             isDarkMode
-                              ? 'bg-slate-700 border-slate-600 text-white'
+                              ? 'bg-black/30 border-white/10 text-white'
                               : 'bg-gray-100 border-gray-300 text-gray-900'
                           }`}
                         />
@@ -720,7 +722,7 @@ export default function DataTab({
 
           {/* Master Spell List Box */}
           <div
-            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
             <h3 className="text-lg font-semibold text-orange-400 mb-2">Master Spell List</h3>
             <input
@@ -821,7 +823,7 @@ export default function DataTab({
 
           {/* Vibe Effects Box */}
           <div
-            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
             <h3 className="text-lg font-semibold text-orange-400 mb-2">Vibe Effects</h3>
             <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'} mb-3`}>
@@ -865,7 +867,7 @@ export default function DataTab({
         <div className="space-y-6 h-fit">
           {/* Calendar Box */}
           <div
-            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
             <h3 className="text-lg font-semibold text-orange-400 mb-2">Calendar</h3>
             <p className="text-xs text-gray-400 mb-4">Set the current game date.</p>
@@ -885,7 +887,7 @@ export default function DataTab({
                     }
                     className={`w-full text-center text-sm border rounded px-2 py-1 transition-all duration-200 ${
                       isDarkMode
-                        ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                        ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                         : 'bg-gray-100 border-gray-300 text-gray-900'
                     }`}
                   >
@@ -910,7 +912,7 @@ export default function DataTab({
                     }
                     className={`w-full text-center text-sm border rounded px-2 py-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                       isDarkMode
-                        ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                        ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                         : 'bg-gray-100 border-gray-300 text-gray-900'
                     }`}
                   />
@@ -931,7 +933,7 @@ export default function DataTab({
                   }
                   className={`w-full text-sm border rounded px-2 py-1 transition-all duration-200 ${
                     isDarkMode
-                      ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                      ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                       : 'bg-gray-100 border-gray-300 text-gray-900'
                   }`}
                 >
@@ -947,7 +949,7 @@ export default function DataTab({
 
           {/* Carrying Size Box */}
           <div
-            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
             <h3 className="text-lg font-semibold text-orange-400 mb-2">Carrying Size</h3>
             <p className="text-xs text-gray-400 mb-4">
@@ -957,7 +959,7 @@ export default function DataTab({
               value={carryingSize}
               onChange={(e) => setCarryingSize(e.target.value)}
               className={`w-full border rounded px-3 py-2 ${
-                isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
+                isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
               }`}
             >
               <option value="Tiny">Tiny</option>
@@ -971,7 +973,7 @@ export default function DataTab({
 
           {/* Images Box */}
           <div
-            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
             <h3 className="text-lg font-semibold text-orange-400 mb-2">Images</h3>
             <p className="text-xs text-gray-400 mb-4">Upload images for character display and background.</p>
@@ -987,7 +989,7 @@ export default function DataTab({
                   onChange={(e) => handleImageUrlChange(e.target.value, setStatsImage)}
                   className={`w-full text-sm border rounded px-3 py-2 ${
                     isDarkMode
-                      ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                      ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                       : 'bg-white border-gray-300 text-gray-900'
                   }`}
                 />
@@ -1008,7 +1010,7 @@ export default function DataTab({
                   onChange={(e) => handleImageUrlChange(e.target.value, setBackgroundImage)}
                   className={`w-full text-sm border rounded px-3 py-2 ${
                     isDarkMode
-                      ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                      ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                       : 'bg-white border-gray-300 text-gray-900'
                   }`}
                 />
@@ -1039,26 +1041,47 @@ export default function DataTab({
               {/* Frosted glass toggle — off restores the solid card panels.
                   Its own section, so the divider lands under the background
                   preview rather than below the switch. */}
-              <div className="flex items-center justify-between gap-3 border-t border-white/20 pt-2">
-                <label htmlFor="glass-cards" className="text-xs font-medium text-gray-400">
-                  Frosted glass cards
-                </label>
-                <button
-                  id="glass-cards"
-                  type="button"
-                  role="switch"
-                  aria-checked={glassCards}
-                  onClick={() => setGlassCards(!glassCards)}
-                  className={`h-5 w-9 shrink-0 rounded-full border transition-colors ${
-                    glassCards ? 'bg-orange-500/80 border-orange-400/60' : 'bg-slate-600 border-slate-500'
-                  }`}
-                >
-                  <span
-                    className={`block h-3.5 w-3.5 rounded-full bg-white transition-transform ${
-                      glassCards ? 'translate-x-4.5' : 'translate-x-1'
+              <div className="border-t border-white/20 pt-2">
+                <div className="flex items-center justify-between gap-3">
+                  <label htmlFor="glass-cards" className="text-xs font-medium text-gray-400">
+                    Frosted glass cards
+                  </label>
+                  <button
+                    id="glass-cards"
+                    type="button"
+                    role="switch"
+                    aria-checked={glassCards}
+                    onClick={() => setGlassCards(!glassCards)}
+                    className={`h-5 w-9 shrink-0 rounded-full border transition-colors ${
+                      glassCards ? 'bg-orange-500/80 border-orange-400/60' : 'bg-slate-600 border-slate-500'
                     }`}
-                  />
-                </button>
+                  >
+                    <span
+                      className={`block h-3.5 w-3.5 rounded-full bg-white transition-transform ${
+                        glassCards ? 'translate-x-4.5' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                {/* Frost amount — only meaningful while the glass is on */}
+                {glassCards && (
+                  <div className="mt-2">
+                    <label htmlFor="glass-frost" className="block text-xs font-medium text-gray-400 mb-1">
+                      Frost: {glassFrost}%
+                    </label>
+                    <input
+                      id="glass-frost"
+                      type="range"
+                      min="55"
+                      max="90"
+                      step="5"
+                      value={glassFrost}
+                      onChange={(e) => setGlassFrost(parseInt(e.target.value))}
+                      className="w-full"
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Character Image URL */}
@@ -1071,7 +1094,7 @@ export default function DataTab({
                   onChange={(e) => handleImageUrlChange(e.target.value, setCharacterImage)}
                   className={`w-full text-sm border rounded px-3 py-2 ${
                     isDarkMode
-                      ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                      ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                       : 'bg-white border-gray-300 text-gray-900'
                   }`}
                 />

@@ -116,13 +116,13 @@ export default function StatsTab({
     <div className="space-y-8">
       {/* Character Header Section */}
       <div
-        className={`${isDarkMode ? 'bg-slate-800' : 'bg-gray-100'} border-2 border-orange-500 rounded-lg shadow-xl p-3`}
+        className={`${isDarkMode ? 'sheet-card' : 'bg-gray-100'} border-2 border-orange-500 rounded-lg shadow-xl p-3`}
       >
         <div className="grid grid-cols-2 gap-8">
           {/* Left Column - Level, Portrait & Character Info */}
           <div className="flex items-center gap-6">
             {/* Level */}
-            <div className={`${isDarkMode ? 'bg-slate-700' : 'bg-gray-200'} rounded-lg p-4 text-center`}>
+            <div className={`${isDarkMode ? 'bg-black/30' : 'bg-gray-200'} rounded-lg p-4 text-center`}>
               <div className={`text-4xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                 {character.level}
               </div>
@@ -134,7 +134,7 @@ export default function StatsTab({
               <div
                 className={`absolute inset-0 ${isDarkMode ? 'bg-gradient-to-br from-orange-500 to-amber-600' : 'bg-gradient-to-br from-orange-400 to-amber-500'} rounded-lg blur-sm opacity-40`}
               ></div>
-              <div className={`relative w-32 h-32 ${isDarkMode ? 'bg-slate-700' : 'bg-gray-200'} rounded-lg p-1`}>
+              <div className={`relative w-32 h-32 ${isDarkMode ? 'bg-black/30' : 'bg-gray-200'} rounded-lg p-1`}>
                 <div
                   className={`w-full h-full ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-white border-gray-300'} rounded-md border-2 flex items-center justify-center overflow-hidden`}
                 >
@@ -188,7 +188,7 @@ export default function StatsTab({
               return (
                 <div
                   key={ability}
-                  className={`${isDarkMode ? 'bg-slate-700' : 'bg-gray-200'} ${borderColors[index]} rounded-xl border-2 px-2 py-1 text-center shadow-lg transform transition-transform hover:scale-105 min-w-16 relative group`}
+                  className={`${isDarkMode ? 'bg-black/30' : 'bg-gray-200'} ${borderColors[index]} rounded-xl border-2 px-2 py-1 text-center shadow-lg transform transition-transform hover:scale-105 min-w-16 relative group`}
                 >
                   <div className={`text-xs font-bold ${textColors[index]} mb-1`}>
                     {ability.slice(0, 3).toUpperCase()}
@@ -208,7 +208,7 @@ export default function StatsTab({
                         });
                       }
                     }}
-                    className={`w-full text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} bg-transparent border-0 text-center rounded-lg py-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none focus:ring-2 focus:ring-orange-500 ${isDarkMode ? 'focus:bg-slate-600/50' : 'focus:bg-gray-300/50'}`}
+                    className={`w-full text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} bg-transparent border-0 text-center rounded-lg py-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none focus:ring-2 focus:ring-orange-500 ${isDarkMode ? 'focus:bg-white/10' : 'focus:bg-gray-300/50'}`}
                   />
                   <div className={`text-sm font-semibold ${isDarkMode ? 'text-white/90' : 'text-gray-700'} mt-1`}>
                     {getModifier(finalScore) >= 0 ? '+' : ''}
@@ -239,7 +239,7 @@ export default function StatsTab({
           {/* Column 1: Saving Throws */}
           <div className="space-y-4">
             <div
-              className={`p-3 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+              className={`p-3 rounded-lg border shadow-xl relative ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
             >
               <div className="pb-8">
                 <div className="grid grid-cols-2 gap-3">
@@ -278,7 +278,7 @@ export default function StatsTab({
                             : proficient
                               ? 'bg-green-500/20 border-green-400'
                               : isDarkMode
-                                ? 'bg-slate-700 border-slate-600'
+                                ? 'bg-black/30 border-white/10'
                                 : 'bg-gray-200 border-gray-400'
                         }`}
                       >
@@ -334,11 +334,11 @@ export default function StatsTab({
 
             {/* Passive Skills */}
             <div
-              className={`p-3 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+              className={`p-3 rounded-lg border shadow-xl relative ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
             >
               <div className="pb-8 space-y-3">
                 <div
-                  className={`flex items-center justify-between px-2 py-1 rounded-full border-2 ${isDarkMode ? 'bg-slate-700 border-slate-600' : 'bg-gray-200 border-gray-400'} transform transition-all duration-200 hover:scale-105`}
+                  className={`flex items-center justify-between px-2 py-1 rounded-full border-2 ${isDarkMode ? 'bg-black/30 border-white/10' : 'bg-gray-200 border-gray-400'} transform transition-all duration-200 hover:scale-105`}
                 >
                   <div className="flex items-center">
                     <span className="mr-1 text-xs">&#x1F441;&#xFE0F;</span>
@@ -350,7 +350,7 @@ export default function StatsTab({
                 </div>
 
                 <div
-                  className={`flex items-center justify-between px-2 py-1 rounded-full border-2 ${isDarkMode ? 'bg-slate-700 border-slate-600' : 'bg-gray-200 border-gray-400'} transform transition-all duration-200 hover:scale-105`}
+                  className={`flex items-center justify-between px-2 py-1 rounded-full border-2 ${isDarkMode ? 'bg-black/30 border-white/10' : 'bg-gray-200 border-gray-400'} transform transition-all duration-200 hover:scale-105`}
                 >
                   <div className="flex items-center">
                     <span className="mr-1 text-xs">&#x1F50D;</span>
@@ -364,7 +364,7 @@ export default function StatsTab({
                 </div>
 
                 <div
-                  className={`flex items-center justify-between px-2 py-1 rounded-full border-2 ${isDarkMode ? 'bg-slate-700 border-slate-600' : 'bg-gray-200 border-gray-400'} transform transition-all duration-200 hover:scale-105`}
+                  className={`flex items-center justify-between px-2 py-1 rounded-full border-2 ${isDarkMode ? 'bg-black/30 border-white/10' : 'bg-gray-200 border-gray-400'} transform transition-all duration-200 hover:scale-105`}
                 >
                   <div className="flex items-center">
                     <span className="mr-1 text-xs">&#x1F9E0;</span>
@@ -382,7 +382,7 @@ export default function StatsTab({
 
             {/* Ammunition */}
             <div
-              className={`p-3 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+              className={`p-3 rounded-lg border shadow-xl relative ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
             >
               <div className="pb-8 space-y-3">
                 <div
@@ -400,7 +400,7 @@ export default function StatsTab({
                       onChange={(e) => updateAmmunition(index, 'name', e.target.value)}
                       className={`col-span-3 text-center border rounded px-2 py-1 text-xs transition-all duration-200 ${
                         isDarkMode
-                          ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                          ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                           : 'bg-gray-100 border-gray-300 text-gray-900'
                       }`}
                       placeholder="Ammo name"
@@ -411,7 +411,7 @@ export default function StatsTab({
                       onChange={(e) => updateAmmunition(index, 'weapon', e.target.value)}
                       className={`col-span-4 text-center border rounded px-2 py-1 text-xs transition-all duration-200 ${
                         isDarkMode
-                          ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                          ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                           : 'bg-gray-100 border-gray-300 text-gray-900'
                       }`}
                       placeholder="Weapon"
@@ -422,7 +422,7 @@ export default function StatsTab({
                       onChange={(e) => updateAmmunition(index, 'amount', e.target.value)}
                       className={`col-span-3 text-center border rounded px-2 py-1 text-xs transition-all duration-200 ${
                         isDarkMode
-                          ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                          ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                           : 'bg-gray-100 border-gray-300 text-gray-900'
                       }`}
                       placeholder="Dice/Qty"
@@ -440,7 +440,7 @@ export default function StatsTab({
           <div className="space-y-4">
             {/* Combat Stats Box */}
             <div
-              className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+              className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
             >
               <div className="grid grid-cols-2 gap-2 pb-8 max-w-xs mx-auto">
                 <div className="text-center">
@@ -455,7 +455,7 @@ export default function StatsTab({
                           ? 'bg-yellow-700 border-yellow-500 text-yellow-200'
                           : 'bg-yellow-100 border-yellow-400 text-yellow-800'
                         : isDarkMode
-                          ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                          ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                           : 'bg-gray-100 border-gray-300 text-gray-900'
                     }`}
                     placeholder={calculateTotalAC().toString()}
@@ -479,7 +479,7 @@ export default function StatsTab({
                   <div
                     className={`w-full text-center border rounded px-2 py-1 transition-all duration-200 text-xl font-semibold cursor-help ${
                       isDarkMode
-                        ? 'bg-slate-700 border-slate-600 text-white'
+                        ? 'bg-black/30 border-white/10 text-white'
                         : 'bg-gray-100 border-gray-300 text-gray-900'
                     }`}
                     title="Auto-calculated from Dexterity and modifiers in Data tab"
@@ -501,14 +501,14 @@ export default function StatsTab({
                         character.survivalConditions.additionalExhaustion;
                       if (totalExhaustion >= 5)
                         return isDarkMode
-                          ? 'bg-red-800 border-red-500 text-red-100'
+                          ? 'bg-red-900/50 border-red-400/30 text-red-100'
                           : 'bg-red-100 border-red-400 text-red-900';
                       if (totalExhaustion >= 2)
                         return isDarkMode
                           ? 'bg-yellow-700 border-yellow-500 text-yellow-100'
                           : 'bg-yellow-100 border-yellow-400 text-yellow-900';
                       return isDarkMode
-                        ? 'bg-slate-700 border-slate-600 text-white'
+                        ? 'bg-black/30 border-white/10 text-white'
                         : 'bg-gray-100 border-gray-300 text-gray-900';
                     })()}`}
                     title={(() => {
@@ -546,7 +546,7 @@ export default function StatsTab({
                     onChange={(e) => updateCharacter({ proficiencyBonus: parseInt(e.target.value) || 0 })}
                     className={`w-full text-center border rounded px-2 py-1 transition-all duration-200 text-xl font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                       isDarkMode
-                        ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                        ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                         : 'bg-gray-100 border-gray-300 text-gray-900'
                     }`}
                   />
@@ -559,7 +559,7 @@ export default function StatsTab({
 
             {/* Health Box */}
             <div
-              className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+              className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
             >
               <div className="space-y-4 pb-8">
                 {/* Health Bar */}
@@ -616,7 +616,7 @@ export default function StatsTab({
                         }
                         className={`w-full text-center border rounded px-2 py-1 transition-all duration-200 font-bold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                           isDarkMode
-                            ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                            ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                             : 'bg-gray-100 border-gray-300 text-gray-900'
                         }`}
                       />
@@ -634,11 +634,11 @@ export default function StatsTab({
                             character.survivalConditions.additionalExhaustion;
                           if (totalExhaustion >= 4) {
                             return isDarkMode
-                              ? 'bg-orange-800 border-orange-500 text-orange-100'
+                              ? 'bg-orange-900/45 border-orange-400/30 text-orange-100'
                               : 'bg-orange-100 border-orange-400 text-orange-900';
                           }
                           return isDarkMode
-                            ? 'bg-slate-600 border-slate-500 text-gray-300'
+                            ? 'bg-black/30 border-white/10 text-gray-300'
                             : 'bg-gray-100 border-gray-300 text-gray-600';
                         })()}`}
                         title={(() => {
@@ -707,7 +707,7 @@ export default function StatsTab({
                         }
                         className={`w-full text-center border rounded px-2 py-1 transition-all duration-200 font-bold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                           isDarkMode
-                            ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                            ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                             : 'bg-gray-100 border-gray-300 text-gray-900'
                         }`}
                         placeholder="0"
@@ -727,7 +727,7 @@ export default function StatsTab({
                         onChange={(e) => setCurrentHitDice(parseInt(e.target.value) || 0)}
                         className={`w-full text-center border rounded px-2 py-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                           isDarkMode
-                            ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                            ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                             : 'bg-gray-100 border-gray-300 text-gray-900'
                         }`}
                         placeholder="0"
@@ -740,7 +740,7 @@ export default function StatsTab({
                       <div
                         className={`w-full text-center border rounded px-2 py-1 transition-all duration-200 font-bold cursor-help ${
                           isDarkMode
-                            ? 'bg-slate-600 border-slate-500 text-gray-300'
+                            ? 'bg-black/30 border-white/10 text-gray-300'
                             : 'bg-gray-100 border-gray-300 text-gray-600'
                         }`}
                         title="Auto-calculated from class and level"
@@ -770,7 +770,7 @@ export default function StatsTab({
                         onChange={(e) => setDamageReduction(parseInt(e.target.value) || 0)}
                         className={`w-full text-center border rounded px-2 py-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                           isDarkMode
-                            ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                            ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                             : 'bg-gray-100 border-gray-300 text-gray-900'
                         }`}
                         placeholder="0"
@@ -789,7 +789,7 @@ export default function StatsTab({
                         rows={3}
                         className={`w-full text-xs text-center border rounded px-2 py-1 resize-none ${
                           isDarkMode
-                            ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                            ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                             : 'bg-gray-100 border-gray-300 text-gray-900'
                         }`}
                       />
@@ -811,9 +811,9 @@ export default function StatsTab({
                               }}
                               className={`w-5 h-5 border-2 ${isDarkMode ? 'border-slate-600' : 'border-gray-400'} rounded cursor-pointer transition-colors ${
                                 failed
-                                  ? 'bg-red-600 border-red-500'
+                                  ? 'bg-red-700/70 border-red-400/40'
                                   : isDarkMode
-                                    ? 'bg-slate-700 hover:bg-red-600'
+                                    ? 'bg-black/30 hover:bg-red-700/70'
                                     : 'bg-gray-200 hover:bg-red-600'
                               }`}
                             ></div>
@@ -831,9 +831,9 @@ export default function StatsTab({
                               }}
                               className={`w-5 h-5 border-2 ${isDarkMode ? 'border-slate-600' : 'border-gray-400'} rounded cursor-pointer transition-colors ${
                                 succeeded
-                                  ? 'bg-green-600 border-green-500'
+                                  ? 'bg-emerald-700/70 border-emerald-400/40'
                                   : isDarkMode
-                                    ? 'bg-slate-700 hover:bg-green-600'
+                                    ? 'bg-black/30 hover:bg-emerald-700/70'
                                     : 'bg-gray-200 hover:bg-green-600'
                               }`}
                             ></div>
@@ -856,7 +856,7 @@ export default function StatsTab({
           {/* Column 3: Skills */}
           <div className="space-y-4">
             <div
-              className={`p-3 rounded-lg border shadow-xl relative self-start ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+              className={`p-3 rounded-lg border shadow-xl relative self-start ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
             >
               <div className="space-y-0.5 pb-3">
                 {Object.entries({
@@ -916,10 +916,10 @@ export default function StatsTab({
                         className={`w-4 h-4 border-2 cursor-pointer transition-all duration-200 flex items-center justify-center ${
                           skillData.proficient
                             ? skillData.source === 'race'
-                              ? 'bg-green-600 border-green-600 shadow-sm'
+                              ? 'bg-emerald-600/80 border-emerald-500/60 shadow-sm'
                               : skillData.source === 'class'
                                 ? 'bg-purple-600 border-purple-600 shadow-sm'
-                                : 'bg-blue-600 border-blue-600 shadow-sm'
+                                : 'bg-sky-600/80 border-sky-500/60 shadow-sm'
                             : 'border-blue-600 bg-transparent hover:border-blue-400'
                         }`}
                         title={
@@ -960,7 +960,7 @@ export default function StatsTab({
                         className={`w-4 h-4 border-2 rounded-full transition-all duration-200 flex items-center justify-center ${
                           skillData.proficient
                             ? skillData.expertise
-                              ? 'bg-orange-500 border-orange-500 shadow-sm cursor-pointer'
+                              ? 'bg-orange-600/80 border-orange-500/60 shadow-sm cursor-pointer'
                               : 'border-orange-500 bg-transparent hover:border-orange-400 cursor-pointer'
                             : 'border-gray-400 bg-gray-300 opacity-40 cursor-not-allowed'
                         }`}
@@ -1027,7 +1027,7 @@ export default function StatsTab({
           <div className="space-y-4">
             {/* Current Date Display */}
             <div
-              className={`p-3 rounded-lg border shadow-xl ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+              className={`p-3 rounded-lg border shadow-xl ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
             >
               <div className="flex justify-center mb-3">
                 <WeatherIcon type={currentWeather} />
@@ -1045,7 +1045,7 @@ export default function StatsTab({
 
             {/* Survival Conditions */}
             <div
-              className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+              className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
             >
               <div className="pb-8">
                 <div className="space-y-1">
@@ -1094,7 +1094,7 @@ export default function StatsTab({
                         }}
                         className={`w-full text-xs text-center border rounded px-1 py-0.5 appearance-none ${
                           isDarkMode
-                            ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500'
+                            ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500'
                             : 'bg-gray-100 border-gray-300 text-gray-900'
                         }`}
                       >
@@ -1114,7 +1114,7 @@ export default function StatsTab({
                         readOnly
                         className={`w-4/5 text-xs text-center rounded px-1 py-0.5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                           isDarkMode
-                            ? 'bg-slate-600 border-slate-500 text-gray-400 cursor-not-allowed'
+                            ? 'bg-black/25 border-white/10 text-gray-400 cursor-not-allowed'
                             : 'bg-gray-100 border-gray-300 text-gray-500 cursor-not-allowed'
                         }`}
                       />
@@ -1157,7 +1157,7 @@ export default function StatsTab({
                         }}
                         className={`w-full text-xs text-center border rounded px-1 py-0.5 appearance-none ${
                           isDarkMode
-                            ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500'
+                            ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500'
                             : 'bg-gray-100 border-gray-300 text-gray-900'
                         }`}
                       >
@@ -1177,7 +1177,7 @@ export default function StatsTab({
                         readOnly
                         className={`w-4/5 text-xs text-center rounded px-1 py-0.5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                           isDarkMode
-                            ? 'bg-slate-600 border-slate-500 text-gray-400 cursor-not-allowed'
+                            ? 'bg-black/25 border-white/10 text-gray-400 cursor-not-allowed'
                             : 'bg-gray-100 border-gray-300 text-gray-500 cursor-not-allowed'
                         }`}
                       />
@@ -1220,7 +1220,7 @@ export default function StatsTab({
                         }}
                         className={`w-full text-xs text-center border rounded px-1 py-0.5 appearance-none ${
                           isDarkMode
-                            ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500'
+                            ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500'
                             : 'bg-gray-100 border-gray-300 text-gray-900'
                         }`}
                       >
@@ -1240,7 +1240,7 @@ export default function StatsTab({
                         readOnly
                         className={`w-4/5 text-xs text-center rounded px-1 py-0.5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                           isDarkMode
-                            ? 'bg-slate-600 border-slate-500 text-gray-400 cursor-not-allowed'
+                            ? 'bg-black/25 border-white/10 text-gray-400 cursor-not-allowed'
                             : 'bg-gray-100 border-gray-300 text-gray-500 cursor-not-allowed'
                         }`}
                       />
@@ -1271,7 +1271,7 @@ export default function StatsTab({
                         placeholder="0"
                         className={`w-4/5 text-xs text-center border rounded px-1 py-0.5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                           isDarkMode
-                            ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500'
+                            ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500'
                             : 'bg-gray-100 border-gray-300 text-gray-900'
                         }`}
                       />
@@ -1338,11 +1338,11 @@ export default function StatsTab({
                               : 'bg-red-200 border-red-500 text-red-900 font-bold';
                           if (totalExhaustion >= 5)
                             return isDarkMode
-                              ? 'bg-red-800 border-red-500 text-red-100'
+                              ? 'bg-red-900/50 border-red-400/30 text-red-100'
                               : 'bg-red-100 border-red-400 text-red-900';
                           if (totalExhaustion >= 3)
                             return isDarkMode
-                              ? 'bg-orange-800 border-orange-500 text-orange-100'
+                              ? 'bg-orange-900/45 border-orange-400/30 text-orange-100'
                               : 'bg-orange-100 border-orange-400 text-orange-900';
                           if (totalExhaustion >= 1)
                             return isDarkMode
@@ -1364,7 +1364,7 @@ export default function StatsTab({
 
             {/* Quick Notes Box */}
             <div
-              className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+              className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
             >
               <div className="pb-8">
                 <textarea
@@ -1374,7 +1374,7 @@ export default function StatsTab({
                   rows={2}
                   className={`w-full text-sm border rounded px-2 py-2 resize-none transition-all duration-200 ${
                     isDarkMode
-                      ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                      ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
                       : 'bg-gray-100 border-gray-300 text-gray-900'
                   }`}
                 />
@@ -1390,7 +1390,7 @@ export default function StatsTab({
       <div className="grid grid-cols-2 gap-6 mt-6">
         {/* Left side - Weapons */}
         <div
-          className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+          className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
         >
           <div className="space-y-3 pb-8">
             <div
@@ -1424,7 +1424,7 @@ export default function StatsTab({
                       newWeapons[index] = { ...weapon, name: e.target.value };
                       updateCharacter({ weapons: newWeapons });
                     }}
-                    className={`w-full border rounded px-1 py-1 transition-all duration-200 text-xs ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+                    className={`w-full border rounded px-1 py-1 transition-all duration-200 text-xs ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
                     placeholder="Weapon name"
                   />
                 </div>
@@ -1445,7 +1445,7 @@ export default function StatsTab({
                       newWeapons[index] = { ...weapon, type: newType, ability: newAbility };
                       updateCharacter({ weapons: newWeapons });
                     }}
-                    className={`w-full border rounded px-1 py-1 transition-all duration-200 text-xs appearance-none ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+                    className={`w-full border rounded px-1 py-1 transition-all duration-200 text-xs appearance-none ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
                   >
                     <option value="Melee">Melee</option>
                     <option value="Ranged">Ranged</option>
@@ -1491,7 +1491,7 @@ export default function StatsTab({
                       newWeapons[index] = { ...weapon, notches: e.target.value };
                       updateCharacter({ weapons: newWeapons });
                     }}
-                    className={`w-full border rounded px-1 py-1 transition-all duration-200 text-xs text-center ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+                    className={`w-full border rounded px-1 py-1 transition-all duration-200 text-xs text-center ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
                     placeholder="+0"
                   />
                 </div>
@@ -1504,7 +1504,7 @@ export default function StatsTab({
                       newWeapons[index] = { ...weapon, atkBonus: e.target.value };
                       updateCharacter({ weapons: newWeapons });
                     }}
-                    className={`w-full border rounded px-1 py-1 transition-all duration-200 text-xs text-center ${weapon.atkBonus ? (isDarkMode ? 'bg-slate-600 border-yellow-500 text-yellow-200' : 'bg-yellow-50 border-yellow-400 text-gray-900') : isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+                    className={`w-full border rounded px-1 py-1 transition-all duration-200 text-xs text-center ${weapon.atkBonus ? (isDarkMode ? 'bg-slate-600 border-yellow-500 text-yellow-200' : 'bg-yellow-50 border-yellow-400 text-gray-900') : isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
                     placeholder={calculateWeaponAttackBonus(weapon)}
                     title={
                       weapon.atkBonus
@@ -1527,7 +1527,7 @@ export default function StatsTab({
                       newWeapons[index] = { ...weapon, damage: e.target.value };
                       updateCharacter({ weapons: newWeapons });
                     }}
-                    className={`w-full border rounded px-1 py-1 transition-all duration-200 text-xs text-center ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+                    className={`w-full border rounded px-1 py-1 transition-all duration-200 text-xs text-center ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
                     placeholder="1d8+2"
                   />
                 </div>
@@ -1540,7 +1540,7 @@ export default function StatsTab({
                       newWeapons[index] = { ...weapon, notches: e.target.value };
                       updateCharacter({ weapons: newWeapons });
                     }}
-                    className={`w-full border rounded px-1 py-1 transition-all duration-200 text-xs text-center ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+                    className={`w-full border rounded px-1 py-1 transition-all duration-200 text-xs text-center ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
                     placeholder="0"
                   />
                 </div>
@@ -1570,7 +1570,7 @@ export default function StatsTab({
                   }
                 }}
                 disabled={character.weapons.length >= 5}
-                className={`flex-1 py-1 px-3 text-xs rounded transition-colors ${character.weapons.length >= 5 ? (isDarkMode ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-gray-400 text-gray-600 cursor-not-allowed') : isDarkMode ? 'bg-orange-600 hover:bg-orange-700 text-white' : 'bg-orange-500 hover:bg-orange-600 text-white'}`}
+                className={`flex-1 py-1 px-3 text-xs rounded transition-colors ${character.weapons.length >= 5 ? (isDarkMode ? 'bg-black/25 border border-white/10 text-gray-500 cursor-not-allowed' : 'bg-gray-400 text-gray-600 cursor-not-allowed') : isDarkMode ? 'bg-orange-700/55 hover:bg-orange-600/70 border border-orange-400/25 text-orange-50' : 'bg-orange-500 hover:bg-orange-600 text-white'}`}
                 title={character.weapons.length >= 5 ? 'Maximum 5 weapons allowed' : 'Add weapon'}
               >
                 {character.weapons.length >= 5 ? 'Max Weapons (5)' : 'Add Weapon'}
@@ -1583,7 +1583,7 @@ export default function StatsTab({
                   }
                 }}
                 disabled={character.weapons.length <= 2}
-                className={`flex-1 py-1 px-3 text-xs rounded transition-colors ${character.weapons.length <= 2 ? (isDarkMode ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-gray-400 text-gray-600 cursor-not-allowed') : isDarkMode ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-red-500 hover:bg-red-600 text-white'}`}
+                className={`flex-1 py-1 px-3 text-xs rounded transition-colors ${character.weapons.length <= 2 ? (isDarkMode ? 'bg-black/25 border border-white/10 text-gray-500 cursor-not-allowed' : 'bg-gray-400 text-gray-600 cursor-not-allowed') : isDarkMode ? 'bg-red-900/50 hover:bg-red-800/65 border border-red-400/25 text-red-50' : 'bg-red-500 hover:bg-red-600 text-white'}`}
                 title={
                   character.weapons.length <= 2 ? 'Cannot remove - minimum 2 weapons required' : 'Remove last weapon'
                 }
@@ -1599,7 +1599,7 @@ export default function StatsTab({
 
         {/* Right side - Armor */}
         <div
-          className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+          className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
         >
           <div
             className="grid items-center gap-x-2 gap-y-2 pb-8"
@@ -1617,7 +1617,7 @@ export default function StatsTab({
             <select
               value={armor.armorType.item}
               onChange={(e) => updateArmor('armorType', 'item', e.target.value)}
-              className={`w-full text-xs border rounded px-2 transition-all duration-200 py-1 appearance-none ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+              className={`w-full text-xs border rounded px-2 transition-all duration-200 py-1 appearance-none ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
             >
               {getArmorOptions().map((armorType) => (
                 <option key={armorType} value={armorType}>
@@ -1629,21 +1629,21 @@ export default function StatsTab({
               type="text"
               value={armor.armorType.karuta}
               onChange={(e) => updateArmor('armorType', 'karuta', e.target.value)}
-              className={`w-full border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+              className={`w-full border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
               placeholder="Armor Item"
             />
             <input
               type="text"
               value={armor.armorType.plus}
               onChange={(e) => updateArmor('armorType', 'plus', e.target.value)}
-              className={`w-full text-center border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+              className={`w-full text-center border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
               placeholder="+"
             />
             <input
               type="text"
               value={armor.armorType.notches}
               onChange={(e) => updateArmor('armorType', 'notches', e.target.value)}
-              className={`w-full text-center border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+              className={`w-full text-center border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
               placeholder="Notches"
             />
 
@@ -1652,7 +1652,7 @@ export default function StatsTab({
             <select
               value={armor.shieldType.item}
               onChange={(e) => updateArmor('shieldType', 'item', e.target.value)}
-              className={`w-full text-xs border rounded px-2 transition-all duration-200 py-1 appearance-none ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+              className={`w-full text-xs border rounded px-2 transition-all duration-200 py-1 appearance-none ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
             >
               {getShieldOptions().map((shieldType) => (
                 <option key={shieldType} value={shieldType}>
@@ -1664,21 +1664,21 @@ export default function StatsTab({
               type="text"
               value={armor.shieldType.karuta || ''}
               onChange={(e) => updateArmor('shieldType', 'karuta', e.target.value)}
-              className={`w-full border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+              className={`w-full border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
               placeholder="Shield Item"
             />
             <input
               type="text"
               value={armor.shieldType.plus}
               onChange={(e) => updateArmor('shieldType', 'plus', e.target.value)}
-              className={`w-full text-center border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+              className={`w-full text-center border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
               placeholder="+"
             />
             <input
               type="text"
               value={armor.shieldType.notches}
               onChange={(e) => updateArmor('shieldType', 'notches', e.target.value)}
-              className={`w-full text-center border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+              className={`w-full text-center border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
               placeholder="Notches"
             />
 
@@ -1687,7 +1687,7 @@ export default function StatsTab({
             <select
               value={armor.magicalAttire.item1}
               onChange={(e) => updateArmor('magicalAttire', 'item1', e.target.value)}
-              className={`w-full text-xs border rounded px-2 transition-all duration-200 py-1 appearance-none ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+              className={`w-full text-xs border rounded px-2 transition-all duration-200 py-1 appearance-none ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
             >
               {getMagicalAttireOptions().map((attire) => (
                 <option key={attire} value={attire}>
@@ -1699,21 +1699,21 @@ export default function StatsTab({
               type="text"
               value={armor.magicalAttire.karuta || ''}
               onChange={(e) => updateArmor('magicalAttire', 'karuta', e.target.value)}
-              className={`w-full border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+              className={`w-full border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
               placeholder="Attire Item"
             />
             <input
               type="text"
               value={armor.magicalAttire.plus}
               onChange={(e) => updateArmor('magicalAttire', 'plus', e.target.value)}
-              className={`w-full text-center border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+              className={`w-full text-center border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
               placeholder="+"
             />
             <input
               type="text"
               value={armor.magicalAttire.notches}
               onChange={(e) => updateArmor('magicalAttire', 'notches', e.target.value)}
-              className={`w-full text-center border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+              className={`w-full text-center border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
               placeholder="Notches"
             />
 
@@ -1722,7 +1722,7 @@ export default function StatsTab({
             <select
               value={armor.magicalAttire.item2}
               onChange={(e) => updateArmor('magicalAttire', 'item2', e.target.value)}
-              className={`w-full text-xs border rounded px-2 transition-all duration-200 py-1 appearance-none ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+              className={`w-full text-xs border rounded px-2 transition-all duration-200 py-1 appearance-none ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
             >
               {getMagicalAttireOptions().map((attire) => (
                 <option key={attire} value={attire}>
@@ -1732,17 +1732,17 @@ export default function StatsTab({
             </select>
             <input
               type="text"
-              className={`w-full border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+              className={`w-full border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
               placeholder="Attire Item"
             />
             <input
               type="text"
-              className={`w-full text-center border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+              className={`w-full text-center border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
               placeholder="+"
             />
             <input
               type="text"
-              className={`w-full text-center border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+              className={`w-full text-center border rounded transition-all duration-200 px-2 py-1 text-xs ${isDarkMode ? 'bg-black/30 border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-orange-500' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
               placeholder="Notches"
             />
           </div>
@@ -1756,7 +1756,7 @@ export default function StatsTab({
       <div className="grid grid-cols-4 gap-4 mt-8">
         {/* Box 1: Racial Features */}
         <div
-          className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+          className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
         >
           <div className="flex justify-between items-center mb-3">
             <h4 className="text-base font-semibold text-blue-400">Racial Features</h4>
@@ -1782,7 +1782,7 @@ export default function StatsTab({
               .map((feat, index) => (
                 <div
                   key={index}
-                  className={`${isDarkMode ? 'bg-slate-700' : 'bg-gray-200'} border border-blue-500/30 rounded p-2`}
+                  className={`${isDarkMode ? 'bg-black/30' : 'bg-gray-200'} border border-blue-500/30 rounded p-2`}
                 >
                   <div className="flex justify-between items-start mb-1">
                     <span className="text-sm font-medium text-blue-300">{feat.name}</span>
@@ -1798,7 +1798,7 @@ export default function StatsTab({
                 return (
                   <div
                     key={`manual-${index}`}
-                    className={`${isDarkMode ? 'bg-slate-700' : 'bg-gray-200'} border border-blue-500/30 rounded p-2`}
+                    className={`${isDarkMode ? 'bg-black/30' : 'bg-gray-200'} border border-blue-500/30 rounded p-2`}
                   >
                     <div className="flex justify-between items-start mb-1">
                       <span className="text-sm font-medium text-blue-300">{feat.name}</span>
@@ -1831,7 +1831,7 @@ export default function StatsTab({
         {/* Box 2: Class Features OR Ranger's Quarry */}
         {character.class === 'Ranger' && character.level >= 2 ? (
           <div
-            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
             <h4 className="text-base font-semibold text-green-400 mb-3">Ranger's Quarry</h4>
             <div className="grid grid-cols-2 gap-3">
@@ -1870,7 +1870,7 @@ export default function StatsTab({
             </div>
             <div className="mt-3 relative group">
               <div
-                className={`text-xs text-center py-2 px-3 rounded border cursor-help ${isDarkMode ? 'bg-slate-700 border-slate-600 text-gray-400' : 'bg-gray-200 border-gray-400 text-gray-600'}`}
+                className={`text-xs text-center py-2 px-3 rounded border cursor-help ${isDarkMode ? 'bg-black/30 border-white/10 text-gray-400' : 'bg-gray-200 border-gray-400 text-gray-600'}`}
               >
                 Description &#x24D8;
               </div>
@@ -1906,7 +1906,7 @@ export default function StatsTab({
           </div>
         ) : characterFeats.filter((feat) => feat.source === 'class').length > 0 ? (
           <div
-            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
             <h4 className="text-base font-semibold text-purple-400 mb-3">Class Features</h4>
             <div className="space-y-2">
@@ -1915,7 +1915,7 @@ export default function StatsTab({
                 .map((feat, index) => (
                   <div
                     key={index}
-                    className={`${isDarkMode ? 'bg-slate-700' : 'bg-gray-200'} border border-purple-500/30 rounded p-2`}
+                    className={`${isDarkMode ? 'bg-black/30' : 'bg-gray-200'} border border-purple-500/30 rounded p-2`}
                   >
                     <div className="flex justify-between items-start mb-1">
                       <div className="flex items-center gap-1">
@@ -1933,14 +1933,14 @@ export default function StatsTab({
 
         {/* Box 3: Feats */}
         <div
-          className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+          className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
         >
           <h4 className="text-base font-semibold text-orange-400 mb-3">Feats</h4>
           <div className="space-y-2">
             {manualFeats.slice(Math.ceil(manualFeats.length / 2)).map((feat, index) => (
               <div
                 key={index + Math.ceil(manualFeats.length / 2)}
-                className={`${isDarkMode ? 'bg-slate-700' : 'bg-gray-200'} border border-orange-500/30 rounded p-2`}
+                className={`${isDarkMode ? 'bg-black/30' : 'bg-gray-200'} border border-orange-500/30 rounded p-2`}
               >
                 <div className="flex justify-between items-start mb-1">
                   <div className="flex items-center gap-1 flex-1 min-w-0">
@@ -1984,6 +1984,15 @@ export default function StatsTab({
                   </button>
                 </div>
                 <textarea
+                  // Size to content on mount and on every render —
+                  // onInput alone left rows={2} clipping longer feats
+                  // until the user typed in the box.
+                  ref={(el) => {
+                    if (el) {
+                      el.style.height = 'auto';
+                      el.style.height = `${el.scrollHeight}px`;
+                    }
+                  }}
                   value={feat.description}
                   onChange={(e) => {
                     const newFeats = [...manualFeats];
@@ -2018,14 +2027,14 @@ export default function StatsTab({
 
         {/* Box 4: Feats */}
         <div
-          className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+          className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
         >
           <h4 className="text-base font-semibold text-orange-400 mb-3">Feats</h4>
           <div className="space-y-2">
             {manualFeats.slice(0, Math.ceil(manualFeats.length / 2)).map((feat, index) => (
               <div
                 key={index}
-                className={`${isDarkMode ? 'bg-slate-700' : 'bg-gray-200'} border border-orange-500/30 rounded p-2`}
+                className={`${isDarkMode ? 'bg-black/30' : 'bg-gray-200'} border border-orange-500/30 rounded p-2`}
               >
                 <div className="flex justify-between items-start mb-1">
                   <div className="flex items-center gap-1 flex-1 min-w-0">
@@ -2063,6 +2072,15 @@ export default function StatsTab({
                   </button>
                 </div>
                 <textarea
+                  // Size to content on mount and on every render —
+                  // onInput alone left rows={2} clipping longer feats
+                  // until the user typed in the box.
+                  ref={(el) => {
+                    if (el) {
+                      el.style.height = 'auto';
+                      el.style.height = `${el.scrollHeight}px`;
+                    }
+                  }}
                   value={feat.description}
                   onChange={(e) => {
                     const newFeats = [...manualFeats];

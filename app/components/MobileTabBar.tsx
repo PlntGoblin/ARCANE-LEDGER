@@ -104,7 +104,7 @@ export default function MobileTabBar({
   return (
     <nav
       aria-label="Character sheet tabs"
-      className="touch-only fixed bottom-0 inset-x-0 z-50 h-[11.7rem] bg-black/40 backdrop-blur-2xl border-t border-amber-200/25 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+      className="mobile-tab-bar touch-only fixed bottom-0 inset-x-0 z-50 h-[11.7rem] border-t border-amber-200/25 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
       style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
     >
       <ul className="flex h-full w-full">
@@ -117,9 +117,7 @@ export default function MobileTabBar({
                 onClick={() => setActiveTab(tab)}
                 aria-current={active ? 'page' : undefined}
                 className={`flex h-full w-full flex-col items-center justify-center gap-2 px-1 text-2xl font-semibold transition-colors ${
-                  active
-                    ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white'
-                    : 'text-gray-300 hover:bg-slate-800 hover:text-white'
+                  active ? 'mobile-tab-active text-white' : 'text-gray-300 hover:bg-white/10 hover:text-white'
                 }`}
               >
                 <TabIcon tab={tab} />

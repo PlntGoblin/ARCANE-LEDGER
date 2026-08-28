@@ -36,9 +36,7 @@ export default function LibraryTab({
   return (
     <div className="space-y-8">
       {/* Spell Filters */}
-      <div
-        className={`p-6 rounded-lg border ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
-      >
+      <div className={`p-6 rounded-lg border ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}>
         <h3 className="text-xl font-semibold text-orange-400 mb-4">Spell Filters</h3>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -54,7 +52,7 @@ export default function LibraryTab({
               onChange={(e) => setSpellSearchTerm(e.target.value)}
               className={`w-full border rounded px-3 py-2 ${
                 isDarkMode
-                  ? 'bg-slate-700 border-slate-600 text-white placeholder-gray-400'
+                  ? 'bg-black/30 border-white/10 text-white placeholder-gray-400'
                   : 'bg-gray-100 border-gray-300 text-gray-900'
               }`}
             />
@@ -69,7 +67,7 @@ export default function LibraryTab({
               value={selectedSpellClass}
               onChange={(e) => setSelectedSpellClass(e.target.value)}
               className={`w-full border rounded px-3 py-2 ${
-                isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
+                isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
               }`}
             >
               <option value="All Classes">All Classes</option>
@@ -126,7 +124,7 @@ export default function LibraryTab({
             onClick={() => setSelectedSpellLevels(new Set(getAccessibleSpellLevels(character.class, character.level)))}
             className={`px-3 py-1 text-xs rounded border transition-colors ${
               isDarkMode
-                ? 'bg-slate-600 border-slate-500 text-white hover:bg-slate-500'
+                ? 'bg-black/30 border-white/10 text-white hover:bg-black/45'
                 : 'bg-gray-200 border-gray-300 text-gray-700 hover:bg-gray-300'
             }`}
           >
@@ -136,7 +134,7 @@ export default function LibraryTab({
             onClick={() => setSelectedSpellLevels(new Set([0]))}
             className={`px-3 py-1 text-xs rounded border transition-colors ${
               isDarkMode
-                ? 'bg-slate-600 border-slate-500 text-white hover:bg-slate-500'
+                ? 'bg-black/30 border-white/10 text-white hover:bg-black/45'
                 : 'bg-gray-200 border-gray-300 text-gray-700 hover:bg-gray-300'
             }`}
           >
@@ -146,7 +144,7 @@ export default function LibraryTab({
             onClick={() => setSelectedSpellLevels(new Set())}
             className={`px-3 py-1 text-xs rounded border transition-colors ${
               isDarkMode
-                ? 'bg-slate-600 border-slate-500 text-white hover:bg-slate-500'
+                ? 'bg-black/30 border-white/10 text-white hover:bg-black/45'
                 : 'bg-gray-200 border-gray-300 text-gray-700 hover:bg-gray-300'
             }`}
           >
@@ -156,9 +154,7 @@ export default function LibraryTab({
       </div>
 
       {/* Spell Library Table */}
-      <div
-        className={`p-6 rounded-lg border ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
-      >
+      <div className={`p-6 rounded-lg border ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-semibold text-orange-400">Master Spell Library</h3>
           {masterSpellList.length > 0 && (
@@ -188,7 +184,7 @@ export default function LibraryTab({
             </div>
 
             {/* Table Rows */}
-            <div className="space-y-1 max-h-[72rem] overflow-y-auto">
+            <div className="sheet-scroll space-y-1 max-h-[72rem] overflow-y-auto pr-1">
               {masterSpellList
                 .map((spell, originalIndex) => ({ spell, originalIndex }))
                 .filter(({ spell }) => {

@@ -83,9 +83,7 @@ function SpellCard({ spell, isDarkMode, onMouseEnter, onMouseMove, onMouseLeave 
   return (
     <div
       className={`rounded-lg border transition-all ${
-        isDarkMode
-          ? 'bg-slate-800/70 border-slate-600 hover:border-slate-500'
-          : 'bg-white border-gray-200 hover:border-gray-300'
+        isDarkMode ? 'sheet-card hover:border-amber-200/40' : 'bg-white border-gray-200 hover:border-gray-300'
       }`}
     >
       {/* Compact header row */}
@@ -155,7 +153,7 @@ function CustomSpellCard({ spell, level, isDarkMode, updateCustomSpell, removeCu
     isDarkMode ? 'text-white placeholder-gray-500' : 'text-gray-900 placeholder-gray-400'
   }`;
 
-  const fieldBox = `rounded px-2 py-1 ${isDarkMode ? 'bg-slate-800/60' : 'bg-white border border-gray-200'}`;
+  const fieldBox = `rounded px-2 py-1 ${isDarkMode ? 'bg-black/25' : 'bg-white border border-gray-200'}`;
 
   const editFields = [
     { label: 'School', field: 'School', value: spell.School || spell.school || '' },
@@ -266,11 +264,7 @@ function SpellLevelSection({
   const [isOpen, setIsOpen] = useState(totalCount > 0);
 
   return (
-    <div
-      className={`rounded-lg border overflow-hidden ${
-        isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'
-      }`}
-    >
+    <div className={`rounded-lg border overflow-hidden ${isDarkMode ? 'sheet-card' : 'bg-white border-gray-200'}`}>
       {/* Accordion header */}
       <div
         className={`flex items-center justify-between px-4 py-3 cursor-pointer select-none transition-colors ${
@@ -283,7 +277,7 @@ function SpellLevelSection({
           {totalCount > 0 && (
             <span
               className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                isDarkMode ? 'bg-slate-600 text-gray-300' : 'bg-gray-200 text-gray-600'
+                isDarkMode ? 'bg-black/30 text-gray-300' : 'bg-gray-200 text-gray-600'
               }`}
             >
               {totalCount}
@@ -298,7 +292,7 @@ function SpellLevelSection({
             }}
             className={`text-sm px-2.5 py-0.5 rounded border font-medium transition-colors ${
               isDarkMode
-                ? 'bg-slate-700 border-slate-500 text-gray-300 hover:bg-slate-600'
+                ? 'bg-black/30 border-white/10 text-gray-300 hover:bg-black/45'
                 : 'bg-gray-100 border-gray-300 text-gray-600 hover:bg-gray-200'
             }`}
             title={`Add custom ${label.toLowerCase()} spell`}
@@ -389,9 +383,7 @@ export default function SpellsTab({
       {/* Top Row: Spellcasting Controls and Spell Slots Side by Side */}
       <div className="grid grid-cols-2 gap-6 items-start">
         {/* Left: Spellcasting Controls */}
-        <div
-          className={`p-6 rounded-lg border h-fit ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
-        >
+        <div className={`p-6 rounded-lg border h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}>
           <div className="grid grid-cols-2 gap-4">
             {/* Spellcasting Ability */}
             <div className="text-center">
@@ -400,7 +392,7 @@ export default function SpellsTab({
               </label>
               <div
                 className={`w-full px-3 py-2 rounded border text-center font-bold cursor-help ${
-                  isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
+                  isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
                 }`}
                 title={`Auto-determined by class: ${character.class} uses ${getSpellcastingAbility()}`}
               >
@@ -460,7 +452,7 @@ export default function SpellsTab({
               </label>
               <div
                 className={`w-full px-3 py-2 rounded border text-center font-bold cursor-help ${
-                  isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
+                  isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
                 }`}
                 title={`Auto-calculated: 8 + Prof Bonus (${character.proficiencyBonus}) + ${getSpellcastingAbility().toUpperCase()} Mod (${getModifier(getFinalAbilityScore(getSpellcastingAbility())) >= 0 ? '+' : ''}${getModifier(getFinalAbilityScore(getSpellcastingAbility()))})`}
               >
@@ -475,7 +467,7 @@ export default function SpellsTab({
               </label>
               <div
                 className={`w-full px-3 py-2 rounded border text-center font-bold cursor-help ${
-                  isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
+                  isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
                 }`}
                 title={`Auto-calculated: Prof Bonus (${character.proficiencyBonus}) + ${getSpellcastingAbility().toUpperCase()} Mod (${getModifier(getFinalAbilityScore(getSpellcastingAbility())) >= 0 ? '+' : ''}${getModifier(getFinalAbilityScore(getSpellcastingAbility()))})`}
               >
@@ -487,9 +479,7 @@ export default function SpellsTab({
         </div>
 
         {/* Right: Spell Slots / Sorcery Points Tracker */}
-        <div
-          className={`p-6 rounded-lg border ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
-        >
+        <div className={`p-6 rounded-lg border ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}>
           {character.class === 'Sorcerer' ? (
             <div className="space-y-4">
               <div className="mb-6">
@@ -534,7 +524,7 @@ export default function SpellsTab({
                           },
                         }))
                       }
-                      className={`px-3 py-1 text-sm rounded border transition-colors ${isDarkMode ? 'bg-red-600 border-red-500 text-white hover:bg-red-500' : 'bg-red-200 border-red-300 text-red-700 hover:bg-red-300'}`}
+                      className={`px-3 py-1 text-sm rounded border transition-colors ${isDarkMode ? 'bg-red-900/50 border-red-400/25 text-red-50 hover:bg-red-800/65' : 'bg-red-200 border-red-300 text-red-700 hover:bg-red-300'}`}
                       disabled={character.sorceryPoints.used >= character.sorceryPoints.max}
                     >
                       -
@@ -546,7 +536,7 @@ export default function SpellsTab({
                           sorceryPoints: { ...prev.sorceryPoints, used: Math.max(0, prev.sorceryPoints.used - 1) },
                         }))
                       }
-                      className={`px-3 py-1 text-sm rounded border transition-colors ${isDarkMode ? 'bg-green-600 border-green-500 text-white hover:bg-green-500' : 'bg-green-200 border-green-300 text-green-700 hover:bg-green-300'}`}
+                      className={`px-3 py-1 text-sm rounded border transition-colors ${isDarkMode ? 'bg-emerald-700/60 border-emerald-400/25 text-emerald-50 hover:bg-emerald-600/75' : 'bg-green-200 border-green-300 text-green-700 hover:bg-green-300'}`}
                       disabled={character.sorceryPoints.used <= 0}
                     >
                       +
@@ -564,7 +554,7 @@ export default function SpellsTab({
                 </h4>
                 <div className="grid grid-cols-2 gap-3">
                   <div
-                    className={`p-3 rounded border ${isDarkMode ? 'bg-slate-700 border-slate-600' : 'bg-gray-200 border-gray-300'}`}
+                    className={`p-3 rounded border ${isDarkMode ? 'bg-black/30 border-white/10' : 'bg-gray-200 border-gray-300'}`}
                   >
                     <table className="w-full text-xs">
                       <thead>
@@ -594,7 +584,7 @@ export default function SpellsTab({
                     </table>
                   </div>
                   <div
-                    className={`p-3 rounded border ${isDarkMode ? 'bg-slate-700 border-slate-600' : 'bg-gray-200 border-gray-300'}`}
+                    className={`p-3 rounded border ${isDarkMode ? 'bg-black/30 border-white/10' : 'bg-gray-200 border-gray-300'}`}
                   >
                     <table className="w-full text-xs">
                       <thead>
@@ -631,7 +621,7 @@ export default function SpellsTab({
                   onClick={() =>
                     setCharacter((prev) => ({ ...prev, sorceryPoints: { ...prev.sorceryPoints, used: 0 } }))
                   }
-                  className={`px-3 py-1 text-xs rounded border transition-colors ${isDarkMode ? 'bg-green-600 border-green-500 text-white hover:bg-green-500' : 'bg-green-200 border-green-300 text-green-700 hover:bg-green-300'}`}
+                  className={`px-3 py-1 text-xs rounded border transition-colors ${isDarkMode ? 'bg-emerald-700/60 border-emerald-400/25 text-emerald-50 hover:bg-emerald-600/75' : 'bg-green-200 border-green-300 text-green-700 hover:bg-green-300'}`}
                 >
                   Long Rest (Restore All)
                 </button>
@@ -726,11 +716,29 @@ export default function SpellsTab({
                       },
                     };
                     const colors = levelColors[level as keyof typeof levelColors];
+                    // levelColors is a light-mode pastel set; on the dark glass
+                    // those painted bright blocks. Dark mode keeps the hue on
+                    // the level number and the pips, but the box itself goes
+                    // translucent like every other well. Class names are spelled
+                    // out because Tailwind can't see interpolated ones.
+                    const darkLevelText: Record<number, string> = {
+                      1: 'text-blue-300',
+                      2: 'text-green-300',
+                      3: 'text-purple-300',
+                      4: 'text-red-300',
+                      5: 'text-yellow-300',
+                      6: 'text-indigo-300',
+                      7: 'text-pink-300',
+                      8: 'text-cyan-300',
+                      9: 'text-orange-300',
+                    };
+                    const boxClass = isDarkMode ? 'bg-black/25 border-white/15' : colors.bg + ' ' + colors.border;
+                    const levelTextClass = isDarkMode ? darkLevelText[level] : colors.text;
 
                     return (
                       <div
                         key={level}
-                        className={`flex flex-col items-center relative ${hasSlots ? 'p-1 rounded-lg ' + colors.bg + ' ' + colors.border + ' border' : ''}`}
+                        className={`flex flex-col items-center relative ${hasSlots ? 'p-1 rounded-lg border ' + boxClass : ''}`}
                       >
                         {hasSlots && (
                           <div className="absolute -top-1 -right-1 flex gap-1">
@@ -741,7 +749,7 @@ export default function SpellsTab({
                                   [level]: { ...prev[level], used: Math.max(0, prev[level].used - 1) },
                                 }))
                               }
-                              className="w-3 h-3 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
+                              className="w-3 h-3 bg-red-700/75 hover:bg-red-600/85 text-white text-xs font-bold rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
                               title="Restore one slot"
                               disabled={slots.used <= 0}
                             >
@@ -754,7 +762,7 @@ export default function SpellsTab({
                                   [level]: { ...prev[level], used: Math.min(prev[level].max, prev[level].used + 1) },
                                 }))
                               }
-                              className="w-3 h-3 bg-green-600 hover:bg-green-500 text-white text-xs font-bold rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
+                              className="w-3 h-3 bg-emerald-700/75 hover:bg-emerald-600/85 text-white text-xs font-bold rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
                               title="Use one slot"
                               disabled={slots.used >= slots.max}
                             >
@@ -768,7 +776,7 @@ export default function SpellsTab({
                           <span className="text-sm font-bold">{hasSlots ? slots.max : 0}</span>
                         </div>
                         <div
-                          className={`text-xs mb-1 font-bold transition-colors duration-300 ${hasSlots ? colors.text : 'text-gray-400'}`}
+                          className={`text-xs mb-1 font-bold transition-colors duration-300 ${hasSlots ? levelTextClass : 'text-gray-400'}`}
                         >
                           {level}
                         </div>
@@ -819,13 +827,13 @@ export default function SpellsTab({
           <div className="flex gap-2 justify-end mt-6">
             <button
               onClick={shortRest}
-              className={`px-3 py-1 text-xs rounded border transition-colors ${isDarkMode ? 'bg-blue-600 border-blue-500 text-white hover:bg-blue-500' : 'bg-blue-200 border-blue-300 text-blue-700 hover:bg-blue-300'}`}
+              className={`px-3 py-1 text-xs rounded border transition-colors ${isDarkMode ? 'bg-sky-800/55 border-sky-400/25 text-sky-50 hover:bg-sky-700/70' : 'bg-blue-200 border-blue-300 text-blue-700 hover:bg-blue-300'}`}
             >
               Short Rest {character.class === 'Warlock' ? '(Restore All)' : ''}
             </button>
             <button
               onClick={longRest}
-              className={`px-3 py-1 text-xs rounded border transition-colors ${isDarkMode ? 'bg-green-600 border-green-500 text-white hover:bg-green-500' : 'bg-green-200 border-green-300 text-green-700 hover:bg-green-300'}`}
+              className={`px-3 py-1 text-xs rounded border transition-colors ${isDarkMode ? 'bg-emerald-700/60 border-emerald-400/25 text-emerald-50 hover:bg-emerald-600/75' : 'bg-green-200 border-green-300 text-green-700 hover:bg-green-300'}`}
             >
               Long Rest (Restore All)
             </button>

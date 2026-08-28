@@ -699,6 +699,11 @@ export default function CharacterSheet() {
   // through. Applied as a root class so one CSS rule covers every card.
   const [glassCards, setGlassCards] = useState<boolean>(true);
 
+  // How much frost, 55-90. Drives both the card's black overlay and the
+  // backdrop blur, so a busy wallpaper can be dialled down without giving up
+  // the glass entirely. 70 reproduces the original fixed look.
+  const [glassFrost, setGlassFrost] = useState<number>(70);
+
   // Ability Score Rolling Tracking
   const [abilityScoreRolls, setAbilityScoreRolls] = useState({
     strength: [0, 0, 0, 0],
@@ -885,6 +890,7 @@ export default function CharacterSheet() {
     const savedDeathSaves = localStorage.getItem('dnd-death-saves');
     const savedVibeEffects = localStorage.getItem('dnd-vibe-effects');
     const savedGlassCards = localStorage.getItem('dnd-glass-cards');
+    const savedGlassFrost = localStorage.getItem('dnd-glass-frost');
     const savedQuarryUses = localStorage.getItem('dnd-quarry-uses');
 
     if (savedCharacter) {
@@ -1023,6 +1029,15 @@ export default function CharacterSheet() {
         setGlassCards(JSON.parse(savedGlassCards));
       } catch (error) {
         console.warn('Failed to load glass cards setting from localStorage:', error);
+      }
+    }
+
+    if (savedGlassFrost) {
+      try {
+        const frost = JSON.parse(savedGlassFrost);
+        if (typeof frost === 'number') setGlassFrost(Math.min(90, Math.max(55, frost)));
+      } catch (error) {
+        console.warn('Failed to load glass frost setting from localStorage:', error);
       }
     }
 
@@ -1364,10 +1379,11 @@ export default function CharacterSheet() {
     if (!hasMountedRef.current) return;
     try {
       localStorage.setItem('dnd-glass-cards', JSON.stringify(glassCards));
+      localStorage.setItem('dnd-glass-frost', JSON.stringify(glassFrost));
     } catch (error) {
       console.warn('Failed to save glass cards setting to localStorage:', error);
     }
-  }, [glassCards]);
+  }, [glassCards, glassFrost]);
 
   // Save Ranger's Quarry uses to localStorage
   useEffect(() => {
@@ -2594,6 +2610,12 @@ export default function CharacterSheet() {
       className={`min-h-screen p-4 font-sans relative ${glassCards ? '' : 'glass-off'} ${
         isDarkMode ? 'text-white' : 'text-black'
       } ${backgroundImage ? '' : isDarkMode ? 'bg-slate-900' : 'bg-gray-200'}`}
+      style={
+        {
+          '--sheet-frost': glassFrost / 100,
+          '--sheet-blur': `${Math.round(8 + glassFrost * 0.24)}px`,
+        } as React.CSSProperties
+      }
     >
       {backgroundImage && (
         // Fixed-position so the wallpaper always covers the visible viewport,
@@ -3109,6 +3131,8 @@ export default function CharacterSheet() {
               setBackgroundBlur={setBackgroundBlur}
               glassCards={glassCards}
               setGlassCards={setGlassCards}
+              glassFrost={glassFrost}
+              setGlassFrost={setGlassFrost}
               characterImage={characterImage}
               setCharacterImage={setCharacterImage}
               handleImageUrlChange={handleImageUrlChange}
@@ -3129,12 +3153,12 @@ export default function CharacterSheet() {
             >
               <div
                 className={`p-4 rounded-lg border shadow-xl ${
-                  isDarkMode ? 'bg-slate-800 border-slate-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
+                  isDarkMode ? 'sheet-card text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
                 }`}
               >
                 <div className="space-y-3">
                   {/* Spell Name and Level */}
-                  <div className="border-b border-slate-600 pb-2">
+                  <div className={`border-b pb-2 ${isDarkMode ? 'border-white/15' : 'border-gray-300'}`}>
                     <h3 className="text-lg font-bold text-orange-400">
                       {hoveredSpell.Name || hoveredSpell.name || 'Unknown Spell'}
                     </h3>
@@ -3205,7 +3229,9 @@ export default function CharacterSheet() {
                   {/* Effect/Description */}
                   <div className="text-sm">
                     <span className="font-semibold text-orange-300">Effect:</span>
-                    <div className={`${isDarkMode ? 'text-gray-300' : 'text-gray-900'} mt-1 max-h-32 overflow-y-auto`}>
+                    <div
+                      className={`${isDarkMode ? 'text-gray-300' : 'text-gray-900'} sheet-scroll mt-1 max-h-32 overflow-y-auto pr-1`}
+                    >
                       {hoveredSpell.Effect ||
                         hoveredSpell.description ||
                         hoveredSpell.effect ||
@@ -3221,7 +3247,9 @@ export default function CharacterSheet() {
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
             className={`fixed bottom-6 right-6 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 ${
-              isDarkMode ? 'bg-amber-500 hover:bg-amber-400 text-gray-900' : 'bg-gray-800 hover:bg-slate-700 text-white'
+              isDarkMode
+                ? 'bg-orange-700/55 hover:bg-orange-600/70 border border-orange-400/25 text-orange-50'
+                : 'bg-black/40 hover:bg-black/55 border border-white/15 text-white'
             }`}
             aria-label="Toggle dark/light mode"
           >
