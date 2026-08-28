@@ -35,13 +35,15 @@ export default function CharacterTab({
   getSkillModifier,
 }: CharacterTabProps) {
   return (
-    <div
-      className={`min-h-screen p-8 font-serif rounded-xl ${isDarkMode ? 'bg-slate-900 text-stone-200' : 'bg-gray-200 text-stone-800'}`}
-    >
+    // Transparent wrapper like the other tabs — each section is its own card
+    // so the wallpaper shows between them instead of one solid panel.
+    <div className={`font-serif ${isDarkMode ? 'text-stone-200' : 'text-stone-800'}`}>
       {/* Top Section: Header + Bio on Left, Portrait on Right */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
         {/* Left Column: Header + Bio */}
-        <div className="md:col-span-2 space-y-8">
+        <div
+          className={`md:col-span-2 space-y-8 p-6 rounded-lg border shadow-xl ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-gray-100 border-stone-300'}`}
+        >
           {/* Decorative Header */}
           <div
             className={`text-center border-b-2 border-t-2 py-3 ${isDarkMode ? 'border-orange-400' : 'border-stone-400'}`}
