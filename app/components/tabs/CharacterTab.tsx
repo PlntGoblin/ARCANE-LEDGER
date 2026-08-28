@@ -34,68 +34,75 @@ export default function CharacterTab({
   setProficiencies,
   getSkillModifier,
 }: CharacterTabProps) {
+  const cardClass = isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-gray-100 border-stone-300';
+
   return (
     // Transparent wrapper like the other tabs — each section is its own card
     // so the wallpaper shows between them instead of one solid panel.
-    <div className={`font-serif ${isDarkMode ? 'text-stone-200' : 'text-stone-800'}`}>
+    // gap-4 between cards to match the Stats tab.
+    <div className={`font-serif space-y-4 ${isDarkMode ? 'text-stone-200' : 'text-stone-800'}`}>
       {/* Top Section: Header + Bio on Left, Portrait on Right */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Left Column: Header + Bio */}
-        <div
-          className={`md:col-span-2 space-y-8 p-6 rounded-lg border shadow-xl ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-gray-100 border-stone-300'}`}
-        >
-          {/* Decorative Header */}
-          <div
-            className={`text-center border-b-2 border-t-2 py-3 ${isDarkMode ? 'border-orange-400' : 'border-stone-400'}`}
-          >
-            <div className="mb-1">
-              <textarea
-                value={
-                  character.backstory.personalityTraits ||
-                  'I am eager to learn new things and ask many questions. I speak in metaphors and parables.'
-                }
-                onChange={(e) =>
-                  updateCharacter({
-                    backstory: { ...character.backstory, personalityTraits: e.target.value },
-                  })
-                }
-                className={`w-full bg-transparent italic text-lg text-center border-none outline-none resize-none ${isDarkMode ? 'text-stone-300' : 'text-stone-600'} placeholder-stone-400`}
-                placeholder="Character description..."
-                rows={2}
-              />
-            </div>
-            <h1 className="text-4xl font-extrabold tracking-wider mb-2 font-serif">
-              {character.trueName?.toUpperCase() || 'CHARACTER NAME'}
-            </h1>
+        <div className="md:col-span-2 flex flex-col gap-4">
+          {/* Title card: quote, name, mantra */}
+          <div className={`p-6 rounded-lg border shadow-xl ${cardClass}`}>
+            {/* Decorative Header */}
             <div
-              className={`py-1 px-3 inline-block rounded shadow-lg ${isDarkMode ? 'bg-orange-600 text-white' : 'bg-red-700 text-white'}`}
+              className={`text-center border-b-2 border-t-2 py-3 ${isDarkMode ? 'border-orange-400' : 'border-stone-400'}`}
             >
-              <input
-                type="text"
-                value={character.mantra || 'Knowledge is the greatest treasure'}
-                onChange={(e) => updateCharacter({ mantra: e.target.value })}
-                className="bg-transparent font-semibold text-lg text-center border-none outline-none text-white placeholder-white/70"
-                placeholder="Character mantra or quote"
-              />
+              <div className="mb-1">
+                <textarea
+                  value={
+                    character.backstory.personalityTraits ||
+                    'I am eager to learn new things and ask many questions. I speak in metaphors and parables.'
+                  }
+                  onChange={(e) =>
+                    updateCharacter({
+                      backstory: { ...character.backstory, personalityTraits: e.target.value },
+                    })
+                  }
+                  className={`w-full bg-transparent italic text-lg text-center border-none outline-none resize-none ${isDarkMode ? 'text-stone-300' : 'text-stone-600'} placeholder-stone-400`}
+                  placeholder="Character description..."
+                  rows={2}
+                />
+              </div>
+              <h1 className="text-4xl font-extrabold tracking-wider mb-2 font-serif">
+                {character.trueName?.toUpperCase() || 'CHARACTER NAME'}
+              </h1>
+              <div
+                className={`py-1 px-3 inline-block rounded shadow-lg ${isDarkMode ? 'bg-orange-600 text-white' : 'bg-red-700 text-white'}`}
+              >
+                <input
+                  type="text"
+                  value={character.mantra || 'Knowledge is the greatest treasure'}
+                  onChange={(e) => updateCharacter({ mantra: e.target.value })}
+                  className="bg-transparent font-semibold text-lg text-center border-none outline-none text-white placeholder-white/70"
+                  placeholder="Character mantra or quote"
+                />
+              </div>
             </div>
           </div>
-          {/* Bio Text */}
-          <div className="leading-relaxed text-sm space-y-3">
-            <div className="prose prose-sm max-w-none">
-              <textarea
-                value={
-                  character.backstory.backstoryText ||
-                  `Elara was raised in the shadowed halls of Candlekeep, where dust-laden tomes whispered secrets of forgotten ages. Surrounded by the endless hush of parchment and ink, she fed her restless hunger for knowledge until the arcane bent willingly to her will. The library became less a sanctuary and more a crucible, shaping her mind into a weapon of runes and power.\n\nNow she wanders the world, a silhouette against storm and moonlight, chasing the echoes of spells long buried. Her journey is not for riches nor fame, but for the shards of magic the world itself has tried to forget. Wherever she walks, shadows stir—and those who cross her path learn that knowledge, once unearthed, can be as dangerous as any blade.\n\nIdeals: Knowledge is power, and the key to all other forms of power.\n\nBonds: The library where I learned to read was my sanctuary. I must protect it.\n\nFlaws: I overlook obvious solutions in favor of complicated ones.`
-                }
-                onChange={(e) =>
-                  updateCharacter({
-                    backstory: { ...character.backstory, backstoryText: e.target.value },
-                  })
-                }
-                className={`w-full bg-transparent border-none outline-none resize-none leading-relaxed text-sm ${isDarkMode ? 'text-stone-200' : 'text-stone-800'} placeholder-stone-400`}
-                placeholder="Character backstory..."
-                rows={12}
-              />
+
+          {/* Body card: backstory. flex-1 so it fills down to the portrait's bottom edge. */}
+          <div className={`flex-1 p-6 rounded-lg border shadow-xl ${cardClass}`}>
+            <div className="leading-relaxed text-sm space-y-3">
+              <div className="prose prose-sm max-w-none">
+                <textarea
+                  value={
+                    character.backstory.backstoryText ||
+                    `Elara was raised in the shadowed halls of Candlekeep, where dust-laden tomes whispered secrets of forgotten ages. Surrounded by the endless hush of parchment and ink, she fed her restless hunger for knowledge until the arcane bent willingly to her will. The library became less a sanctuary and more a crucible, shaping her mind into a weapon of runes and power.\n\nNow she wanders the world, a silhouette against storm and moonlight, chasing the echoes of spells long buried. Her journey is not for riches nor fame, but for the shards of magic the world itself has tried to forget. Wherever she walks, shadows stir—and those who cross her path learn that knowledge, once unearthed, can be as dangerous as any blade.\n\nIdeals: Knowledge is power, and the key to all other forms of power.\n\nBonds: The library where I learned to read was my sanctuary. I must protect it.\n\nFlaws: I overlook obvious solutions in favor of complicated ones.`
+                  }
+                  onChange={(e) =>
+                    updateCharacter({
+                      backstory: { ...character.backstory, backstoryText: e.target.value },
+                    })
+                  }
+                  className={`w-full bg-transparent border-none outline-none resize-none leading-relaxed text-sm ${isDarkMode ? 'text-stone-200' : 'text-stone-800'} placeholder-stone-400`}
+                  placeholder="Character backstory..."
+                  rows={12}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -121,7 +128,7 @@ export default function CharacterTab({
       </div>
 
       {/* Roleplay Notes Section */}
-      <div className="grid grid-cols-2 gap-6 mb-12">
+      <div className="grid grid-cols-2 gap-4">
         {/* Left: Your Nature */}
         <div
           className={`relative p-4 rounded-lg border shadow-xl ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-gray-100 border-stone-300'}`}
@@ -168,7 +175,7 @@ export default function CharacterTab({
       </div>
 
       {/* Bottom Section: Proficiencies on Left, Profile Details & Ability Scores on Right */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Left Column: Proficiencies & Languages */}
         <div>
           {/* Proficiencies & Languages Section */}
@@ -272,7 +279,7 @@ export default function CharacterTab({
         </div>
 
         {/* Right Column: Profile Details & Ability Scores */}
-        <div className="md:col-span-2 space-y-8">
+        <div className="md:col-span-2 space-y-4">
           {/* Profile Details Section */}
           <div
             className={`border-2 p-6 rounded-lg shadow-xl ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-gray-100 border-stone-300'}`}
