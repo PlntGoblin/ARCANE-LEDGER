@@ -242,7 +242,12 @@ export default function CharacterSheet() {
 
   // Get final ability score including racial and ASI bonuses
   const getFinalAbilityScore = (ability: string): number =>
-    _getFinalAbilityScore(ability, character.abilityScores as unknown as { [key: string]: number }, character.race, asiChoices);
+    _getFinalAbilityScore(
+      ability,
+      character.abilityScores as unknown as { [key: string]: number },
+      character.race,
+      asiChoices,
+    );
 
   // Calculate maximum HP based on HP rolls and bonuses
   const calculateMaxHP = (): number => {
@@ -440,11 +445,23 @@ export default function CharacterSheet() {
 
   // Calculate Spell Save DC (8 + proficiency bonus + spellcasting ability modifier)
   const calculateSpellDC = (): number =>
-    _calculateSpellDC(character.class, character.proficiencyBonus, character.abilityScores as unknown as { [key: string]: number }, character.race, asiChoices);
+    _calculateSpellDC(
+      character.class,
+      character.proficiencyBonus,
+      character.abilityScores as unknown as { [key: string]: number },
+      character.race,
+      asiChoices,
+    );
 
   // Calculate Spell Attack Bonus (proficiency bonus + spellcasting ability modifier)
   const calculateSpellAttack = (): number =>
-    _calculateSpellAttack(character.class, character.proficiencyBonus, character.abilityScores as unknown as { [key: string]: number }, character.race, asiChoices);
+    _calculateSpellAttack(
+      character.class,
+      character.proficiencyBonus,
+      character.abilityScores as unknown as { [key: string]: number },
+      character.race,
+      asiChoices,
+    );
 
   // Calculate known/prepared spells based on class, level, and ability modifier
   const calculateKnownSpells = (): number => {
@@ -491,18 +508,45 @@ export default function CharacterSheet() {
   };
 
   const getSkillModifier = (skill: string, ability: keyof typeof character.abilityScores): number =>
-    _getSkillModifier(skill, ability, character.abilityScores as unknown as { [key: string]: number }, character.race, asiChoices, character.skills[skill], character.proficiencyBonus, skillBonuses);
+    _getSkillModifier(
+      skill,
+      ability,
+      character.abilityScores as unknown as { [key: string]: number },
+      character.race,
+      asiChoices,
+      character.skills[skill],
+      character.proficiencyBonus,
+      skillBonuses,
+    );
 
   const getSaveModifier = (save: string, ability: keyof typeof character.abilityScores): number =>
-    _getSaveModifier(ability, character.abilityScores as unknown as { [key: string]: number }, character.race, asiChoices, character.savingThrows[save], character.proficiencyBonus);
+    _getSaveModifier(
+      ability,
+      character.abilityScores as unknown as { [key: string]: number },
+      character.race,
+      asiChoices,
+      character.savingThrows[save],
+      character.proficiencyBonus,
+    );
 
   // Calculate weapon attack bonus based on ability, proficiency, and weapon bonus
   const calculateWeaponAttackBonus = (weapon: any): string =>
-    _calculateWeaponAttackBonus(weapon, character.abilityScores as unknown as { [key: string]: number }, character.race, asiChoices, character.proficiencyBonus);
+    _calculateWeaponAttackBonus(
+      weapon,
+      character.abilityScores as unknown as { [key: string]: number },
+      character.race,
+      asiChoices,
+      character.proficiencyBonus,
+    );
 
   // Calculate total AC based on D&D 5e rules
   const calculateTotalAC = (): number =>
-    _calculateTotalAC(armor, character.abilityScores as unknown as { [key: string]: number }, character.race, asiChoices);
+    _calculateTotalAC(
+      armor,
+      character.abilityScores as unknown as { [key: string]: number },
+      character.race,
+      asiChoices,
+    );
 
   const updateCharacter = (updates: Partial<Character>) => {
     setCharacter((prev) => ({ ...prev, ...updates }));
@@ -2372,10 +2416,13 @@ export default function CharacterSheet() {
 
   // Update encumbrance calculations when dependencies change
   useEffect(() => {
+    // Bulk values are fractional (0.11, 0.2, ...) so sums pick up float noise
+    // like 2.800000000000001 — round to 2dp before it hits the UI.
+    const round2 = (n: number) => Math.round(n * 100) / 100;
     const newMaxSlots = calculateMaxSlots();
     const inventoryBulk = calculateInventoryBulk();
-    const newOpenSlots = newMaxSlots - inventoryBulk;
-    const newYourBulk = calculateYourBulk();
+    const newOpenSlots = round2(newMaxSlots - inventoryBulk);
+    const newYourBulk = round2(calculateYourBulk());
     const newStatus = calculateEncumbranceStatus(newYourBulk);
 
     setEncumbrance((prev) => ({

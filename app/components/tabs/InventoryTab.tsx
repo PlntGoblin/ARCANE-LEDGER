@@ -657,7 +657,7 @@ export default function InventoryTab({
       {/* items-start: don't stretch the Inventory card to the height of the
           left-column stack — it should only be as tall as its rows. */}
       <div className="grid gap-6 items-start" style={{ gridTemplateColumns: '1fr 1.15fr' }}>
-        {/* Left Column: Equipped Items + External Storage + Attuned Items */}
+        {/* Left Column: Equipped Items + External Storage */}
         <div className="space-y-6">
           {/* 1. Equipped Items */}
           <div
@@ -953,6 +953,148 @@ export default function InventoryTab({
               <h3 className="text-sm font-bold text-gray-400">External Storage</h3>
             </div>
           </div>
+        </div>
+
+        {/* Right Column: Inventory + Attuned Items */}
+        <div className="space-y-6">
+          <div
+            className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
+          >
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b border-slate-600">
+                    <th className="text-left py-1 w-32">Item</th>
+                    <th className="text-left py-1">Details</th>
+                    <th className="text-center py-1 w-8">Amount</th>
+                    <th className="text-center py-1 w-10">SP</th>
+                    <th className="text-center py-1 w-10">Bulk</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {inventoryItems.map((inventoryItem, index) => (
+                    <tr key={index} className="border-b border-slate-600">
+                      <td className="py-1">
+                        <input
+                          type="text"
+                          value={inventoryItem.item}
+                          onChange={(e) => {
+                            const newItems = [...inventoryItems];
+                            newItems[index].item = e.target.value;
+                            setInventoryItems(newItems);
+                          }}
+                          className={`w-full text-xs border rounded px-1 transition-all duration-200 ${
+                            isDarkMode
+                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              : 'bg-gray-100 border-gray-300 text-gray-900'
+                          }`}
+                        />
+                      </td>
+                      <td className="py-1">
+                        <input
+                          type="text"
+                          value={inventoryItem.details}
+                          onChange={(e) => {
+                            const newItems = [...inventoryItems];
+                            newItems[index].details = e.target.value;
+                            setInventoryItems(newItems);
+                          }}
+                          className={`w-full text-xs border rounded px-1 transition-all duration-200 ${
+                            isDarkMode
+                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              : 'bg-gray-100 border-gray-300 text-gray-900'
+                          }`}
+                          placeholder="Details"
+                        />
+                      </td>
+                      <td className="py-1">
+                        <input
+                          type="number"
+                          min="0"
+                          value={inventoryItem.amount || ''}
+                          onChange={(e) => {
+                            const newItems = [...inventoryItems];
+                            newItems[index].amount = parseInt(e.target.value) || 0;
+                            setInventoryItems(newItems);
+                          }}
+                          onFocus={(e) => e.target.select()}
+                          className={`w-12 text-center text-xs border rounded px-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+                            isDarkMode
+                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              : 'bg-gray-100 border-gray-300 text-gray-900'
+                          }`}
+                          placeholder="0"
+                        />
+                      </td>
+                      <td className="py-1">
+                        <input
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={inventoryItem.valueSP || ''}
+                          onChange={(e) => {
+                            const newItems = [...inventoryItems];
+                            newItems[index].valueSP = parseFloat(e.target.value) || 0;
+                            setInventoryItems(newItems);
+                          }}
+                          className={`w-12 text-center text-xs border rounded px-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+                            isDarkMode
+                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              : 'bg-gray-100 border-gray-300 text-gray-900'
+                          }`}
+                          placeholder="0"
+                        />
+                      </td>
+                      <td className="py-1">
+                        <input
+                          type="number"
+                          min="0"
+                          step="0.1"
+                          value={inventoryItem.bulk || ''}
+                          onChange={(e) => {
+                            const newItems = [...inventoryItems];
+                            newItems[index].bulk = parseFloat(e.target.value) || 0;
+                            setInventoryItems(newItems);
+                          }}
+                          onFocus={(e) => e.target.select()}
+                          className={`w-12 text-center text-xs border rounded px-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+                            isDarkMode
+                              ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
+                              : 'bg-gray-100 border-gray-300 text-gray-900'
+                          }`}
+                          placeholder="0"
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="flex gap-2 mt-2 mb-8">
+              <button
+                onClick={addInventoryItem}
+                className="w-3/5 py-1 px-3 text-xs rounded transition-colors bg-green-500 hover:bg-green-600 text-white"
+              >
+                Add Item
+              </button>
+
+              <button
+                onClick={removeInventoryItem}
+                disabled={inventoryItems.length <= 1}
+                className={`w-2/5 py-1 px-3 text-xs rounded transition-colors ${
+                  inventoryItems.length <= 1
+                    ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                    : 'bg-red-800 hover:bg-red-900 text-white'
+                }`}
+                title={inventoryItems.length <= 1 ? 'Cannot remove - minimum 1 item required' : 'Remove last item'}
+              >
+                Remove
+              </button>
+            </div>
+            <div className="absolute bottom-2 left-0 right-0 text-center">
+              <h3 className="text-sm font-bold text-gray-400">Inventory</h3>
+            </div>
+          </div>
 
           {/* 3. Attuned Items */}
           <div
@@ -1037,146 +1179,6 @@ export default function InventoryTab({
             <div className="absolute bottom-2 left-0 right-0 text-center">
               <h3 className="text-sm font-bold text-gray-400">Attuned Items</h3>
             </div>
-          </div>
-        </div>
-
-        {/* Right Column: Inventory */}
-        <div
-          className={`p-4 rounded-lg border shadow-xl relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-100 border-gray-300'}`}
-        >
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="border-b border-slate-600">
-                  <th className="text-left py-1 w-32">Item</th>
-                  <th className="text-left py-1">Details</th>
-                  <th className="text-center py-1 w-8">Amount</th>
-                  <th className="text-center py-1 w-10">SP</th>
-                  <th className="text-center py-1 w-10">Bulk</th>
-                </tr>
-              </thead>
-              <tbody>
-                {inventoryItems.map((inventoryItem, index) => (
-                  <tr key={index} className="border-b border-slate-600">
-                    <td className="py-1">
-                      <input
-                        type="text"
-                        value={inventoryItem.item}
-                        onChange={(e) => {
-                          const newItems = [...inventoryItems];
-                          newItems[index].item = e.target.value;
-                          setInventoryItems(newItems);
-                        }}
-                        className={`w-full text-xs border rounded px-1 transition-all duration-200 ${
-                          isDarkMode
-                            ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
-                            : 'bg-gray-100 border-gray-300 text-gray-900'
-                        }`}
-                      />
-                    </td>
-                    <td className="py-1">
-                      <input
-                        type="text"
-                        value={inventoryItem.details}
-                        onChange={(e) => {
-                          const newItems = [...inventoryItems];
-                          newItems[index].details = e.target.value;
-                          setInventoryItems(newItems);
-                        }}
-                        className={`w-full text-xs border rounded px-1 transition-all duration-200 ${
-                          isDarkMode
-                            ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
-                            : 'bg-gray-100 border-gray-300 text-gray-900'
-                        }`}
-                        placeholder="Details"
-                      />
-                    </td>
-                    <td className="py-1">
-                      <input
-                        type="number"
-                        min="0"
-                        value={inventoryItem.amount || ''}
-                        onChange={(e) => {
-                          const newItems = [...inventoryItems];
-                          newItems[index].amount = parseInt(e.target.value) || 0;
-                          setInventoryItems(newItems);
-                        }}
-                        onFocus={(e) => e.target.select()}
-                        className={`w-12 text-center text-xs border rounded px-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
-                          isDarkMode
-                            ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
-                            : 'bg-gray-100 border-gray-300 text-gray-900'
-                        }`}
-                        placeholder="0"
-                      />
-                    </td>
-                    <td className="py-1">
-                      <input
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        value={inventoryItem.valueSP || ''}
-                        onChange={(e) => {
-                          const newItems = [...inventoryItems];
-                          newItems[index].valueSP = parseFloat(e.target.value) || 0;
-                          setInventoryItems(newItems);
-                        }}
-                        className={`w-12 text-center text-xs border rounded px-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
-                          isDarkMode
-                            ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
-                            : 'bg-gray-100 border-gray-300 text-gray-900'
-                        }`}
-                        placeholder="0"
-                      />
-                    </td>
-                    <td className="py-1">
-                      <input
-                        type="number"
-                        min="0"
-                        step="0.1"
-                        value={inventoryItem.bulk || ''}
-                        onChange={(e) => {
-                          const newItems = [...inventoryItems];
-                          newItems[index].bulk = parseFloat(e.target.value) || 0;
-                          setInventoryItems(newItems);
-                        }}
-                        onFocus={(e) => e.target.select()}
-                        className={`w-12 text-center text-xs border rounded px-1 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
-                          isDarkMode
-                            ? 'bg-slate-700 border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-orange-500'
-                            : 'bg-gray-100 border-gray-300 text-gray-900'
-                        }`}
-                        placeholder="0"
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="flex gap-2 mt-2 mb-8">
-            <button
-              onClick={addInventoryItem}
-              className="w-3/5 py-1 px-3 text-xs rounded transition-colors bg-green-500 hover:bg-green-600 text-white"
-            >
-              Add Item
-            </button>
-
-            <button
-              onClick={removeInventoryItem}
-              disabled={inventoryItems.length <= 1}
-              className={`w-2/5 py-1 px-3 text-xs rounded transition-colors ${
-                inventoryItems.length <= 1
-                  ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                  : 'bg-red-800 hover:bg-red-900 text-white'
-              }`}
-              title={inventoryItems.length <= 1 ? 'Cannot remove - minimum 1 item required' : 'Remove last item'}
-            >
-              Remove
-            </button>
-          </div>
-          <div className="absolute bottom-2 left-0 right-0 text-center">
-            <h3 className="text-sm font-bold text-gray-400">Inventory</h3>
           </div>
         </div>
       </div>
