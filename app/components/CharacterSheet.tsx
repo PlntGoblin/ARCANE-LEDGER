@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, type CSSProperties } from 'react';
 import { Character, Feat } from '../types/character';
 import { syncedStorage as localStorage } from '../lib/syncedStorage';
 import {
@@ -867,6 +867,39 @@ export default function CharacterSheet() {
       color?: string;
     }>
   >([]);
+
+  // The vibe overlay's real height in CSS pixels, measured from the element.
+  // app/page.tsx pins the mobile layout viewport to 1080px and lets the phone
+  // scale it down to fit, so `vh` describes that unscaled viewport rather than
+  // the screen you actually see — which is why a 112vh fall used to peter out
+  // part way down a phone. Every falling/rising particle travels --fx-h
+  // instead, and the layer is given the same height so it can't clip them.
+  const vibeLayerRef = useRef<HTMLDivElement | null>(null);
+  const [vibeLayerHeight, setVibeLayerHeight] = useState(0);
+
+  useEffect(() => {
+    const el = vibeLayerRef.current;
+    if (!el) return;
+    // innerHeight/visualViewport grow as the page is zoomed out to fit, so on a
+    // scaled-down mobile viewport they, not the element box, know how tall the
+    // visible screen really is. Take whichever is largest.
+    const measure = () => {
+      const height = Math.max(
+        el.getBoundingClientRect().height,
+        window.innerHeight || 0,
+        window.visualViewport?.height ?? 0,
+      );
+      setVibeLayerHeight((prev) => (Math.abs(prev - height) > 1 ? height : prev));
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    window.visualViewport?.addEventListener('resize', measure);
+    return () => {
+      observer.disconnect();
+      window.visualViewport?.removeEventListener('resize', measure);
+    };
+  }, [vibeEffects]);
 
   // Track if component has mounted (to prevent saving on initial render)
   const hasMountedRef = useRef(false);
@@ -2755,17 +2788,25 @@ export default function CharacterSheet() {
 
       {/* Vibe Effects Overlay */}
       {/* Fixed like the wallpaper above: particles spawn at the top of the
-          visible viewport and fall 100vh through it. When this was `absolute`
-          it was bound to the sheet container, so on mobile (scrolled down,
-          1080px scaled viewport) rain/snow only covered the top slice of
-          the screen. */}
+          visible viewport and fall the layer's full measured height. When this
+          was `absolute` it was bound to the sheet container, so on mobile
+          (scrolled down, 1080px scaled viewport) rain/snow only covered the top
+          slice of the screen. */}
       {vibeEffects !== 'none' && (
         <div
+          ref={vibeLayerRef}
           className="fixed inset-0 pointer-events-none overflow-hidden"
-          style={{
-            opacity: vibeOpacity / 100,
-            zIndex: 5,
-          }}
+          style={
+            {
+              opacity: vibeOpacity / 100,
+              zIndex: 5,
+              // Height wins over `bottom` when both are set, so the layer
+              // reaches the true bottom of the screen even where inset-0 does
+              // not, and hands that distance to the particles as --fx-h.
+              ...(vibeLayerHeight ? { height: `${vibeLayerHeight}px`, bottom: 'auto' } : null),
+              '--fx-h': vibeLayerHeight ? `${vibeLayerHeight}px` : '100vh',
+            } as CSSProperties
+          }
         >
           {vibeEffects === 'rain' && (
             <div className="absolute inset-0">
@@ -3094,7 +3135,7 @@ export default function CharacterSheet() {
       <style jsx>{`
         @keyframes fall {
           to {
-            transform: translateY(100vh);
+            transform: translateY(var(--fx-h, 100vh));
           }
         }
         @keyframes twinkle {
@@ -3120,16 +3161,16 @@ export default function CharacterSheet() {
             transform: translateY(0) translateX(0) rotate(0deg);
           }
           25% {
-            transform: translateY(25vh) translateX(20px) rotate(90deg);
+            transform: translateY(calc(var(--fx-h, 100vh) * 0.25)) translateX(20px) rotate(90deg);
           }
           50% {
-            transform: translateY(50vh) translateX(-10px) rotate(180deg);
+            transform: translateY(calc(var(--fx-h, 100vh) * 0.5)) translateX(-10px) rotate(180deg);
           }
           75% {
-            transform: translateY(75vh) translateX(15px) rotate(270deg);
+            transform: translateY(calc(var(--fx-h, 100vh) * 0.75)) translateX(15px) rotate(270deg);
           }
           100% {
-            transform: translateY(100vh) translateX(0) rotate(360deg);
+            transform: translateY(var(--fx-h, 100vh)) translateX(0) rotate(360deg);
           }
         }
         @keyframes rise {
@@ -3138,11 +3179,11 @@ export default function CharacterSheet() {
             opacity: 1;
           }
           50% {
-            transform: translateY(-50vh) translateX(20px);
+            transform: translateY(calc(var(--fx-h, 100vh) * -0.5)) translateX(20px);
             opacity: 0.8;
           }
           100% {
-            transform: translateY(-100vh) translateX(0);
+            transform: translateY(calc(var(--fx-h, 100vh) * -1)) translateX(0);
             opacity: 0;
           }
         }
