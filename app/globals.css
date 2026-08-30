@@ -129,6 +129,15 @@ body {
     0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
+/* Nested sheet-cards (spell cards inside an accordion, etc.) need to stand
+   out from their parent when glass is off — otherwise they read as one
+   solid slate block. Bump the fill a shade lighter and use an amber-tinted
+   border so the tiles read as warm cards on a cool slate. */
+.glass-off .sheet-card .sheet-card {
+  background-color: rgb(51 65 85);
+  border: 1px solid rgb(251 191 36 / 0.5);
+}
+
 /* Tab pills wear the same glass as .sheet-card and flip with it when the
    Data tab's "Frosted glass cards" switch is off. */
 .tab-pill {
