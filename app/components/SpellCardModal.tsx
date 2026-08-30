@@ -140,7 +140,7 @@ const IconD20 = ({ className = 'w-4 h-4' }: { className?: string }) => (
 
 // School glyphs — one per magical school, simple and consistent.
 const SchoolIcon = ({ school, className = 'w-5 h-5' }: { school: string; className?: string }) => {
-  const paths: Record<string, JSX.Element> = {
+  const paths: Record<string, React.ReactNode> = {
     Abjuration: (
       <path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6l7-3z" strokeLinejoin="round" />
     ),
