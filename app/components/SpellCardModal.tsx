@@ -388,6 +388,196 @@ export function SpellCardFace({
   );
 }
 
+// ─── EditableSpellCard: same face as SpellCardFace, but every value is a live
+//     input. Used for custom spells the player is filling out from scratch.
+export function EditableSpellCard({
+  spell,
+  level,
+  onChange,
+  onRemove,
+  className = 'w-full aspect-[5/7]',
+}: {
+  spell: any;
+  level: number;
+  onChange: (field: string, value: string) => void;
+  onRemove: () => void;
+  className?: string;
+}) {
+  const schoolRaw = spell.School || 'Evoc';
+  const school = SCHOOL_FULL[schoolRaw] || schoolRaw;
+  const accent =
+    SCHOOL_ACCENT[school] || { text: 'text-amber-300', ring: 'border-amber-400/50', glow: 'bg-amber-500/15' };
+
+  const isConc = !!spell.Conc;
+  const isRitual = !!spell.Ritual;
+
+  // Plain-looking inputs — no visible border until focused, so the card still
+  // reads as a spell card, with a subtle amber highlight to say "editable."
+  const editInput =
+    'bg-transparent border-none outline-none focus:bg-amber-400/10 rounded-sm placeholder:text-amber-200/30';
+
+  return (
+    <div
+      onClick={(e) => e.stopPropagation()}
+      className={`relative sheet-card rounded-2xl overflow-hidden shadow-2xl border-amber-400/40 flex flex-col ${className}`}
+    >
+      <button
+        onClick={onRemove}
+        className="absolute top-2 right-2 z-10 w-5 h-5 flex items-center justify-center text-red-400 hover:text-red-300 text-sm"
+        title="Delete custom spell"
+      >
+        ✕
+      </button>
+
+      <div className="px-5 pt-6 pb-5 flex-1 min-h-0 flex flex-col">
+        {/* Title input — big serif with the same glow as the display card */}
+        <input
+          type="text"
+          value={spell.Name || ''}
+          onChange={(e) => onChange('Name', e.target.value)}
+          placeholder="Spell Name"
+          className={`${editInput} font-serif font-bold text-amber-100 text-2xl text-center leading-tight w-full`}
+          style={{ textShadow: '0 0 12px rgba(253, 224, 71, 0.35), 0 0 4px rgba(253, 224, 71, 0.55)' }}
+        />
+
+        <div className={`mt-2 h-px w-full ${accent.ring} border-t`} />
+
+        {/* Stat inputs — same layout as SpellCardFace's StatBlock row */}
+        <div className="flex justify-around mt-2 gap-1">
+          <EditableStat icon={<IconClock className="w-6 h-6" />} label="Cast" value={spell.CastingTime || ''} onChange={(v) => onChange('CastingTime', v)} editInput={editInput} />
+          <EditableStat icon={<IconRange className="w-6 h-6" />} label="Range" value={spell.Range || ''} onChange={(v) => onChange('Range', v)} editInput={editInput} />
+          <EditableStat icon={<IconHourglass className="w-6 h-6" />} label="Duration" value={spell.Duration || ''} onChange={(v) => onChange('Duration', v)} editInput={editInput} />
+          {/* Conc is a checkbox rendered like a Yes/No stat */}
+          <div className="flex flex-col items-center gap-0.5 min-w-0 flex-1">
+            <div className="text-amber-200/80"><IconConcentration className="w-6 h-6" /></div>
+            <div className="text-[9px] uppercase tracking-wider font-semibold text-amber-400/70 text-center leading-tight whitespace-nowrap">Conc.</div>
+            <label className="text-[11px] font-medium text-gray-100 text-center leading-tight flex items-center gap-1 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isConc}
+                onChange={(e) => onChange('Conc', e.target.checked ? 'YES' : '')}
+                className="accent-amber-400 w-3 h-3"
+              />
+              {isConc ? 'Yes' : 'No'}
+            </label>
+          </div>
+          <EditableStat icon={<IconComponents className="w-6 h-6" />} label="Components" value={spell.Comp || ''} onChange={(v) => onChange('Comp', v)} editInput={editInput} />
+        </div>
+
+        <div className={`mt-3 h-px w-full ${accent.ring} border-t`} />
+
+        {/* Details */}
+        <div className="mt-2 space-y-2 flex-1 min-h-0 flex flex-col">
+          <div className="rounded-lg bg-black/30 border border-amber-500/20 px-3 py-2">
+            <div className="flex divide-x divide-amber-500/15">
+              <div className="flex-1 min-w-0 px-2 first:pl-0 last:pr-0">
+                <div className="flex items-center gap-1.5 text-amber-300 mb-0.5">
+                  <IconArea className="w-4 h-4" />
+                  <span className="text-[10px] uppercase tracking-wider font-semibold">Area</span>
+                </div>
+                <input
+                  type="text"
+                  value={spell['Area or Targets'] || ''}
+                  onChange={(e) => onChange('Area or Targets', e.target.value)}
+                  placeholder="—"
+                  className={`${editInput} text-xs text-gray-100 w-full`}
+                />
+              </div>
+              <div className="flex-1 min-w-0 px-2 first:pl-0 last:pr-0">
+                <div className="text-[10px] uppercase tracking-wider text-amber-400/70 font-semibold mb-0.5">Save / Att</div>
+                <input
+                  type="text"
+                  value={spell['Save or Attack'] || ''}
+                  onChange={(e) => onChange('Save or Attack', e.target.value)}
+                  placeholder="—"
+                  className={`${editInput} text-xs text-gray-100 w-full`}
+                />
+              </div>
+              <div className="flex-1 min-w-0 px-2 first:pl-0 last:pr-0">
+                <div className="text-[10px] uppercase tracking-wider text-amber-400/70 font-semibold mb-0.5">Cost</div>
+                <input
+                  type="text"
+                  value={spell.Cost || ''}
+                  onChange={(e) => onChange('Cost', e.target.value)}
+                  placeholder="—"
+                  className={`${editInput} text-xs text-gray-100 w-full`}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Description textarea — fills remaining space and scrolls */}
+          <textarea
+            value={spell.Effect || ''}
+            onChange={(e) => onChange('Effect', e.target.value)}
+            placeholder="Describe the spell…"
+            className={`${editInput} flex-1 min-h-0 rounded-lg bg-black/30 border border-amber-500/20 px-3 py-2 text-sm text-gray-100 leading-relaxed resize-none sheet-scroll overscroll-contain`}
+          />
+        </div>
+
+        {/* Bottom row: Level · custom tag · School+Ritual pill */}
+        <div className="mt-3 flex items-center justify-between gap-2">
+          <span className={`text-sm font-medium ${accent.text} flex-shrink-0`}>{LEVEL_LABEL(level)}</span>
+          <span className="text-[10px] uppercase tracking-widest text-gray-500 italic">custom</span>
+          <div className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border flex-shrink-0 ${accent.ring} ${accent.glow}`}>
+            <select
+              title="School of magic"
+              value={schoolRaw}
+              onChange={(e) => onChange('School', e.target.value)}
+              className={`bg-transparent text-sm font-medium ${accent.text} outline-none appearance-none pr-1 cursor-pointer`}
+            >
+              {Object.entries(SCHOOL_FULL).map(([abbr, full]) => (
+                <option key={abbr} value={abbr} className="bg-slate-800 text-gray-100">
+                  {full}
+                </option>
+              ))}
+            </select>
+            <label className="flex items-center gap-1 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isRitual}
+                onChange={(e) => onChange('Ritual', e.target.checked ? 'YES' : '')}
+                className="accent-amber-400 w-3 h-3"
+              />
+              <span className={`text-[10px] font-bold ${isRitual ? 'text-purple-200' : 'text-gray-500'}`}>Ritual</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EditableStat({
+  icon,
+  label,
+  value,
+  onChange,
+  editInput,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  editInput: string;
+}) {
+  return (
+    <div className="flex flex-col items-center gap-0.5 min-w-0 flex-1">
+      <div className="text-amber-200/80">{icon}</div>
+      <div className="text-[9px] uppercase tracking-wider font-semibold text-amber-400/70 text-center leading-tight whitespace-nowrap">
+        {label}
+      </div>
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="—"
+        className={`${editInput} text-[11px] font-medium text-gray-100 text-center leading-tight w-full`}
+      />
+    </div>
+  );
+}
+
 // ─── Main modal: wraps SpellCardFace with a full-screen backdrop ─────────────
 export default function SpellCardModal({
   spell,

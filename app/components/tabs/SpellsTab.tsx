@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Character } from '../../types/character';
 import NumberField from '../NumberField';
-import SpellCardModal, { SpellCardFace } from '../SpellCardModal';
+import SpellCardModal, { SpellCardFace, EditableSpellCard } from '../SpellCardModal';
 
 export interface SpellsTabProps {
   character: Character;
@@ -80,103 +80,6 @@ function StatPill({
       <span className={`text-base font-bold leading-tight ${tone || (isDarkMode ? 'text-white' : 'text-gray-900')}`}>
         {value}
       </span>
-    </div>
-  );
-}
-
-// ─── CustomSpellCard: user-created editable spell ────────────────────────────
-interface CustomSpellCardProps {
-  spell: any;
-  level: number;
-  isDarkMode: boolean;
-  updateCustomSpell: (level: number, spellId: string, field: string, value: string) => void;
-  removeCustomSpell: (level: number, spellId: string) => void;
-}
-
-function CustomSpellCard({ spell, level, isDarkMode, updateCustomSpell, removeCustomSpell }: CustomSpellCardProps) {
-  const [expanded, setExpanded] = useState(true);
-
-  const inputBase = `bg-transparent text-xs border-none outline-none w-full ${
-    isDarkMode ? 'text-white placeholder-gray-500' : 'text-gray-900 placeholder-gray-400'
-  }`;
-
-  const fieldBox = `rounded px-2 py-1 ${isDarkMode ? 'bg-black/25' : 'bg-white border border-gray-200'}`;
-
-  const editFields = [
-    { label: 'School', field: 'School', value: spell.School || spell.school || '' },
-    { label: 'Casting Time', field: 'CastingTime', value: spell.CastingTime || spell.casting_time || '' },
-    { label: 'Range', field: 'Range', value: spell.Range || spell.range || '' },
-    { label: 'Area/Targets', field: 'Area or Targets', value: spell['Area or Targets'] || spell.area_of_effect || '' },
-    { label: 'Save/Attack', field: 'Save or Attack', value: spell['Save or Attack'] || spell.save || '' },
-    { label: 'Duration', field: 'Duration', value: spell.Duration || spell.duration || '' },
-    { label: 'Tags', field: 'Tags', value: spell.Tags || spell.tags || '' },
-    { label: 'Components', field: 'Comp', value: spell.Comp || spell.components || '' },
-  ];
-
-  return (
-    <div
-      className={`rounded-lg border ${
-        isDarkMode ? 'bg-orange-950/25 border-orange-700/40' : 'bg-orange-50 border-orange-200'
-      }`}
-    >
-      {/* Header with name input + controls */}
-      <div className="flex items-center gap-2 px-3 py-2">
-        <input
-          type="text"
-          value={spell.Name || spell.name || ''}
-          onChange={(e) => updateCustomSpell(level, spell.id, 'Name', e.target.value)}
-          className={`${inputBase} font-semibold text-sm flex-1`}
-          placeholder="Spell name..."
-        />
-        <span className={`text-xs italic ${isDarkMode ? 'text-orange-400/60' : 'text-orange-500/70'}`}>custom</span>
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className={`text-xs inline-block transition-transform duration-200 ${expanded ? 'rotate-180' : ''} ${isDarkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-700'}`}
-          title={expanded ? 'Collapse' : 'Expand'}
-        >
-          ▼
-        </button>
-        <button
-          onClick={() => removeCustomSpell(level, spell.id)}
-          className="text-red-400 hover:text-red-300 text-xs w-4 h-4 flex items-center justify-center"
-          title="Remove spell"
-        >
-          ✕
-        </button>
-      </div>
-
-      {/* Expanded editing fields */}
-      {expanded && (
-        <div className={`px-3 pb-3 border-t ${isDarkMode ? 'border-orange-700/30' : 'border-orange-200'}`}>
-          <div className="grid grid-cols-2 gap-2 mt-2">
-            {editFields.map(({ label, field, value }) => (
-              <div key={field} className={fieldBox}>
-                <div className={`text-xs font-medium mb-0.5 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                  {label}
-                </div>
-                <input
-                  type="text"
-                  value={value}
-                  onChange={(e) => updateCustomSpell(level, spell.id, field, e.target.value)}
-                  className={inputBase}
-                  placeholder={label + '...'}
-                />
-              </div>
-            ))}
-          </div>
-          {/* Effect textarea — full width */}
-          <div className={`mt-2 ${fieldBox}`}>
-            <div className={`text-xs font-medium mb-0.5 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Effect</div>
-            <textarea
-              value={spell.Effect || spell.description || spell.effect || ''}
-              onChange={(e) => updateCustomSpell(level, spell.id, 'Effect', e.target.value)}
-              className={`${inputBase} resize-none`}
-              placeholder="Effect..."
-              rows={2}
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 }
@@ -273,36 +176,30 @@ function SpellLevelSection({
             </p>
           ) : (
             <>
-              {knownSpells.length > 0 && (
-                <div
-                  className="grid gap-3"
-                  style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}
-                >
-                  {knownSpells.map((spell, i) => (
-                    <div
-                      key={i}
-                      className="cursor-pointer transition-transform hover:scale-[1.02]"
-                      onClick={() => onOpenCard(spell)}
-                    >
-                      <SpellCardFace spell={spell} className="w-full aspect-[5/7]" />
-                    </div>
-                  ))}
-                </div>
-              )}
-              {customSpellsForLevel.length > 0 && (
-                <div className={`space-y-1.5 ${knownSpells.length > 0 ? 'mt-3' : ''}`}>
-                  {customSpellsForLevel.map((spell) => (
-                    <CustomSpellCard
-                      key={spell.id}
-                      spell={spell}
-                      level={level}
-                      isDarkMode={isDarkMode}
-                      updateCustomSpell={updateCustomSpell}
-                      removeCustomSpell={removeCustomSpell}
-                    />
-                  ))}
-                </div>
-              )}
+              <div
+                className="grid gap-3"
+                style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}
+              >
+                {knownSpells.map((spell, i) => (
+                  <div
+                    key={`known-${i}`}
+                    className="cursor-pointer transition-transform hover:scale-[1.02]"
+                    onClick={() => onOpenCard(spell)}
+                  >
+                    <SpellCardFace spell={spell} className="w-full aspect-[5/7]" />
+                  </div>
+                ))}
+                {customSpellsForLevel.map((spell) => (
+                  <EditableSpellCard
+                    key={`custom-${spell.id}`}
+                    spell={spell}
+                    level={level}
+                    onChange={(field, value) => updateCustomSpell(level, spell.id, field, value)}
+                    onRemove={() => removeCustomSpell(level, spell.id)}
+                    className="w-full aspect-[5/7]"
+                  />
+                ))}
+              </div>
             </>
           )}
         </div>
