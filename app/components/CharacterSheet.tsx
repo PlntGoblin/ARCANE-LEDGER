@@ -3413,8 +3413,6 @@ export default function CharacterSheet() {
               setAsiChoices={setAsiChoices}
               manualFeats={manualFeats}
               addManualFeat={addManualFeat}
-              masterSpellList={masterSpellList}
-              setMasterSpellList={setMasterSpellList}
               vibeEffects={vibeEffects}
               setVibeEffects={setVibeEffects}
               vibeOpacity={vibeOpacity}

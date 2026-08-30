@@ -2,7 +2,6 @@
 
 import { Character, Feat } from '../../types/character';
 import { CLASS_HIT_DICE } from '../../data/dndConstants';
-import { syncedStorage as localStorage } from '../../lib/syncedStorage';
 import NumberField from '../NumberField';
 
 export interface DataTabProps {
@@ -30,8 +29,6 @@ export interface DataTabProps {
   setAsiChoices: React.Dispatch<React.SetStateAction<any>>;
   manualFeats: Feat[];
   addManualFeat: (name: string, description: string) => void;
-  masterSpellList: any[];
-  setMasterSpellList: React.Dispatch<React.SetStateAction<any[]>>;
   vibeEffects: string;
   setVibeEffects: React.Dispatch<React.SetStateAction<string>>;
   vibeOpacity: number;
@@ -84,8 +81,6 @@ export default function DataTab({
   setAsiChoices,
   manualFeats,
   addManualFeat,
-  masterSpellList,
-  setMasterSpellList,
   vibeEffects,
   setVibeEffects,
   vibeOpacity,
@@ -532,7 +527,7 @@ export default function DataTab({
           </div>
         </div>
 
-        {/* Column 3: Feat/ASI Choices & Master Spell List */}
+        {/* Column 3: Feat/ASI Choices & Carrying Size */}
         <div className="space-y-6 h-fit">
           {/* Feat/ASI Choices Box */}
           <div
@@ -703,105 +698,29 @@ export default function DataTab({
             </div>
           </div>
 
-          {/* Master Spell List Box */}
+          {/* Carrying Size Box */}
           <div
             className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
           >
-            <h3 className="text-lg font-semibold text-orange-400 mb-2">Master Spell List</h3>
-            <input
-              type="file"
-              accept=".json"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  const reader = new FileReader();
-                  reader.onload = (event) => {
-                    try {
-                      const jsonData = JSON.parse(event.target?.result as string);
-                      console.log('Raw JSON data:', jsonData);
-
-                      let spellArray: any[] = [];
-
-                      // Handle different JSON structures
-                      if (Array.isArray(jsonData)) {
-                        spellArray = jsonData;
-                      } else if (jsonData.spells && Array.isArray(jsonData.spells)) {
-                        spellArray = jsonData.spells;
-                      } else if (jsonData.data && Array.isArray(jsonData.data)) {
-                        spellArray = jsonData.data;
-                      } else if (typeof jsonData === 'object') {
-                        // Handle object format where spell names are keys (like tadzik/5e-spells format)
-                        const spellNames = Object.keys(jsonData);
-                        if (spellNames.length > 0 && typeof jsonData[spellNames[0]] === 'object') {
-                          // Convert object format to array format
-                          spellArray = spellNames.map((spellName) => ({
-                            name: spellName,
-                            Name: spellName,
-                            level: jsonData[spellName].level,
-                            Level: jsonData[spellName].level,
-                            school: jsonData[spellName].school,
-                            School: jsonData[spellName].school,
-                            casting_time: jsonData[spellName].casting_time,
-                            CastingTime: jsonData[spellName].casting_time,
-                            range: jsonData[spellName].range,
-                            Range: jsonData[spellName].range,
-                            components: jsonData[spellName].components,
-                            Components: jsonData[spellName].components,
-                            duration: jsonData[spellName].duration,
-                            Duration: jsonData[spellName].duration,
-                            description: jsonData[spellName].description,
-                            Description: jsonData[spellName].description,
-                            effect: jsonData[spellName].description,
-                            Effect: jsonData[spellName].description,
-                          }));
-                        } else {
-                          // If it's an object with spell properties, treat each property as a potential spell array
-                          for (const key in jsonData) {
-                            if (Array.isArray(jsonData[key])) {
-                              spellArray = jsonData[key];
-                              break;
-                            }
-                          }
-                          // If no arrays found, try to treat the object itself as a single spell
-                          if (spellArray.length === 0) {
-                            spellArray = [jsonData];
-                          }
-                        }
-                      }
-
-                      console.log('Processed spell array:', spellArray);
-                      setMasterSpellList(spellArray);
-
-                      // Save spell data to localStorage
-                      try {
-                        localStorage.setItem('dnd-master-spell-list', JSON.stringify(spellArray));
-                      } catch (error) {
-                        console.warn('Failed to save spell data to localStorage:', error);
-                      }
-
-                      if (spellArray.length === 0) {
-                        alert('No spells found in the JSON file. Please check the file structure.');
-                      } else {
-                        alert(`Successfully loaded ${spellArray.length} spells!`);
-                      }
-                    } catch (error) {
-                      console.error('JSON parsing error:', error);
-                      alert('Error reading JSON file. Please check the file format.');
-                    }
-                  };
-                  reader.readAsText(file);
-                }
-              }}
-              className={`w-full px-2 py-1 text-xs rounded border bg-transparent ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-2 ${
-                isDarkMode ? 'border-slate-600 focus:border-orange-400' : 'border-gray-400 focus:border-orange-500'
-              } focus:outline-none focus:ring-1 focus:ring-orange-500`}
-            />
-            <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Upload JSON file</p>
-            {masterSpellList.length > 0 && (
-              <div className="mt-2 text-center">
-                <p className="text-xs text-green-400">✓ {masterSpellList.length} spells loaded</p>
-              </div>
-            )}
+            <h3 className="text-lg font-semibold text-orange-400 mb-2">Carrying Size</h3>
+            <p className="text-xs text-gray-400 mb-4">
+              Select the size you count as when determining carrying capacity.
+            </p>
+            <select
+              title="Carrying size for encumbrance"
+              value={carryingSize}
+              onChange={(e) => setCarryingSize(e.target.value)}
+              className={`w-full border rounded px-3 py-2 ${
+                isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
+              }`}
+            >
+              <option value="Tiny">Tiny</option>
+              <option value="Small">Small</option>
+              <option value="Medium">Medium</option>
+              <option value="Large">Large</option>
+              <option value="Huge">Huge</option>
+              <option value="Gargantuan">Gargantuan</option>
+            </select>
           </div>
 
           {/* Vibe Effects Box */}
@@ -846,7 +765,7 @@ export default function DataTab({
           </div>
         </div>
 
-        {/* Column 4: Calendar & Carrying Size */}
+        {/* Column 4: Calendar & Images */}
         <div className="space-y-6 h-fit">
           {/* Calendar Box */}
           <div
@@ -928,30 +847,6 @@ export default function DataTab({
                 </select>
               </div>
             </div>
-          </div>
-
-          {/* Carrying Size Box */}
-          <div
-            className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
-          >
-            <h3 className="text-lg font-semibold text-orange-400 mb-2">Carrying Size</h3>
-            <p className="text-xs text-gray-400 mb-4">
-              Select the size you count as when determining carrying capacity.
-            </p>
-            <select
-              value={carryingSize}
-              onChange={(e) => setCarryingSize(e.target.value)}
-              className={`w-full border rounded px-3 py-2 ${
-                isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
-              }`}
-            >
-              <option value="Tiny">Tiny</option>
-              <option value="Small">Small</option>
-              <option value="Medium">Medium</option>
-              <option value="Large">Large</option>
-              <option value="Huge">Huge</option>
-              <option value="Gargantuan">Gargantuan</option>
-            </select>
           </div>
 
           {/* Images Box */}
