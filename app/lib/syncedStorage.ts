@@ -20,6 +20,14 @@ const MIGRATED_MARKER = 'dnd-migrated-to-server';
 const SAVE_DEBOUNCE_MS = 800;
 const SAVE_RETRY_MS = 5000;
 
+// Bump when public/master-spell-list.json ships a meaningful data change (new
+// spells, enriched Effect bodies, renames). The seed logic re-fetches the
+// bundled file when the stored version doesn't match, so every user picks up
+// the update on their next load instead of being stuck on the copy they cached
+// when they first signed up.
+const BUNDLED_SPELL_LIST_VERSION = '2';
+const SPELL_LIST_VERSION_KEY = 'dnd-master-spell-list-version';
+
 type Listener = () => void;
 
 const cache = new Map<string, string>();
@@ -153,15 +161,21 @@ async function doLoad(): Promise<boolean> {
     }
   }
 
-  // Seed the bundled master spell list if the user has none yet. Ships in
-  // public/master-spell-list.json so new signups don't have to import it.
-  if (!cache.has('dnd-master-spell-list')) {
+  // Seed the bundled master spell list if the user has none yet, OR if the
+  // bundled data has been bumped to a newer version than what they have. Ships
+  // in public/master-spell-list.json so new signups don't have to import it,
+  // and existing users pick up spell-data updates on their next load.
+  const storedVersion = cache.get(SPELL_LIST_VERSION_KEY);
+  const needsSeed =
+    !cache.has('dnd-master-spell-list') || storedVersion !== BUNDLED_SPELL_LIST_VERSION;
+  if (needsSeed) {
     try {
-      const res = await fetch('/master-spell-list.json', { cache: 'force-cache' });
+      const res = await fetch('/master-spell-list.json', { cache: 'no-cache' });
       if (res.ok) {
         const text = await res.text();
         JSON.parse(text); // sanity — skip seeding if the asset is corrupt
         cache.set('dnd-master-spell-list', text);
+        cache.set(SPELL_LIST_VERSION_KEY, BUNDLED_SPELL_LIST_VERSION);
       }
     } catch {
       // Fall through — user just won't have a default spell list.

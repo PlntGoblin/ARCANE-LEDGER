@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Character } from '../../types/character';
 import NumberField from '../NumberField';
+import SpellCardModal from '../SpellCardModal';
 
 export interface SpellsTabProps {
   character: Character;
@@ -99,40 +100,25 @@ function StatPill({
   );
 }
 
-// ─── SpellCard: read-only known spell from the master list ───────────────────
+// ─── SpellCard: compact row that opens the full card modal on click ─────────
 interface SpellCardProps {
   spell: any;
   isDarkMode: boolean;
+  onOpen: (spell: any) => void;
   onMouseEnter: (e: React.MouseEvent) => void;
   onMouseMove: (e: React.MouseEvent) => void;
   onMouseLeave: () => void;
 }
 
-function SpellCard({ spell, isDarkMode, onMouseEnter, onMouseMove, onMouseLeave }: SpellCardProps) {
-  const [expanded, setExpanded] = useState(false);
-
+function SpellCard({ spell, isDarkMode, onOpen, onMouseEnter, onMouseMove, onMouseLeave }: SpellCardProps) {
   const name = spell.Name || spell.name || '';
   const school = spell.School || spell.school || '';
   const castTime = spell.CastingTime || spell.casting_time || spell.castingTime || '';
-  const range = spell.Range || spell.range || '';
-  const area = spell['Area or Targets'] || spell.area_of_effect || spell.areaOfEffect || spell.targets || '';
-  const effect = spell.Effect || spell.description || spell.effect || '';
-  const saveAtt = spell['Save or Attack'] || spell.save || spell.attack || '';
-  const duration = spell.Duration || spell.duration || '';
-  const comp = spell.Comp || spell.components || '';
   const isConc = !!spell.Conc;
   const isRitual = !!spell.Ritual;
 
   const schoolColor =
     SCHOOL_COLORS[school] || (isDarkMode ? 'bg-slate-700 text-gray-300' : 'bg-gray-200 text-gray-600');
-
-  const detailItems = [
-    { label: 'Range', value: range },
-    { label: 'Area', value: area },
-    { label: 'Duration', value: duration },
-    { label: 'Save/Att', value: saveAtt },
-    { label: 'Components', value: comp },
-  ].filter((d) => d.value);
 
   return (
     <div
@@ -140,10 +126,9 @@ function SpellCard({ spell, isDarkMode, onMouseEnter, onMouseMove, onMouseLeave 
         isDarkMode ? 'sheet-card hover:border-amber-200/40' : 'bg-white border-gray-200 hover:border-gray-300'
       }`}
     >
-      {/* Compact header row */}
       <div
         className="flex items-center gap-2 px-3 py-2 cursor-pointer select-none"
-        onClick={() => setExpanded(!expanded)}
+        onClick={() => onOpen(spell)}
         onMouseEnter={onMouseEnter}
         onMouseMove={onMouseMove}
         onMouseLeave={onMouseLeave}
@@ -161,32 +146,7 @@ function SpellCard({ spell, isDarkMode, onMouseEnter, onMouseMove, onMouseLeave 
             R
           </span>
         )}
-        <span
-          className={`text-xs inline-block transition-transform duration-200 ${expanded ? 'rotate-180' : ''} ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}
-        >
-          ▼
-        </span>
       </div>
-
-      {/* Expanded details */}
-      {expanded && (
-        <div className={`px-3 pb-3 border-t text-xs ${isDarkMode ? 'border-slate-700' : 'border-gray-100'}`}>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 mt-2">
-            {detailItems.map(({ label, value }) => (
-              <div key={label}>
-                <span className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>{label}: </span>
-                <span className={isDarkMode ? 'text-gray-200' : 'text-gray-700'}>{value}</span>
-              </div>
-            ))}
-          </div>
-          {effect && (
-            <div className="mt-2">
-              <span className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>Effect: </span>
-              <span className={isDarkMode ? 'text-gray-200' : 'text-gray-700'}>{effect}</span>
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 }
@@ -301,6 +261,7 @@ interface SpellLevelSectionProps {
   updateCustomSpell: (level: number, spellId: string, field: string, value: string) => void;
   setHoveredSpell: React.Dispatch<React.SetStateAction<any>>;
   setMousePosition: React.Dispatch<React.SetStateAction<{ x: number; y: number }>>;
+  onOpenCard: (spell: any) => void;
 }
 
 function SpellLevelSection({
@@ -315,6 +276,7 @@ function SpellLevelSection({
   updateCustomSpell,
   setHoveredSpell,
   setMousePosition,
+  onOpenCard,
 }: SpellLevelSectionProps) {
   const totalCount = knownSpells.length + customSpellsForLevel.length;
   const [isOpen, setIsOpen] = useState(totalCount > 0);
@@ -387,6 +349,7 @@ function SpellLevelSection({
                   key={i}
                   spell={spell}
                   isDarkMode={isDarkMode}
+                  onOpen={onOpenCard}
                   onMouseEnter={(e) => {
                     setHoveredSpell(spell);
                     setMousePosition({ x: e.clientX, y: e.clientY });
@@ -672,6 +635,7 @@ export default function SpellsTab({
   const accessibleSpellLevels = getAccessibleSpellLevels(character.class, character.level).filter((l) => l !== 0);
   const isSorcerer = character.class === 'Sorcerer';
   const [knownEditorOpen, setKnownEditorOpen] = useState(false);
+  const [viewingSpell, setViewingSpell] = useState<any | null>(null);
 
   return (
     <div className="space-y-4">
@@ -815,6 +779,7 @@ export default function SpellsTab({
           updateCustomSpell={updateCustomSpell}
           setHoveredSpell={setHoveredSpell}
           setMousePosition={setMousePosition}
+          onOpenCard={setViewingSpell}
         />
         {accessibleSpellLevels.map((level) => (
           <SpellLevelSection
@@ -829,9 +794,12 @@ export default function SpellsTab({
             updateCustomSpell={updateCustomSpell}
             setHoveredSpell={setHoveredSpell}
             setMousePosition={setMousePosition}
+            onOpenCard={setViewingSpell}
           />
         ))}
       </div>
+
+      {viewingSpell && <SpellCardModal spell={viewingSpell} onClose={() => setViewingSpell(null)} />}
 
       {knownEditorOpen && (
         <NumberPickerModal
