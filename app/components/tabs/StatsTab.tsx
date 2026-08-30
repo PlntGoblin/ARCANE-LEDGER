@@ -1924,7 +1924,18 @@ export default function StatsTab({
         <div
           className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
         >
-          <h4 className="text-base font-semibold text-orange-400 mb-3">Feats</h4>
+          <div className="flex justify-between items-center mb-3">
+            <h4 className="text-base font-semibold text-orange-400">Feats</h4>
+            <button
+              onClick={() => addManualFeat('', '')}
+              className="text-orange-400 hover:text-orange-300 transition-colors"
+              title="Add Feat"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+          </div>
           <div className="space-y-2">
             {manualFeats.slice(Math.ceil(manualFeats.length / 2)).map((feat, index) => (
               <div
@@ -2005,12 +2016,6 @@ export default function StatsTab({
                 />
               </div>
             ))}
-            <button
-              onClick={() => addManualFeat('', '')}
-              className="w-full border-2 border-dashed border-orange-500/30 rounded p-3 text-orange-400 hover:border-orange-500/50 hover:bg-orange-500/5 transition-colors text-sm"
-            >
-              + Add Feat
-            </button>
           </div>
         </div>
 
@@ -2018,7 +2023,18 @@ export default function StatsTab({
         <div
           className={`p-4 rounded-lg border shadow-xl h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}
         >
-          <h4 className="text-base font-semibold text-orange-400 mb-3">Feats</h4>
+          <div className="flex justify-between items-center mb-3">
+            <h4 className="text-base font-semibold text-orange-400">Feats</h4>
+            <button
+              onClick={() => addManualFeat('', '')}
+              className="text-orange-400 hover:text-orange-300 transition-colors"
+              title="Add Feat"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+          </div>
           <div className="space-y-2">
             {manualFeats.slice(0, Math.ceil(manualFeats.length / 2)).map((feat, index) => (
               <div
@@ -2090,12 +2106,6 @@ export default function StatsTab({
                 />
               </div>
             ))}
-            <button
-              onClick={() => addManualFeat('', '')}
-              className="w-full border-2 border-dashed border-orange-500/30 rounded p-3 text-orange-400 hover:border-orange-500/50 hover:bg-orange-500/5 transition-colors text-sm"
-            >
-              + Add Feat
-            </button>
           </div>
         </div>
       </div>
