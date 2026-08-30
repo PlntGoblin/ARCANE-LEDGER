@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Character } from '../../types/character';
 import NumberField from '../NumberField';
-import SpellCardModal from '../SpellCardModal';
+import SpellCardModal, { SpellCardFace } from '../SpellCardModal';
 
 export interface SpellsTabProps {
   character: Character;
@@ -29,23 +29,7 @@ export interface SpellsTabProps {
   addCustomSpell: (level: number) => void;
   removeCustomSpell: (level: number, spellId: string) => void;
   updateCustomSpell: (level: number, spellId: string, field: string, value: string) => void;
-  hoveredSpell: any;
-  setHoveredSpell: React.Dispatch<React.SetStateAction<any>>;
-  mousePosition: { x: number; y: number };
-  setMousePosition: React.Dispatch<React.SetStateAction<{ x: number; y: number }>>;
 }
-
-// ─── School color badges ──────────────────────────────────────────────────────
-const SCHOOL_COLORS: Record<string, string> = {
-  Abjuration: 'bg-blue-900/50 text-blue-300',
-  Conjuration: 'bg-yellow-900/50 text-yellow-300',
-  Divination: 'bg-cyan-900/50 text-cyan-300',
-  Enchantment: 'bg-pink-900/50 text-pink-300',
-  Evocation: 'bg-red-900/50 text-red-300',
-  Illusion: 'bg-purple-900/50 text-purple-300',
-  Necromancy: 'bg-green-900/50 text-green-300',
-  Transmutation: 'bg-orange-900/50 text-orange-300',
-};
 
 // Level tokens used by the sticky HUD's slot pips.
 const LEVEL_COLORS: Record<
@@ -96,57 +80,6 @@ function StatPill({
       <span className={`text-base font-bold leading-tight ${tone || (isDarkMode ? 'text-white' : 'text-gray-900')}`}>
         {value}
       </span>
-    </div>
-  );
-}
-
-// ─── SpellCard: compact row that opens the full card modal on click ─────────
-interface SpellCardProps {
-  spell: any;
-  isDarkMode: boolean;
-  onOpen: (spell: any) => void;
-  onMouseEnter: (e: React.MouseEvent) => void;
-  onMouseMove: (e: React.MouseEvent) => void;
-  onMouseLeave: () => void;
-}
-
-function SpellCard({ spell, isDarkMode, onOpen, onMouseEnter, onMouseMove, onMouseLeave }: SpellCardProps) {
-  const name = spell.Name || spell.name || '';
-  const school = spell.School || spell.school || '';
-  const castTime = spell.CastingTime || spell.casting_time || spell.castingTime || '';
-  const isConc = !!spell.Conc;
-  const isRitual = !!spell.Ritual;
-
-  const schoolColor =
-    SCHOOL_COLORS[school] || (isDarkMode ? 'bg-slate-700 text-gray-300' : 'bg-gray-200 text-gray-600');
-
-  return (
-    <div
-      className={`rounded-lg border transition-all ${
-        isDarkMode ? 'sheet-card hover:border-amber-200/40' : 'bg-white border-gray-200 hover:border-gray-300'
-      }`}
-    >
-      <div
-        className="flex items-center gap-2 px-3 py-2 cursor-pointer select-none"
-        onClick={() => onOpen(spell)}
-        onMouseEnter={onMouseEnter}
-        onMouseMove={onMouseMove}
-        onMouseLeave={onMouseLeave}
-      >
-        <span className={`font-semibold text-sm flex-1 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{name}</span>
-        {school && <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${schoolColor}`}>{school}</span>}
-        {castTime && <span className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{castTime}</span>}
-        {isConc && (
-          <span className="text-xs font-bold text-yellow-400" title="Concentration">
-            C
-          </span>
-        )}
-        {isRitual && (
-          <span className="text-xs font-bold text-blue-400" title="Ritual">
-            R
-          </span>
-        )}
-      </div>
     </div>
   );
 }
@@ -259,8 +192,6 @@ interface SpellLevelSectionProps {
   addCustomSpell: (level: number) => void;
   removeCustomSpell: (level: number, spellId: string) => void;
   updateCustomSpell: (level: number, spellId: string, field: string, value: string) => void;
-  setHoveredSpell: React.Dispatch<React.SetStateAction<any>>;
-  setMousePosition: React.Dispatch<React.SetStateAction<{ x: number; y: number }>>;
   onOpenCard: (spell: any) => void;
 }
 
@@ -274,8 +205,6 @@ function SpellLevelSection({
   addCustomSpell,
   removeCustomSpell,
   updateCustomSpell,
-  setHoveredSpell,
-  setMousePosition,
   onOpenCard,
 }: SpellLevelSectionProps) {
   const totalCount = knownSpells.length + customSpellsForLevel.length;
@@ -337,37 +266,43 @@ function SpellLevelSection({
 
       {/* Spell cards */}
       {isOpen && (
-        <div className={`px-4 pb-4 pt-2 space-y-1.5 border-t ${isDarkMode ? 'border-slate-700' : 'border-gray-100'}`}>
+        <div className={`px-4 pb-4 pt-3 border-t ${isDarkMode ? 'border-slate-700' : 'border-gray-100'}`}>
           {totalCount === 0 ? (
             <p className={`text-sm italic py-2 text-center ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
               No spells — use + to add a custom one
             </p>
           ) : (
             <>
-              {knownSpells.map((spell, i) => (
-                <SpellCard
-                  key={i}
-                  spell={spell}
-                  isDarkMode={isDarkMode}
-                  onOpen={onOpenCard}
-                  onMouseEnter={(e) => {
-                    setHoveredSpell(spell);
-                    setMousePosition({ x: e.clientX, y: e.clientY });
-                  }}
-                  onMouseMove={(e) => setMousePosition({ x: e.clientX, y: e.clientY })}
-                  onMouseLeave={() => setHoveredSpell(null)}
-                />
-              ))}
-              {customSpellsForLevel.map((spell) => (
-                <CustomSpellCard
-                  key={spell.id}
-                  spell={spell}
-                  level={level}
-                  isDarkMode={isDarkMode}
-                  updateCustomSpell={updateCustomSpell}
-                  removeCustomSpell={removeCustomSpell}
-                />
-              ))}
+              {knownSpells.length > 0 && (
+                <div
+                  className="grid gap-3"
+                  style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}
+                >
+                  {knownSpells.map((spell, i) => (
+                    <div
+                      key={i}
+                      className="cursor-pointer transition-transform hover:scale-[1.02]"
+                      onClick={() => onOpenCard(spell)}
+                    >
+                      <SpellCardFace spell={spell} className="w-full aspect-[5/7]" />
+                    </div>
+                  ))}
+                </div>
+              )}
+              {customSpellsForLevel.length > 0 && (
+                <div className={`space-y-1.5 ${knownSpells.length > 0 ? 'mt-3' : ''}`}>
+                  {customSpellsForLevel.map((spell) => (
+                    <CustomSpellCard
+                      key={spell.id}
+                      spell={spell}
+                      level={level}
+                      isDarkMode={isDarkMode}
+                      updateCustomSpell={updateCustomSpell}
+                      removeCustomSpell={removeCustomSpell}
+                    />
+                  ))}
+                </div>
+              )}
             </>
           )}
         </div>
@@ -620,10 +555,6 @@ export default function SpellsTab({
   addCustomSpell,
   removeCustomSpell,
   updateCustomSpell,
-  hoveredSpell: _hoveredSpell,
-  setHoveredSpell,
-  mousePosition: _mousePosition,
-  setMousePosition,
 }: SpellsTabProps) {
   const abilityKey = getSpellcastingAbility();
   const abilityShort = abilityKey.slice(0, 3).toUpperCase();
@@ -777,8 +708,6 @@ export default function SpellsTab({
           addCustomSpell={addCustomSpell}
           removeCustomSpell={removeCustomSpell}
           updateCustomSpell={updateCustomSpell}
-          setHoveredSpell={setHoveredSpell}
-          setMousePosition={setMousePosition}
           onOpenCard={setViewingSpell}
         />
         {accessibleSpellLevels.map((level) => (
@@ -792,8 +721,6 @@ export default function SpellsTab({
             addCustomSpell={addCustomSpell}
             removeCustomSpell={removeCustomSpell}
             updateCustomSpell={updateCustomSpell}
-            setHoveredSpell={setHoveredSpell}
-            setMousePosition={setMousePosition}
             onOpenCard={setViewingSpell}
           />
         ))}

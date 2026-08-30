@@ -46,9 +46,7 @@ export default function CharacterSheet() {
   const [spellSearchTerm, setSpellSearchTerm] = useState('');
   const [selectedSpellClass, setSelectedSpellClass] = useState('All Classes');
   const [selectedSpellLevels, setSelectedSpellLevels] = useState<Set<number>>(new Set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]));
-  const [hoveredSpell, setHoveredSpell] = useState<any>(null);
   const [knownSpellsOverride, setKnownSpellsOverride] = useState<number | null>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   // Custom spells state
   const [customSpells, setCustomSpells] = useState<{ [level: number]: any[] }>({});
@@ -3325,10 +3323,6 @@ export default function CharacterSheet() {
               addCustomSpell={addCustomSpell}
               removeCustomSpell={removeCustomSpell}
               updateCustomSpell={updateCustomSpell}
-              hoveredSpell={hoveredSpell}
-              setHoveredSpell={setHoveredSpell}
-              mousePosition={mousePosition}
-              setMousePosition={setMousePosition}
             />
           )}
 
@@ -3447,108 +3441,6 @@ export default function CharacterSheet() {
               skillBonuses={skillBonuses}
               setSkillBonuses={setSkillBonuses}
             />
-          )}
-
-          {/* Spell Hover Card */}
-          {hoveredSpell && (
-            <div
-              className="fixed z-50 pointer-events-none"
-              style={{
-                left: mousePosition.x + 20,
-                top: mousePosition.y - 10,
-                maxWidth: '400px',
-              }}
-            >
-              <div
-                className={`p-4 rounded-lg border shadow-xl ${
-                  isDarkMode ? 'sheet-card text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
-                }`}
-              >
-                <div className="space-y-3">
-                  {/* Spell Name and Level */}
-                  <div className={`border-b pb-2 ${isDarkMode ? 'border-white/15' : 'border-gray-300'}`}>
-                    <h3 className="text-lg font-bold text-orange-400">
-                      {hoveredSpell.Name || hoveredSpell.name || 'Unknown Spell'}
-                    </h3>
-                    <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                      {isNaN(parseFloat(hoveredSpell.Level !== undefined ? hoveredSpell.Level : hoveredSpell.level))
-                        ? 'Unknown Level'
-                        : parseFloat(hoveredSpell.Level !== undefined ? hoveredSpell.Level : hoveredSpell.level) === 0
-                          ? 'Cantrip'
-                          : `Level ${Math.floor(parseFloat(hoveredSpell.Level !== undefined ? hoveredSpell.Level : hoveredSpell.level))}`}{' '}
-                      • {hoveredSpell.School || hoveredSpell.school || 'Unknown School'}
-                    </div>
-                  </div>
-
-                  {/* Spell Stats */}
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div>
-                      <span className="font-semibold text-orange-300">Casting Time:</span>
-                      <div className={`${isDarkMode ? 'text-gray-300' : 'text-gray-900'}`}>
-                        {hoveredSpell.CastingTime || hoveredSpell.casting_time || hoveredSpell.castingTime || 'Unknown'}
-                      </div>
-                    </div>
-                    <div>
-                      <span className="font-semibold text-orange-300">Range:</span>
-                      <div className={`${isDarkMode ? 'text-gray-300' : 'text-gray-900'}`}>
-                        {hoveredSpell.Range || hoveredSpell.range || 'Unknown'}
-                      </div>
-                    </div>
-                    <div>
-                      <span className="font-semibold text-orange-300">Duration:</span>
-                      <div className={`${isDarkMode ? 'text-gray-300' : 'text-gray-900'}`}>
-                        {hoveredSpell.Duration || hoveredSpell.duration || 'Unknown'}
-                      </div>
-                    </div>
-                    <div>
-                      <span className="font-semibold text-orange-300">Components:</span>
-                      <div className={`${isDarkMode ? 'text-gray-300' : 'text-gray-900'}`}>
-                        {hoveredSpell.Components || hoveredSpell.components || 'Unknown'}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Area/Targets */}
-                  {(hoveredSpell['Area or Targets'] ||
-                    hoveredSpell.area_of_effect ||
-                    hoveredSpell.areaOfEffect ||
-                    hoveredSpell.targets) && (
-                    <div className="text-sm">
-                      <span className="font-semibold text-orange-300">Area/Targets:</span>
-                      <div className={`${isDarkMode ? 'text-gray-300' : 'text-gray-900'}`}>
-                        {hoveredSpell['Area or Targets'] ||
-                          hoveredSpell.area_of_effect ||
-                          hoveredSpell.areaOfEffect ||
-                          hoveredSpell.targets}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Save/Attack */}
-                  {(hoveredSpell['Save or Attack'] || hoveredSpell.save || hoveredSpell.attack) && (
-                    <div className="text-sm">
-                      <span className="font-semibold text-orange-300">Save/Attack:</span>
-                      <div className={`${isDarkMode ? 'text-gray-300' : 'text-gray-900'}`}>
-                        {hoveredSpell['Save or Attack'] || hoveredSpell.save || hoveredSpell.attack}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Effect/Description */}
-                  <div className="text-sm">
-                    <span className="font-semibold text-orange-300">Effect:</span>
-                    <div
-                      className={`${isDarkMode ? 'text-gray-300' : 'text-gray-900'} sheet-scroll mt-1 max-h-32 overflow-y-auto pr-1`}
-                    >
-                      {hoveredSpell.Effect ||
-                        hoveredSpell.description ||
-                        hoveredSpell.effect ||
-                        'No description available'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           )}
 
           {/* Dark/Light Mode Toggle */}

@@ -217,22 +217,16 @@ function StatBlock({
   );
 }
 
-// ─── Main modal ───────────────────────────────────────────────────────────────
-export default function SpellCardModal({
+// ─── SpellCardFace: the card body, reusable in a modal OR a grid tile ─────────
+export function SpellCardFace({
   spell,
   onClose,
+  className = 'w-full max-w-sm aspect-[5/7] max-h-[90vh]',
 }: {
   spell: any;
-  onClose: () => void;
+  onClose?: () => void;
+  className?: string;
 }) {
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [onClose]);
-
   // Auto-shrink the title so long spell names ("Otiluke's Resilient Sphere")
   // never wrap. Start at 36px and step down until the natural width fits the
   // container.
@@ -245,7 +239,7 @@ export default function SpellCardModal({
     if (!el || !wrap) return;
     let size = 36;
     el.style.fontSize = `${size}px`;
-    while (el.scrollWidth > wrap.clientWidth && size > 14) {
+    while (el.scrollWidth > wrap.clientWidth && size > 10) {
       size -= 1;
       el.style.fontSize = `${size}px`;
     }
@@ -276,13 +270,10 @@ export default function SpellCardModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
-      onClick={onClose}
+      onClick={(e) => e.stopPropagation()}
+      className={`relative sheet-card rounded-2xl overflow-hidden shadow-2xl border-amber-400/40 flex flex-col ${className}`}
     >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="relative sheet-card rounded-2xl w-full max-w-sm aspect-[5/7] max-h-[90vh] overflow-hidden shadow-2xl border-amber-400/40 flex flex-col"
-      >
+      {onClose && (
         <button
           onClick={onClose}
           className="absolute top-3 right-10 text-gray-400 hover:text-white text-lg leading-none z-10"
@@ -290,8 +281,9 @@ export default function SpellCardModal({
         >
           ✕
         </button>
+      )}
 
-        <div className="px-5 pt-7 pb-5 flex-1 min-h-0 flex flex-col">
+      <div className="px-5 pt-7 pb-5 flex-1 min-h-0 flex flex-col">
           {/* Title with soft amber glow — auto-shrinks to fit on one line */}
           <div ref={titleWrapRef} className="text-center overflow-hidden">
             <h2
@@ -358,7 +350,7 @@ export default function SpellCardModal({
               )}
 
               {effect && (
-                <div className="flex-1 min-h-0 rounded-lg bg-black/30 border border-amber-500/20 px-3 py-2 overflow-y-auto sheet-scroll">
+                <div className="flex-1 min-h-0 rounded-lg bg-black/30 border border-amber-500/20 px-3 py-2 overflow-y-auto overscroll-contain sheet-scroll">
                   <p className="text-sm text-gray-100 leading-relaxed whitespace-pre-wrap">{effect}</p>
                 </div>
               )}
@@ -392,7 +384,34 @@ export default function SpellCardModal({
             </div>
           </div>
         </div>
-      </div>
+    </div>
+  );
+}
+
+// ─── Main modal: wraps SpellCardFace with a full-screen backdrop ─────────────
+export default function SpellCardModal({
+  spell,
+  onClose,
+}: {
+  spell: any;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onClose]);
+
+  if (!spell) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <SpellCardFace spell={spell} onClose={onClose} />
     </div>
   );
 }
