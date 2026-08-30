@@ -183,7 +183,7 @@ function SpellLevelSection({
                 {knownSpells.map((spell, i) => (
                   <div
                     key={`known-${i}`}
-                    className="cursor-pointer transition-transform hover:scale-[1.02]"
+                    className="spell-card-sheen rounded-2xl cursor-pointer transition-transform hover:scale-[1.02]"
                     onClick={() => onOpenCard(spell)}
                   >
                     <SpellCardFace spell={spell} className="w-full aspect-[5/7]" />
