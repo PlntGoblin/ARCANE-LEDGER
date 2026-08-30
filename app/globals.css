@@ -698,3 +698,16 @@ option {
     animation: none;
   }
 }
+
+/* Kill the native number spinner — it appears on hover/focus and shoves the
+   value off-centre inside compact pill fields. NumberField already offers
+   text-driven editing, so the arrows aren't load-bearing. */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

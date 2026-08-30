@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Character } from '../../types/character';
 import NumberField from '../NumberField';
 
@@ -45,6 +45,59 @@ const SCHOOL_COLORS: Record<string, string> = {
   Necromancy: 'bg-green-900/50 text-green-300',
   Transmutation: 'bg-orange-900/50 text-orange-300',
 };
+
+// Level tokens used by the sticky HUD's slot pips.
+const LEVEL_COLORS: Record<
+  number,
+  { pip: string; pipUsed: string; text: string; pipHover: string }
+> = {
+  1: { pip: 'border-blue-400', pipUsed: 'bg-blue-500', text: 'text-blue-300', pipHover: 'hover:bg-blue-500/25' },
+  2: { pip: 'border-green-400', pipUsed: 'bg-green-500', text: 'text-green-300', pipHover: 'hover:bg-green-500/25' },
+  3: { pip: 'border-purple-400', pipUsed: 'bg-purple-500', text: 'text-purple-300', pipHover: 'hover:bg-purple-500/25' },
+  4: { pip: 'border-red-400', pipUsed: 'bg-red-500', text: 'text-red-300', pipHover: 'hover:bg-red-500/25' },
+  5: { pip: 'border-yellow-400', pipUsed: 'bg-yellow-500', text: 'text-yellow-300', pipHover: 'hover:bg-yellow-500/25' },
+  6: { pip: 'border-indigo-400', pipUsed: 'bg-indigo-500', text: 'text-indigo-300', pipHover: 'hover:bg-indigo-500/25' },
+  7: { pip: 'border-pink-400', pipUsed: 'bg-pink-500', text: 'text-pink-300', pipHover: 'hover:bg-pink-500/25' },
+  8: { pip: 'border-cyan-400', pipUsed: 'bg-cyan-500', text: 'text-cyan-300', pipHover: 'hover:bg-cyan-500/25' },
+  9: { pip: 'border-orange-400', pipUsed: 'bg-orange-500', text: 'text-orange-300', pipHover: 'hover:bg-orange-500/25' },
+};
+
+// ─── HUD stat pill ────────────────────────────────────────────────────────────
+function StatPill({
+  label,
+  value,
+  title,
+  isDarkMode,
+  tone,
+  highlighted,
+}: {
+  label: string;
+  value: React.ReactNode;
+  title?: string;
+  isDarkMode: boolean;
+  tone?: string;
+  highlighted?: boolean;
+}) {
+  return (
+    <div
+      title={title}
+      className={`flex flex-col items-center px-3 py-1 rounded-md border min-w-[64px] ${
+        highlighted
+          ? 'bg-orange-900/70 border-orange-500'
+          : isDarkMode
+            ? 'bg-black/25 border-white/10'
+            : 'bg-white border-gray-300'
+      }`}
+    >
+      <span className={`text-[10px] uppercase tracking-wider font-semibold ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+        {label}
+      </span>
+      <span className={`text-base font-bold leading-tight ${tone || (isDarkMode ? 'text-white' : 'text-gray-900')}`}>
+        {value}
+      </span>
+    </div>
+  );
+}
 
 // ─── SpellCard: read-only known spell from the master list ───────────────────
 interface SpellCardProps {
@@ -239,6 +292,7 @@ function CustomSpellCard({ spell, level, isDarkMode, updateCustomSpell, removeCu
 interface SpellLevelSectionProps {
   level: number;
   label: string;
+  badge?: string;
   knownSpells: any[];
   customSpellsForLevel: any[];
   isDarkMode: boolean;
@@ -252,6 +306,7 @@ interface SpellLevelSectionProps {
 function SpellLevelSection({
   level,
   label,
+  badge,
   knownSpells,
   customSpellsForLevel,
   isDarkMode,
@@ -275,6 +330,15 @@ function SpellLevelSection({
       >
         <div className="flex items-center gap-2">
           <span className={`font-bold text-base ${isDarkMode ? 'text-gray-100' : 'text-gray-800'}`}>{label}</span>
+          {badge && (
+            <span
+              className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${
+                isDarkMode ? 'bg-amber-500/20 text-amber-300 border border-amber-400/30' : 'bg-amber-100 text-amber-700 border border-amber-300'
+              }`}
+            >
+              {badge}
+            </span>
+          )}
           {totalCount > 0 && (
             <span
               className={`text-xs px-2 py-0.5 rounded-full font-medium ${
@@ -349,6 +413,225 @@ function SpellLevelSection({
   );
 }
 
+// ─── NumberPickerModal: centered picker for tapping to change a small integer ─
+function NumberPickerModal({
+  title,
+  value,
+  min = 0,
+  max = 999,
+  autoValue,
+  onCommit,
+  onClose,
+  isDarkMode,
+}: {
+  title: string;
+  value: number;
+  min?: number;
+  max?: number;
+  autoValue?: number;
+  onCommit: (next: number) => void;
+  onClose: () => void;
+  isDarkMode: boolean;
+}) {
+  const [draft, setDraft] = useState<number>(value);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'Enter') {
+        onCommit(draft);
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [draft, onCommit, onClose]);
+
+  const clamp = (n: number) => Math.max(min, Math.min(max, n));
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className={`min-w-[300px] rounded-xl p-6 shadow-2xl border ${
+          isDarkMode ? 'bg-slate-800 border-amber-400/30' : 'bg-white border-gray-300'
+        }`}
+      >
+        <h3
+          className={`text-xs uppercase tracking-wider text-center mb-5 font-semibold ${
+            isDarkMode ? 'text-gray-400' : 'text-gray-500'
+          }`}
+        >
+          {title}
+        </h3>
+        <div className="flex items-center justify-center gap-4 mb-4">
+          <button
+            onClick={() => setDraft(clamp(draft - 1))}
+            className="w-12 h-12 rounded-full text-2xl font-bold text-white bg-red-800/70 hover:bg-red-700 transition-colors"
+            title="Decrease"
+          >
+            −
+          </button>
+          <NumberField
+            min={String(min)}
+            max={String(max)}
+            value={draft}
+            onCommit={(v) => setDraft(clamp(v))}
+            onFocus={(e) => e.target.select()}
+            autoFocus
+            className={`w-24 text-4xl font-bold text-center bg-transparent outline-none border-b-2 ${
+              isDarkMode ? 'text-white border-amber-400/50' : 'text-gray-900 border-amber-500/70'
+            }`}
+          />
+          <button
+            onClick={() => setDraft(clamp(draft + 1))}
+            className="w-12 h-12 rounded-full text-2xl font-bold text-white bg-emerald-800/70 hover:bg-emerald-700 transition-colors"
+            title="Increase"
+          >
+            +
+          </button>
+        </div>
+        {autoValue !== undefined && autoValue !== draft && (
+          <button
+            onClick={() => setDraft(autoValue)}
+            className={`w-full text-xs mb-4 ${isDarkMode ? 'text-orange-300 hover:text-orange-200' : 'text-orange-600 hover:text-orange-500'}`}
+          >
+            ↻ Reset to auto ({autoValue})
+          </button>
+        )}
+        <div className="flex gap-2 justify-end">
+          <button
+            onClick={onClose}
+            className={`px-4 py-1.5 text-sm rounded transition-colors ${
+              isDarkMode ? 'bg-slate-700 hover:bg-slate-600 text-gray-200' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+            }`}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => {
+              onCommit(draft);
+              onClose();
+            }}
+            className="px-4 py-1.5 text-sm rounded font-semibold text-white bg-amber-600 hover:bg-amber-500 transition-colors"
+          >
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── SorceryBar: compact sorcery-points meter for the HUD ────────────────────
+function SorceryBar({
+  character,
+  setCharacter,
+  isDarkMode,
+}: {
+  character: Character;
+  setCharacter: React.Dispatch<React.SetStateAction<Character>>;
+  isDarkMode: boolean;
+}) {
+  const remaining = character.sorceryPoints.max - character.sorceryPoints.used;
+  const pct = character.sorceryPoints.max > 0 ? remaining / character.sorceryPoints.max : 0;
+  const fill = pct <= 0.25 ? '#ef4444' : pct <= 0.5 ? '#f59e0b' : pct <= 0.75 ? '#eab308' : '#10b981';
+
+  return (
+    <div className="flex-1 min-w-[220px] flex items-center gap-2">
+      <span className={`text-[10px] uppercase tracking-wider font-semibold ${isDarkMode ? 'text-orange-300' : 'text-orange-600'}`}>
+        Sorcery
+      </span>
+      <div className={`flex-1 ${isDarkMode ? 'bg-slate-700' : 'bg-gray-200'} rounded-full h-6 relative overflow-hidden`}>
+        <div
+          className={`h-full transition-all duration-300 liquid-fill ${pct <= 0.25 ? 'liquid-fill-critical' : ''}`}
+          style={{ width: `${pct * 100}%`, backgroundColor: fill, color: fill }}
+        />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} drop-shadow`}>
+            {remaining} / {character.sorceryPoints.max}
+          </span>
+        </div>
+      </div>
+      <div className="flex gap-1">
+        <button
+          onClick={() =>
+            setCharacter((prev) => ({
+              ...prev,
+              sorceryPoints: {
+                ...prev.sorceryPoints,
+                used: Math.min(prev.sorceryPoints.max, prev.sorceryPoints.used + 1),
+              },
+            }))
+          }
+          className={`w-6 h-6 text-xs rounded border transition-colors ${
+            isDarkMode ? 'bg-red-900/50 border-red-400/25 text-red-50 hover:bg-red-800/65' : 'bg-red-200 border-red-300 text-red-700 hover:bg-red-300'
+          }`}
+          disabled={character.sorceryPoints.used >= character.sorceryPoints.max}
+          title="Spend one"
+        >
+          −
+        </button>
+        <button
+          onClick={() =>
+            setCharacter((prev) => ({
+              ...prev,
+              sorceryPoints: { ...prev.sorceryPoints, used: Math.max(0, prev.sorceryPoints.used - 1) },
+            }))
+          }
+          className={`w-6 h-6 text-xs rounded border transition-colors ${
+            isDarkMode ? 'bg-emerald-700/60 border-emerald-400/25 text-emerald-50 hover:bg-emerald-600/75' : 'bg-green-200 border-green-300 text-green-700 hover:bg-green-300'
+          }`}
+          disabled={character.sorceryPoints.used <= 0}
+          title="Restore one"
+        >
+          +
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── SorceryCostRef: collapsed reference table (Sorcerer only) ───────────────
+function SorceryCostRef({ isDarkMode }: { isDarkMode: boolean }) {
+  const [open, setOpen] = useState(false);
+  const rows: [string, number][] = [
+    ['Cantrip', 0],
+    ['1st', 2],
+    ['2nd', 3],
+    ['3rd', 5],
+    ['4th', 6],
+    ['5th', 7],
+  ];
+  return (
+    <div className={`rounded-lg border ${isDarkMode ? 'sheet-card' : 'bg-white border-gray-200'}`}>
+      <button
+        onClick={() => setOpen(!open)}
+        className={`w-full flex items-center justify-between px-4 py-2 text-sm font-semibold ${isDarkMode ? 'text-orange-300' : 'text-orange-600'}`}
+      >
+        <span>Sorcery Point Costs</span>
+        <span className={`text-xs transition-transform ${open ? '' : '-rotate-90'}`}>▼</span>
+      </button>
+      {open && (
+        <div className={`px-4 pb-3 grid grid-cols-6 gap-2 border-t ${isDarkMode ? 'border-slate-700' : 'border-gray-100'} pt-2`}>
+          {rows.map(([label, cost]) => (
+            <div
+              key={label}
+              className={`text-center rounded px-2 py-1 ${isDarkMode ? 'bg-black/25' : 'bg-gray-100'}`}
+            >
+              <div className={`text-[10px] uppercase font-semibold ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{label}</div>
+              <div className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{cost}</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Main SpellsTab ───────────────────────────────────────────────────────────
 export default function SpellsTab({
   character,
@@ -379,481 +662,151 @@ export default function SpellsTab({
   mousePosition: _mousePosition,
   setMousePosition,
 }: SpellsTabProps) {
+  const abilityKey = getSpellcastingAbility();
+  const abilityShort = abilityKey.slice(0, 3).toUpperCase();
+  const abilityMod = getModifier(getFinalAbilityScore(abilityKey));
+  const abilityModStr = `${abilityMod >= 0 ? '+' : ''}${abilityMod}`;
+  const spellAtk = calculateSpellAttack();
+
+  const activeSlotLevels = [1, 2, 3, 4, 5, 6, 7, 8, 9].filter((l) => spellSlots[l] && spellSlots[l].max > 0);
+  const accessibleSpellLevels = getAccessibleSpellLevels(character.class, character.level).filter((l) => l !== 0);
+  const isSorcerer = character.class === 'Sorcerer';
+  const [knownEditorOpen, setKnownEditorOpen] = useState(false);
+
   return (
-    <div className="space-y-8">
-      {/* Top Row: Spellcasting Controls and Spell Slots Side by Side */}
-      <div className="grid grid-cols-2 gap-6 items-start">
-        {/* Left: Spellcasting Controls */}
-        <div className={`p-6 rounded-lg border h-fit ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}>
-          <div className="grid grid-cols-2 gap-4">
-            {/* Spellcasting Ability */}
-            <div className="text-center">
-              <label className={`block text-sm font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                Spellcasting Ability
-              </label>
-              <div
-                className={`w-full px-3 py-2 rounded border text-center font-bold cursor-help ${
-                  isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
-                }`}
-                title={`Auto-determined by class: ${character.class} uses ${getSpellcastingAbility()}`}
-              >
-                {getSpellcastingAbility().charAt(0).toUpperCase() + getSpellcastingAbility().slice(1)}
-              </div>
-            </div>
-
-            {/* Number of Known/Prepared Spells */}
-            <div className="text-center">
-              <label className={`block text-sm font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                Known/Prepared Spells
-              </label>
-              <div className="relative">
-                <NumberField
-                  min="0"
-                  value={getEffectiveKnownSpells()}
-                  onCommit={(value) => {
-                    const calculated = calculateKnownSpells();
-                    setKnownSpellsOverride(value === calculated ? null : value);
-                    setCharacter({ ...character, knownPreparedSpells: value });
-                  }}
-                  onFocus={(e) => e.target.select()}
-                  className={`w-full px-3 py-2 rounded border text-center font-bold ${
-                    knownSpellsOverride !== null
-                      ? 'bg-orange-900 border-orange-500 text-white'
-                      : isDarkMode
-                        ? 'bg-transparent border-slate-600 text-white'
-                        : 'bg-transparent border-gray-400 text-gray-900'
-                  } focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-500`}
-                  title={
-                    knownSpellsOverride !== null
-                      ? `Manual override: ${knownSpellsOverride} (Auto: ${calculateKnownSpells()})`
-                      : `Auto-calculated: ${calculateKnownSpells()}`
-                  }
-                />
-                {knownSpellsOverride !== null && (
-                  <button
-                    onClick={() => {
-                      setKnownSpellsOverride(null);
-                      setCharacter({ ...character, knownPreparedSpells: calculateKnownSpells() });
-                    }}
-                    className="absolute right-1 top-1/2 transform -translate-y-1/2 text-orange-400 hover:text-orange-300 text-xs"
-                    title="Reset to auto-calculated value"
-                  >
-                    ↻
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Spell DC */}
-            <div className="text-center">
-              <label className={`block text-sm font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                Spell DC
-              </label>
-              <div
-                className={`w-full px-3 py-2 rounded border text-center font-bold cursor-help ${
-                  isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
-                }`}
-                title={`Auto-calculated: 8 + Prof Bonus (${character.proficiencyBonus}) + ${getSpellcastingAbility().toUpperCase()} Mod (${getModifier(getFinalAbilityScore(getSpellcastingAbility())) >= 0 ? '+' : ''}${getModifier(getFinalAbilityScore(getSpellcastingAbility()))})`}
-              >
-                {calculateSpellDC()}
-              </div>
-            </div>
-
-            {/* Spell Attack */}
-            <div className="text-center">
-              <label className={`block text-sm font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
-                Spell Attack
-              </label>
-              <div
-                className={`w-full px-3 py-2 rounded border text-center font-bold cursor-help ${
-                  isDarkMode ? 'bg-black/30 border-white/10 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'
-                }`}
-                title={`Auto-calculated: Prof Bonus (${character.proficiencyBonus}) + ${getSpellcastingAbility().toUpperCase()} Mod (${getModifier(getFinalAbilityScore(getSpellcastingAbility())) >= 0 ? '+' : ''}${getModifier(getFinalAbilityScore(getSpellcastingAbility()))})`}
-              >
-                {calculateSpellAttack() >= 0 ? '+' : ''}
-                {calculateSpellAttack()}
-              </div>
-            </div>
+    <div className="space-y-4">
+      {/* Sticky Spellcasting HUD */}
+      <div
+        className={`sticky top-0 z-20 p-3 rounded-lg border shadow-xl ${
+          isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'
+        }`}
+      >
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Stat pills */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <StatPill
+              label="Ability"
+              value={abilityShort}
+              title={`${character.class} uses ${abilityKey.charAt(0).toUpperCase() + abilityKey.slice(1)}`}
+              isDarkMode={isDarkMode}
+            />
+            <button
+              onClick={() => setKnownEditorOpen(true)}
+              title={
+                knownSpellsOverride !== null
+                  ? `Manual override: ${knownSpellsOverride} (Auto: ${calculateKnownSpells()}). Click to edit.`
+                  : `Auto-calculated: ${calculateKnownSpells()}. Click to edit.`
+              }
+              className={`flex flex-col items-center px-3 py-1 rounded-md border min-w-[64px] transition-colors ${
+                knownSpellsOverride !== null
+                  ? 'bg-orange-900/70 border-orange-500 hover:bg-orange-800/80'
+                  : isDarkMode
+                    ? 'bg-black/25 border-white/10 hover:bg-black/40'
+                    : 'bg-white border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              <span className={`text-[10px] uppercase tracking-wider font-semibold ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                Known
+              </span>
+              <span className={`text-base font-bold leading-tight ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                {getEffectiveKnownSpells()}
+              </span>
+            </button>
+            <StatPill
+              label="DC"
+              value={calculateSpellDC()}
+              title={`8 + Prof (${character.proficiencyBonus}) + ${abilityShort} (${abilityModStr})`}
+              isDarkMode={isDarkMode}
+            />
+            <StatPill
+              label="Attack"
+              value={`${spellAtk >= 0 ? '+' : ''}${spellAtk}`}
+              title={`Prof (${character.proficiencyBonus}) + ${abilityShort} (${abilityModStr})`}
+              isDarkMode={isDarkMode}
+            />
           </div>
-        </div>
 
-        {/* Right: Spell Slots / Sorcery Points Tracker */}
-        <div className={`p-6 rounded-lg border ${isDarkMode ? 'sheet-card' : 'bg-gray-100 border-gray-300'}`}>
-          {character.class === 'Sorcerer' ? (
-            <div className="space-y-4">
-              <div className="mb-6">
-                <h3 className={`text-lg font-bold mb-3 ${isDarkMode ? 'text-orange-400' : 'text-orange-600'}`}>
-                  Sorcery Points
-                </h3>
-                <div className="flex items-center gap-4 mb-2">
-                  <div
-                    className={`flex-1 ${isDarkMode ? 'bg-slate-700' : 'bg-gray-200'} rounded-full h-8 relative overflow-hidden`}
-                  >
-                    {(() => {
-                      const remaining = character.sorceryPoints.max - character.sorceryPoints.used;
-                      const percentage = character.sorceryPoints.max > 0 ? remaining / character.sorceryPoints.max : 0;
-                      const fill =
-                        percentage <= 0.25
-                          ? '#ef4444'
-                          : percentage <= 0.5
-                            ? '#f59e0b'
-                            : percentage <= 0.75
-                              ? '#eab308'
-                              : '#10b981';
-                      return (
-                        <div
-                          className={`h-full transition-all duration-300 liquid-fill ${
-                            percentage <= 0.25 ? 'liquid-fill-critical' : ''
-                          }`}
-                          style={{
-                            width: `${percentage * 100}%`,
-                            backgroundColor: fill,
-                            color: fill,
+          {/* Middle: slot pips OR sorcery bar */}
+          {isSorcerer ? (
+            <SorceryBar character={character} setCharacter={setCharacter} isDarkMode={isDarkMode} />
+          ) : activeSlotLevels.length > 0 ? (
+            <div className="flex-1 min-w-0 flex items-start gap-3 justify-center overflow-x-auto">
+              {activeSlotLevels.map((level) => {
+                const slots = spellSlots[level];
+                const colors = LEVEL_COLORS[level];
+                return (
+                  <div key={level} className="flex flex-col items-center gap-1">
+                    <span className={`text-[10px] font-bold uppercase tracking-wider ${colors.text}`}>L{level}</span>
+                    <div className="grid grid-cols-2 gap-1 justify-items-center">
+                      {Array.from({ length: slots.max }, (_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => {
+                            if (index < slots.used) {
+                              setSpellSlots((prev) => ({
+                                ...prev,
+                                [level]: { ...prev[level], used: Math.max(0, prev[level].used - 1) },
+                              }));
+                            } else {
+                              castSpell(level);
+                            }
                           }}
+                          className={`w-3.5 h-3.5 rounded-full border-2 transition-all hover:scale-125 ${
+                            index < slots.used
+                              ? colors.pipUsed + ' border-transparent shadow-sm'
+                              : 'bg-transparent ' + colors.pip + ' ' + colors.pipHover
+                          }`}
+                          title={index < slots.used ? 'Click to restore this slot' : 'Click to cast'}
                         />
-                      );
-                    })()}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span
-                        className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} drop-shadow-md`}
-                      >
-                        {character.sorceryPoints.max - character.sorceryPoints.used} / {character.sorceryPoints.max}
-                      </span>
+                      ))}
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() =>
-                        setCharacter((prev) => ({
-                          ...prev,
-                          sorceryPoints: {
-                            ...prev.sorceryPoints,
-                            used: Math.min(prev.sorceryPoints.max, prev.sorceryPoints.used + 1),
-                          },
-                        }))
-                      }
-                      className={`px-3 py-1 text-sm rounded border transition-colors ${isDarkMode ? 'bg-red-900/50 border-red-400/25 text-red-50 hover:bg-red-800/65' : 'bg-red-200 border-red-300 text-red-700 hover:bg-red-300'}`}
-                      disabled={character.sorceryPoints.used >= character.sorceryPoints.max}
-                    >
-                      -
-                    </button>
-                    <button
-                      onClick={() =>
-                        setCharacter((prev) => ({
-                          ...prev,
-                          sorceryPoints: { ...prev.sorceryPoints, used: Math.max(0, prev.sorceryPoints.used - 1) },
-                        }))
-                      }
-                      className={`px-3 py-1 text-sm rounded border transition-colors ${isDarkMode ? 'bg-emerald-700/60 border-emerald-400/25 text-emerald-50 hover:bg-emerald-600/75' : 'bg-green-200 border-green-300 text-green-700 hover:bg-green-300'}`}
-                      disabled={character.sorceryPoints.used <= 0}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-                <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'} italic`}>
-                  You regain all expended Sorcery Points on a long rest.
-                </p>
-              </div>
-
-              <div>
-                <h4 className={`text-sm font-bold mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Sorcery Point Costs
-                </h4>
-                <div className="grid grid-cols-2 gap-3">
-                  <div
-                    className={`p-3 rounded border ${isDarkMode ? 'bg-black/30 border-white/10' : 'bg-gray-200 border-gray-300'}`}
-                  >
-                    <table className="w-full text-xs">
-                      <thead>
-                        <tr className={`border-b ${isDarkMode ? 'border-slate-500' : 'border-gray-400'}`}>
-                          <th className={`text-left py-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            Spell Level
-                          </th>
-                          <th className={`text-right py-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            Points
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td className={`py-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Cantrip</td>
-                          <td className={`text-right ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>0</td>
-                        </tr>
-                        <tr>
-                          <td className={`py-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>1st</td>
-                          <td className={`text-right ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>2</td>
-                        </tr>
-                        <tr>
-                          <td className={`py-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>2nd</td>
-                          <td className={`text-right ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>3</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div
-                    className={`p-3 rounded border ${isDarkMode ? 'bg-black/30 border-white/10' : 'bg-gray-200 border-gray-300'}`}
-                  >
-                    <table className="w-full text-xs">
-                      <thead>
-                        <tr className={`border-b ${isDarkMode ? 'border-slate-500' : 'border-gray-400'}`}>
-                          <th className={`text-left py-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            Spell Level
-                          </th>
-                          <th className={`text-right py-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            Points
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td className={`py-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>3rd</td>
-                          <td className={`text-right ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>5</td>
-                        </tr>
-                        <tr>
-                          <td className={`py-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>4th</td>
-                          <td className={`text-right ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>6</td>
-                        </tr>
-                        <tr>
-                          <td className={`py-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>5th</td>
-                          <td className={`text-right ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>7</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex gap-2 justify-end mt-4">
-                <button
-                  onClick={() =>
-                    setCharacter((prev) => ({ ...prev, sorceryPoints: { ...prev.sorceryPoints, used: 0 } }))
-                  }
-                  className={`px-3 py-1 text-xs rounded border transition-colors ${isDarkMode ? 'bg-emerald-700/60 border-emerald-400/25 text-emerald-50 hover:bg-emerald-600/75' : 'bg-green-200 border-green-300 text-green-700 hover:bg-green-300'}`}
-                >
-                  Long Rest (Restore All)
-                </button>
-              </div>
-            </div>
-          ) : Object.keys(spellSlots).length > 0 ? (
-            <div className="flex items-start gap-4">
-              <div
-                className={`flex flex-col items-center ${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-sm font-bold mt-8`}
-              >
-                <div className="transform -rotate-90 whitespace-nowrap">TOTAL</div>
-                <div className="transform -rotate-90 whitespace-nowrap mt-8">SLOTS</div>
-              </div>
-
-              <div className="flex-1">
-                <div className="grid grid-cols-9 gap-1 items-start">
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => {
-                    const slots = spellSlots[level];
-                    const hasSlots = slots && slots.max > 0;
-                    const levelColors = {
-                      1: {
-                        bg: 'bg-blue-100',
-                        border: 'border-blue-300',
-                        text: 'text-blue-800',
-                        slot: 'border-blue-400',
-                        slotUsed: 'bg-blue-500',
-                        slotHover: 'hover:bg-blue-200',
-                      },
-                      2: {
-                        bg: 'bg-green-100',
-                        border: 'border-green-300',
-                        text: 'text-green-800',
-                        slot: 'border-green-400',
-                        slotUsed: 'bg-green-500',
-                        slotHover: 'hover:bg-green-200',
-                      },
-                      3: {
-                        bg: 'bg-purple-100',
-                        border: 'border-purple-300',
-                        text: 'text-purple-800',
-                        slot: 'border-purple-400',
-                        slotUsed: 'bg-purple-500',
-                        slotHover: 'hover:bg-purple-200',
-                      },
-                      4: {
-                        bg: 'bg-red-100',
-                        border: 'border-red-300',
-                        text: 'text-red-800',
-                        slot: 'border-red-400',
-                        slotUsed: 'bg-red-500',
-                        slotHover: 'hover:bg-red-200',
-                      },
-                      5: {
-                        bg: 'bg-yellow-100',
-                        border: 'border-yellow-300',
-                        text: 'text-yellow-800',
-                        slot: 'border-yellow-400',
-                        slotUsed: 'bg-yellow-500',
-                        slotHover: 'hover:bg-yellow-200',
-                      },
-                      6: {
-                        bg: 'bg-indigo-100',
-                        border: 'border-indigo-300',
-                        text: 'text-indigo-800',
-                        slot: 'border-indigo-400',
-                        slotUsed: 'bg-indigo-500',
-                        slotHover: 'hover:bg-indigo-200',
-                      },
-                      7: {
-                        bg: 'bg-pink-100',
-                        border: 'border-pink-300',
-                        text: 'text-pink-800',
-                        slot: 'border-pink-400',
-                        slotUsed: 'bg-pink-500',
-                        slotHover: 'hover:bg-pink-200',
-                      },
-                      8: {
-                        bg: 'bg-cyan-100',
-                        border: 'border-cyan-300',
-                        text: 'text-cyan-800',
-                        slot: 'border-cyan-400',
-                        slotUsed: 'bg-cyan-500',
-                        slotHover: 'hover:bg-cyan-200',
-                      },
-                      9: {
-                        bg: 'bg-orange-100',
-                        border: 'border-orange-300',
-                        text: 'text-orange-800',
-                        slot: 'border-orange-400',
-                        slotUsed: 'bg-orange-500',
-                        slotHover: 'hover:bg-orange-200',
-                      },
-                    };
-                    const colors = levelColors[level as keyof typeof levelColors];
-                    // levelColors is a light-mode pastel set; on the dark glass
-                    // those painted bright blocks. Dark mode keeps the hue on
-                    // the level number and the pips, but the box itself goes
-                    // translucent like every other well. Class names are spelled
-                    // out because Tailwind can't see interpolated ones.
-                    const darkLevelText: Record<number, string> = {
-                      1: 'text-blue-300',
-                      2: 'text-green-300',
-                      3: 'text-purple-300',
-                      4: 'text-red-300',
-                      5: 'text-yellow-300',
-                      6: 'text-indigo-300',
-                      7: 'text-pink-300',
-                      8: 'text-cyan-300',
-                      9: 'text-orange-300',
-                    };
-                    const boxClass = isDarkMode ? 'bg-black/25 border-white/15' : colors.bg + ' ' + colors.border;
-                    const levelTextClass = isDarkMode ? darkLevelText[level] : colors.text;
-
-                    return (
-                      <div
-                        key={level}
-                        className={`flex flex-col items-center relative ${hasSlots ? 'p-1 rounded-lg border ' + boxClass : ''}`}
-                      >
-                        {hasSlots && (
-                          <div className="absolute -top-1 -right-1 flex gap-1">
-                            <button
-                              onClick={() =>
-                                setSpellSlots((prev) => ({
-                                  ...prev,
-                                  [level]: { ...prev[level], used: Math.max(0, prev[level].used - 1) },
-                                }))
-                              }
-                              className="w-3 h-3 bg-red-700/75 hover:bg-red-600/85 text-white text-xs font-bold rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
-                              title="Restore one slot"
-                              disabled={slots.used <= 0}
-                            >
-                              -
-                            </button>
-                            <button
-                              onClick={() =>
-                                setSpellSlots((prev) => ({
-                                  ...prev,
-                                  [level]: { ...prev[level], used: Math.min(prev[level].max, prev[level].used + 1) },
-                                }))
-                              }
-                              className="w-3 h-3 bg-emerald-700/75 hover:bg-emerald-600/85 text-white text-xs font-bold rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
-                              title="Use one slot"
-                              disabled={slots.used >= slots.max}
-                            >
-                              +
-                            </button>
-                          </div>
-                        )}
-                        <div
-                          className={`w-8 h-8 flex items-center justify-center border-2 mb-2 rounded transition-all duration-300 ${hasSlots ? colors.bg + ' ' + colors.border + ' ' + colors.text + ' shadow-sm' : 'bg-gray-600 border-gray-500 text-gray-400'}`}
-                        >
-                          <span className="text-sm font-bold">{hasSlots ? slots.max : 0}</span>
-                        </div>
-                        <div
-                          className={`text-xs mb-1 font-bold transition-colors duration-300 ${hasSlots ? levelTextClass : 'text-gray-400'}`}
-                        >
-                          {level}
-                        </div>
-                        <div className="flex flex-col gap-1 items-center">
-                          {hasSlots &&
-                            Array.from({ length: slots.max }, (_, index) => (
-                              <button
-                                key={index}
-                                onClick={() => {
-                                  if (index < slots.used) {
-                                    setSpellSlots((prev) => ({
-                                      ...prev,
-                                      [level]: { ...prev[level], used: Math.max(0, prev[level].used - 1) },
-                                    }));
-                                  } else {
-                                    castSpell(level);
-                                  }
-                                }}
-                                className={`w-4 h-4 rounded-full border-2 transition-all duration-300 hover:scale-125 hover:shadow-lg ${
-                                  index < slots.used
-                                    ? colors.slotUsed + ' border-gray-300 hover:brightness-110 shadow-md'
-                                    : 'bg-transparent ' +
-                                      colors.slot +
-                                      ' ' +
-                                      colors.slotHover +
-                                      ' hover:border-2 hover:shadow-md'
-                                }`}
-                                title={index < slots.used ? 'Click to restore this slot' : 'Click to use this slot'}
-                              />
-                            ))}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+                );
+              })}
             </div>
           ) : (
-            <div className={`text-center ${isDarkMode ? 'text-gray-400' : 'text-gray-600'} py-8`}>
-              <p>
-                No spell slots available for {character.class} level {character.level}
-              </p>
-              <p className="text-xs mt-2">Some classes gain spellcasting at higher levels</p>
-            </div>
+            <span className={`flex-1 text-center text-xs italic ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+              No spell slots for {character.class} L{character.level}
+            </span>
           )}
 
-          {/* Rest Buttons */}
-          <div className="flex gap-2 justify-end mt-6">
+          {/* Rest buttons */}
+          <div className="flex gap-2 ml-auto">
             <button
               onClick={shortRest}
-              className={`px-3 py-1 text-xs rounded border transition-colors ${isDarkMode ? 'bg-sky-800/55 border-sky-400/25 text-sky-50 hover:bg-sky-700/70' : 'bg-blue-200 border-blue-300 text-blue-700 hover:bg-blue-300'}`}
+              className={`px-3 py-1 text-xs rounded border transition-colors ${
+                isDarkMode ? 'bg-sky-800/55 border-sky-400/25 text-sky-50 hover:bg-sky-700/70' : 'bg-blue-200 border-blue-300 text-blue-700 hover:bg-blue-300'
+              }`}
+              title={character.class === 'Warlock' ? 'Short Rest (Restore All)' : 'Short Rest'}
             >
-              Short Rest {character.class === 'Warlock' ? '(Restore All)' : ''}
+              Short Rest
             </button>
             <button
-              onClick={longRest}
-              className={`px-3 py-1 text-xs rounded border transition-colors ${isDarkMode ? 'bg-emerald-700/60 border-emerald-400/25 text-emerald-50 hover:bg-emerald-600/75' : 'bg-green-200 border-green-300 text-green-700 hover:bg-green-300'}`}
+              onClick={
+                isSorcerer
+                  ? () => setCharacter((prev) => ({ ...prev, sorceryPoints: { ...prev.sorceryPoints, used: 0 } }))
+                  : longRest
+              }
+              className={`px-3 py-1 text-xs rounded border transition-colors ${
+                isDarkMode ? 'bg-emerald-700/60 border-emerald-400/25 text-emerald-50 hover:bg-emerald-600/75' : 'bg-green-200 border-green-300 text-green-700 hover:bg-green-300'
+              }`}
+              title="Long Rest (Restore All)"
             >
-              Long Rest (Restore All)
+              Long Rest
             </button>
           </div>
         </div>
       </div>
+
+      {/* Sorcery cost reference (only for Sorcerers) */}
+      {isSorcerer && <SorceryCostRef isDarkMode={isDarkMode} />}
 
       {/* Spell Level Accordion Sections */}
       <div className="space-y-3">
         <SpellLevelSection
           level={0}
           label="Cantrips"
+          badge="At Will"
           knownSpells={getKnownSpellsForLevel(0)}
           customSpellsForLevel={customSpells[0] || []}
           isDarkMode={isDarkMode}
@@ -863,24 +816,38 @@ export default function SpellsTab({
           setHoveredSpell={setHoveredSpell}
           setMousePosition={setMousePosition}
         />
-        {Array.from({ length: 9 }, (_, i) => i + 1)
-          .filter((level) => getAccessibleSpellLevels(character.class, character.level).includes(level))
-          .map((level) => (
-            <SpellLevelSection
-              key={level}
-              level={level}
-              label={`Level ${level}`}
-              knownSpells={getKnownSpellsForLevel(level)}
-              customSpellsForLevel={customSpells[level] || []}
-              isDarkMode={isDarkMode}
-              addCustomSpell={addCustomSpell}
-              removeCustomSpell={removeCustomSpell}
-              updateCustomSpell={updateCustomSpell}
-              setHoveredSpell={setHoveredSpell}
-              setMousePosition={setMousePosition}
-            />
-          ))}
+        {accessibleSpellLevels.map((level) => (
+          <SpellLevelSection
+            key={level}
+            level={level}
+            label={`Level ${level}`}
+            knownSpells={getKnownSpellsForLevel(level)}
+            customSpellsForLevel={customSpells[level] || []}
+            isDarkMode={isDarkMode}
+            addCustomSpell={addCustomSpell}
+            removeCustomSpell={removeCustomSpell}
+            updateCustomSpell={updateCustomSpell}
+            setHoveredSpell={setHoveredSpell}
+            setMousePosition={setMousePosition}
+          />
+        ))}
       </div>
+
+      {knownEditorOpen && (
+        <NumberPickerModal
+          title="Known / Prepared Spells"
+          value={getEffectiveKnownSpells()}
+          min={0}
+          autoValue={calculateKnownSpells()}
+          onCommit={(value) => {
+            const calculated = calculateKnownSpells();
+            setKnownSpellsOverride(value === calculated ? null : value);
+            setCharacter({ ...character, knownPreparedSpells: value });
+          }}
+          onClose={() => setKnownEditorOpen(false)}
+          isDarkMode={isDarkMode}
+        />
+      )}
     </div>
   );
 }

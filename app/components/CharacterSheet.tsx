@@ -2206,37 +2206,37 @@ export default function CharacterSheet() {
   };
 
   // Functions for spell slot management
+  // React 19 StrictMode invokes state updaters twice in dev to flag impurities;
+  // spread the inner slot too so `used += 1` isn't applied to the shared object.
   const castSpell = (spellLevel: number) => {
     setSpellSlots((prev) => {
-      const newSlots = { ...prev };
-      if (newSlots[spellLevel] && newSlots[spellLevel].used < newSlots[spellLevel].max) {
-        newSlots[spellLevel].used += 1;
-      }
-      return newSlots;
+      const slot = prev[spellLevel];
+      if (!slot || slot.used >= slot.max) return prev;
+      return { ...prev, [spellLevel]: { ...slot, used: slot.used + 1 } };
     });
   };
 
   const shortRest = () => {
-    // Warlocks restore all spell slots on short rest
     if (character.class === 'Warlock') {
       setSpellSlots((prev) => {
-        const newSlots = { ...prev };
-        Object.keys(newSlots).forEach((level) => {
-          newSlots[parseInt(level)].used = 0;
-        });
-        return newSlots;
+        const next: typeof prev = {};
+        for (const key of Object.keys(prev)) {
+          const level = parseInt(key);
+          next[level] = { ...prev[level], used: 0 };
+        }
+        return next;
       });
     }
   };
 
   const longRest = () => {
-    // All classes restore all spell slots on long rest
     setSpellSlots((prev) => {
-      const newSlots = { ...prev };
-      Object.keys(newSlots).forEach((level) => {
-        newSlots[parseInt(level)].used = 0;
-      });
-      return newSlots;
+      const next: typeof prev = {};
+      for (const key of Object.keys(prev)) {
+        const level = parseInt(key);
+        next[level] = { ...prev[level], used: 0 };
+      }
+      return next;
     });
   };
 
