@@ -150,12 +150,14 @@ body {
     transparent 70%
   );
   transform: translateX(-120%);
-  transition: transform 900ms cubic-bezier(0.2, 0.6, 0.2, 1);
   pointer-events: none;
   mix-blend-mode: screen;
 }
+/* Transition lives ONLY on the hover state, so the sheen animates in on
+   hover-in but snaps back off-screen on hover-out (no visible return sweep). */
 .spell-card-sheen:hover::after {
   transform: translateX(120%);
+  transition: transform 900ms cubic-bezier(0.2, 0.6, 0.2, 1);
 }
 
 /* Nested sheet-cards (spell cards inside an accordion, etc.) need to stand
