@@ -49,6 +49,8 @@ export interface DataTabProps {
   setGlassCards: React.Dispatch<React.SetStateAction<boolean>>;
   glassFrost: number;
   setGlassFrost: React.Dispatch<React.SetStateAction<number>>;
+  sheetLayout: 'narrow' | 'wide';
+  setSheetLayout: React.Dispatch<React.SetStateAction<'narrow' | 'wide'>>;
   characterImage: string;
   setCharacterImage: React.Dispatch<React.SetStateAction<string>>;
   handleImageUrlChange: (url: string, setter: React.Dispatch<React.SetStateAction<string>>) => void;
@@ -101,6 +103,8 @@ export default function DataTab({
   setGlassCards,
   glassFrost,
   setGlassFrost,
+  sheetLayout,
+  setSheetLayout,
   characterImage,
   setCharacterImage,
   handleImageUrlChange,
@@ -960,6 +964,41 @@ export default function DataTab({
                     />
                   </div>
                 )}
+              </div>
+
+              {/* Sheet width — narrow for tablets / sideways monitors, wide for
+                  standard 16:9 desktops so the grids fill the screen. */}
+              <div className="border-t border-white/20 pt-2">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-xs font-medium text-gray-400">Sheet width</span>
+                  <div
+                    role="radiogroup"
+                    aria-label="Sheet width"
+                    className="inline-flex rounded-md border border-slate-600 overflow-hidden text-xs"
+                  >
+                    {(['narrow', 'wide'] as const).map((mode) => (
+                      <button
+                        key={mode}
+                        type="button"
+                        role="radio"
+                        aria-checked={sheetLayout === mode ? 'true' : 'false'}
+                        onClick={() => setSheetLayout(mode)}
+                        className={`px-3 py-1 transition-colors ${
+                          sheetLayout === mode
+                            ? 'bg-orange-500/80 text-white'
+                            : 'bg-transparent text-gray-300 hover:bg-slate-700'
+                        }`}
+                      >
+                        {mode === 'narrow' ? 'Narrow' : 'Wide'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <p className="text-[10px] text-gray-500 mt-1">
+                  {sheetLayout === 'wide'
+                    ? 'Fills a 16:9 desktop — grids stretch to use the extra width.'
+                    : 'Fits tablets and sideways/portrait monitors.'}
+                </p>
               </div>
 
               {/* Character Image URL */}

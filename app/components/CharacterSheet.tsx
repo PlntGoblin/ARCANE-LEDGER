@@ -697,6 +697,11 @@ export default function CharacterSheet() {
   // through. Applied as a root class so one CSS rule covers every card.
   const [glassCards, setGlassCards] = useState<boolean>(true);
 
+  // Sheet width mode. "narrow" is the classic max-w-5xl (great on tablets and
+  // portrait/sideways monitors), "wide" bumps to max-w-7xl for standard 16:9
+  // desktops so the grids fill the screen instead of being letterboxed.
+  const [sheetLayout, setSheetLayout] = useState<'narrow' | 'wide'>('narrow');
+
   // How much frost, 55-90. Drives both the card's black overlay and the
   // backdrop blur, so a busy wallpaper can be dialled down without giving up
   // the glass entirely. 70 reproduces the original fixed look.
@@ -922,6 +927,7 @@ export default function CharacterSheet() {
     const savedVibeEffects = localStorage.getItem('dnd-vibe-effects');
     const savedGlassCards = localStorage.getItem('dnd-glass-cards');
     const savedGlassFrost = localStorage.getItem('dnd-glass-frost');
+    const savedSheetLayout = localStorage.getItem('dnd-sheet-layout');
     const savedQuarryUses = localStorage.getItem('dnd-quarry-uses');
 
     if (savedCharacter) {
@@ -1061,6 +1067,10 @@ export default function CharacterSheet() {
       } catch (error) {
         console.warn('Failed to load glass cards setting from localStorage:', error);
       }
+    }
+
+    if (savedSheetLayout === 'narrow' || savedSheetLayout === 'wide') {
+      setSheetLayout(savedSheetLayout);
     }
 
     if (savedGlassFrost) {
@@ -1415,6 +1425,17 @@ export default function CharacterSheet() {
       console.warn('Failed to save glass cards setting to localStorage:', error);
     }
   }, [glassCards, glassFrost]);
+
+  // Persist the sheet width mode. Stored as a plain string (not JSON) so the
+  // load path can just string-compare without needing a parse.
+  useEffect(() => {
+    if (!hasMountedRef.current) return;
+    try {
+      localStorage.setItem('dnd-sheet-layout', sheetLayout);
+    } catch (error) {
+      console.warn('Failed to save sheet layout to localStorage:', error);
+    }
+  }, [sheetLayout]);
 
   // Save Ranger's Quarry uses to localStorage
   useEffect(() => {
@@ -3211,7 +3232,7 @@ export default function CharacterSheet() {
 
       <div className="relative z-10">
         <MobileTabBar activeTab={activeTab} setActiveTab={setActiveTab} />
-        <div className="max-w-5xl mx-auto sheet-bottom-pad">
+        <div className={`${sheetLayout === 'wide' ? 'max-w-7xl' : 'max-w-5xl'} mx-auto sheet-bottom-pad`}>
           {/* Tab Navigation - Above Main Box (desktop only; phones use MobileTabBar) */}
           <div className="no-touch flex justify-center mb-4 space-x-2">
             {tabs.map((tab) => (
@@ -3433,6 +3454,8 @@ export default function CharacterSheet() {
               setGlassCards={setGlassCards}
               glassFrost={glassFrost}
               setGlassFrost={setGlassFrost}
+              sheetLayout={sheetLayout}
+              setSheetLayout={setSheetLayout}
               characterImage={characterImage}
               setCharacterImage={setCharacterImage}
               handleImageUrlChange={handleImageUrlChange}
